@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>ТРКИ-C1 词汇卡片 · Chrome版</title>
+<style>
+:root {
+  --bg:#f4f4f7; --panel:#ffffff; --text:#17171a; --muted:#73737c; --line:#dedee6;
+  --a:#eef3ff; --r:#f6efff; --g:#fff2cf;
+  --good:#eaf7ed; --mid:#fff7d8; --bad:#fff0f0; --accent:#5b5bd6;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:#111116; --panel:#1c1c22; --text:#f4f4f5; --muted:#aaaab4; --line:#383841;
+    --a:#242b42; --r:#31243b; --g:#3a311f;
+    --good:#203127; --mid:#3a351f; --bad:#3b2424; --accent:#8a8af5;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC","PingFang SC",Arial,sans-serif;
+}
+.wrap{max-width:820px;margin:0 auto;padding:18px 16px 42px}
+h1{font-size:22px;margin:0 0 6px}
+.sub{color:var(--muted);font-size:13px;line-height:1.55;margin-bottom:14px}
+.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.toolbar .full{grid-column:1/-1}
+button,select,input[type="search"],.filebtn{
+  width:100%;border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:13px;padding:11px 12px;font-size:15px;
+}
+button,.filebtn{cursor:pointer}
+button:active,.filebtn:active{transform:scale(.985)}
+.filebtn{display:block;text-align:center}
+input[type="file"]{display:none}
+.statusbar{
+  display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  color:var(--muted);font-size:12px;margin:8px 2px 12px
+}
+.save-ok{color:#2a8a4a} .save-warn{color:#b97800}
+.progress{height:8px;background:var(--line);border-radius:999px;overflow:hidden;margin:10px 0 16px}
+.progress > div{height:100%;background:var(--accent);width:0%}
+.cardwrap{perspective:1200px}
+.card{
+  position:relative;min-height:430px;transform-style:preserve-3d;
+  transition:transform .42s ease;cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.card.flipped{transform:rotateY(180deg)}
+.face{
+  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border:1px solid var(--line);border-radius:26px;background:var(--panel);
+  box-shadow:0 10px 30px rgba(0,0,0,.07);padding:28px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center
+}
+.back{transform:rotateY(180deg)}
+.badges{display:flex;gap:8px;margin-bottom:20px}
+.badge{font-size:12px;font-weight:700;padding:5px 9px;border-radius:999px}
+.badge.a{background:var(--a)} .badge.r{background:var(--r)} .badge.g{background:var(--g)}
+.term{
+  font-family:"Times New Roman",serif;font-size:40px;line-height:1.25;text-align:center;
+  word-break:break-word
+}
+.meaning{font-size:27px;line-height:1.45;text-align:center;margin-bottom:20px}
+.extra{
+  width:100%;border-top:1px solid var(--line);padding-top:18px;
+  font-size:18px;line-height:1.62;text-align:center
+}
+.tap{color:var(--muted);font-size:14px;margin-top:25px}
+.ratebox{
+  margin-top:14px;padding:14px;border:1px solid var(--line);
+  border-radius:18px;background:var(--panel)
+}
+.rate-title{font-size:13px;color:var(--muted);margin-bottom:10px}
+.rates{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rates button{font-weight:600}
+.rates .familiar.active{background:var(--good);border-color:#7ab88a}
+.rates .fuzzy.active{background:var(--mid);border-color:#c4ad56}
+.rates .unknown.active{background:var(--bad);border-color:#c67a7a}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.stats{
+  margin-top:14px;border:1px solid var(--line);background:var(--panel);
+  border-radius:18px;padding:14px
+}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stat{text-align:center;padding:10px 6px;border-radius:12px;background:var(--bg)}
+.stat strong{display:block;font-size:20px}
+.stat span{font-size:12px;color:var(--muted)}
+.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.note{color:var(--muted);font-size:12px;line-height:1.6;margin-top:12px}
+.hidden{display:none!important}
+.toast{
+  position:fixed;left:50%;bottom:28px;transform:translateX(-50%);
+  background:rgba(20,20,24,.92);color:white;padding:10px 14px;border-radius:999px;
+  font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s
+}
+.toast.show{opacity:1}
+@media(max-width:560px){
+  .toolbar{grid-template-columns:1fr}
+  .toolbar .full{grid-column:auto}
+  .card{min-height:440px}
+  .term{font-size:34px} .meaning{font-size:24px} .face{padding:22px}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>ТРКИ-C1 词汇卡片 · Chrome版</h1>
+  <div class="sub">
+    默认先用“学习轮”把词卡过一遍；切到“自评轮”后，你选择的“熟悉 / 模糊 / 不认识”会尝试自动保存在当前浏览器本地。
+  </div>
+
+  <div class="toolbar">
+    <select id="mode" class="full">
+      <option value="learn">学习轮（不计掌握度）</option>
+      <option value="review">自评轮（记录熟悉 / 模糊 / 不认识）</option>
+    </select>
+
+    <select id="filter">
+      <option value="all">全部词</option>
+      <option value="AG">A + G 优先</option>
+      <option value="A">全部 A</option>
+      <option value="RG">R + G</option>
+      <option value="R">全部 R</option>
+      <option value="unrated">只看未自评</option>
+      <option value="familiar">只看熟悉</option>
+      <option value="fuzzy">只看模糊</option>
+      <option value="unknown">只看不认识</option>
+    </select>
+
+    <button id="shuffleBtn">打乱当前卡组</button>
+    <input id="search" class="full" type="search" placeholder="搜索俄语词或中文释义">
+  </div>
+
+  <div class="statusbar">
+    <span id="counter">1 / 148</span>
+    <span id="saveStatus">正在检查本地保存…</span>
+  </div>
+
+  <div class="progress"><div id="bar"></div></div>
+
+  <div class="cardwrap">
+    <div class="card" id="card">
+      <div class="face front">
+        <div class="badges" id="badgesFront"></div>
+        <div class="term" id="term"></div>
+        <div class="tap">轻点卡片翻面</div>
+      </div>
+      <div class="face back">
+        <div class="badges" id="badgesBack"></div>
+        <div class="meaning" id="meaning"></div>
+        <div class="extra" id="extra"></div>
+        <div class="tap">轻点卡片返回正面</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ratebox hidden" id="rateBox">
+    <div class="rate-title">你的自评（仅在“自评轮”记录）</div>
+    <div class="rates">
+      <button class="familiar" data-rating="familiar">熟悉</button>
+      <button class="fuzzy" data-rating="fuzzy">模糊</button>
+      <button class="unknown" data-rating="unknown">不认识</button>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button id="prevBtn">← 上一张</button>
+    <button id="nextBtn">下一张 →</button>
+  </div>
+
+  <div class="stats">
+    <div class="stats-grid">
+      <div class="stat"><strong id="sFamiliar">0</strong><span>熟悉</span></div>
+      <div class="stat"><strong id="sFuzzy">0</strong><span>模糊</span></div>
+      <div class="stat"><strong id="sUnknown">0</strong><span>不认识</span></div>
+      <div class="stat"><strong id="sUnrated">148</strong><span>未自评</span></div>
+    </div>
+
+    <div class="actions">
+      <button id="exportJson">导出 JSON 记录</button>
+      <button id="exportCsv">导出 CSV 记录</button>
+      <label class="filebtn" for="importFile">导入 JSON 记录</label>
+      <input id="importFile" type="file" accept=".json,application/json">
+      <button id="clearRatings">清空全部自评</button>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>建议用法：</b>第一遍只学习，不急着点自评。等你准备正式区分掌握度时切到“自评轮”。<br>
+    <b>本地保存：</b>只保存在你当前浏览器/当前设备，不会自动同步给 ChatGPT。若浏览器不允许本地保存，页面会明确提示。<br>
+    <b>导出：</b>JSON 最适合之后发回给我继续做间隔复习；CSV 方便你自己查看或存表格。
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ALL = [{"term": "диссерта́ция", "level": "A", "g": false, "meaning": "学位论文；论文", "extra": ""}, {"term": "заседа́ние", "level": "A", "g": false, "meaning": "会议", "extra": "заседа́ние комиссии — 委员会会议"}, {"term": "постановле́ние", "level": "A", "g": false, "meaning": "决议；决定", "extra": ""}, {"term": "подведе́ние ито́гов", "level": "A", "g": true, "meaning": "总结；汇总结果", "extra": "подвести́ ито́ги — 作总结"}, {"term": "недоразуме́ние", "level": "A", "g": false, "meaning": "误会", "extra": ""}, {"term": "по недоразуме́нию", "level": "A", "g": true, "meaning": "由于误会", "extra": "固定表达"}, {"term": "вопреки́ + Д.", "level": "A", "g": true, "meaning": "尽管；与……相反", "extra": "вопреки́ обстоятельствам"}, {"term": "типи́чный для + Р.", "level": "A", "g": true, "meaning": "对……而言典型的", "extra": "для + Р."}, {"term": "характе́рный для + Р.", "level": "A", "g": true, "meaning": "……所特有的", "extra": "для + Р."}, {"term": "назрева́ть", "level": "A", "g": false, "meaning": "逐渐形成；酝酿", "extra": "назрева́ет конфли́кт — 冲突正在酝酿"}, {"term": "взве́сить", "level": "A", "g": false, "meaning": "权衡", "extra": "обду́мать и взве́сить — 深思并权衡"}, {"term": "ориенти́р", "level": "A", "g": false, "meaning": "参照；方向；目标", "extra": ""}, {"term": "ориенти́ровка", "level": "A", "g": false, "meaning": "导向；定位；判断方向的能力", "extra": ""}, {"term": "претендова́ть на + В.", "level": "A", "g": true, "meaning": "声称具有；争取；企图取得", "extra": "претендова́ть на пе́рвенство"}, {"term": "мировоззре́ние", "level": "A", "g": false, "meaning": "世界观", "extra": ""}, {"term": "бескоры́стный", "level": "A", "g": false, "meaning": "无私的；不计个人利益的", "extra": ""}, {"term": "прикладно́й", "level": "A", "g": false, "meaning": "应用性的", "extra": "прикладны́е иссле́дования — 应用研究"}, {"term": "ску́дный", "level": "A", "g": false, "meaning": "贫乏的；匮乏的", "extra": ""}, {"term": "востре́бованность", "level": "A", "g": false, "meaning": "需求度；受欢迎、受需要的程度", "extra": ""}, {"term": "про́рыв", "level": "A", "g": false, "meaning": "突破", "extra": "нау́чный про́рыв — 科学突破"}, {"term": "насу́щный", "level": "A", "g": false, "meaning": "迫切的；基本生活所需的", "extra": "насу́щная пробле́ма — 迫切问题"}, {"term": "продле́ние жи́зни", "level": "A", "g": true, "meaning": "延长寿命", "extra": ""}, {"term": "приспоса́бливаться к + Д.", "level": "A", "g": true, "meaning": "适应……", "extra": "к + Д."}, {"term": "домини́рующий", "level": "A", "g": false, "meaning": "占主导地位的", "extra": ""}, {"term": "изоли́рованный", "level": "A", "g": false, "meaning": "孤立的；隔离的", "extra": ""}, {"term": "ото́рванный от + Р.", "level": "A", "g": true, "meaning": "与……脱节的；脱离……的", "extra": "от + Р."}, {"term": "масшта́б", "level": "A", "g": false, "meaning": "规模；尺度", "extra": ""}, {"term": "сбаланси́рованность", "level": "A", "g": false, "meaning": "平衡性；均衡状态", "extra": ""}, {"term": "нестаби́льность", "level": "A", "g": false, "meaning": "不稳定性", "extra": ""}, {"term": "у исто́ков + Р.", "level": "A", "g": true, "meaning": "位于……的源头；是……的开端", "extra": "+ Р."}, {"term": "нелине́йный", "level": "A", "g": false, "meaning": "非线性的", "extra": ""}, {"term": "реда́кция", "level": "A", "g": false, "meaning": "编辑部；编辑工作", "extra": ""}, {"term": "преодоле́ние", "level": "A", "g": false, "meaning": "克服", "extra": "пути́ преодоле́ния пробле́мы — 克服问题的途径"}, {"term": "представля́ть кого/что", "level": "A", "g": true, "meaning": "代表；呈现", "extra": "представля́ть компа́нию — 代表公司"}, {"term": "разрабо́тка", "level": "A", "g": false, "meaning": "开发；研发；制定", "extra": ""}, {"term": "единомы́шленник", "level": "A", "g": false, "meaning": "志同道合者", "extra": ""}, {"term": "конкурентоспосо́бный", "level": "A", "g": false, "meaning": "有竞争力的", "extra": ""}, {"term": "неукосни́тельный", "level": "A", "g": false, "meaning": "严格的；必须遵守的", "extra": "неукосни́тельное выполне́ние — 严格执行"}, {"term": "взять на себя́ отве́тственность за + В.", "level": "A", "g": true, "meaning": "承担对……的责任", "extra": "за + В."}, {"term": "коне́чный результа́т", "level": "A", "g": false, "meaning": "最终结果", "extra": ""}, {"term": "работоспосо́бный", "level": "A", "g": false, "meaning": "有工作能力的；高效运转的", "extra": "работоспосо́бная кома́нда — 高效运转的团队"}, {"term": "затра́гивать + В.", "level": "A", "g": true, "meaning": "涉及；触及", "extra": "затра́гивать вопро́с / пробле́му"}, {"term": "зало́г + Р.", "level": "A", "g": true, "meaning": "……的保障", "extra": "зало́г успе́ха — 成功的保障"}, {"term": "заде́йствовать + В.", "level": "A", "g": true, "meaning": "启用；调动；投入使用", "extra": "заде́йствовать механи́зм"}, {"term": "подбо́р персона́ла", "level": "A", "g": false, "meaning": "人员选拔；招聘筛选", "extra": ""}, {"term": "интуи́ция", "level": "A", "g": false, "meaning": "直觉", "extra": ""}, {"term": "вы́браться из + Р.", "level": "A", "g": true, "meaning": "从……出去；摆脱……", "extra": "из + Р."}, {"term": "дозвони́ться до + Р.", "level": "A", "g": true, "meaning": "打通某人的电话", "extra": "до + Р."}, {"term": "отговори́ть кого от + Р.", "level": "A", "g": true, "meaning": "劝某人不要做某事", "extra": "кого + В.; от + Р."}, {"term": "подели́ться чем с кем", "level": "A", "g": true, "meaning": "与某人分享某事", "extra": "чем + Т.; с кем + Т."}, {"term": "довести́сь + инф.", "level": "A", "g": true, "meaning": "碰巧；有机会做某事", "extra": "мне довело́сь познакомиться…"}, {"term": "очути́ться в/на + П.", "level": "A", "g": true, "meaning": "突然发现自己身处……", "extra": "в/на + П."}, {"term": "приступи́ть к + Д.", "level": "A", "g": true, "meaning": "着手；开始进行……", "extra": "к + Д."}, {"term": "нае́сться + Р.", "level": "A", "g": true, "meaning": "吃很多；吃饱", "extra": "+ Р."}, {"term": "созвони́ться с кем", "level": "A", "g": true, "meaning": "与某人通过电话联系上", "extra": "с + Т."}, {"term": "заня́ть ме́сто", "level": "A", "g": true, "meaning": "占据位置；就座", "extra": "固定搭配"}, {"term": "расстро́иться", "level": "A", "g": false, "meaning": "难过；沮丧；心情受影响", "extra": ""}, {"term": "смути́ть кого", "level": "A", "g": true, "meaning": "使某人窘迫、困惑", "extra": "кого + В."}, {"term": "смущённый чем", "level": "A", "g": true, "meaning": "因……而窘迫/困惑", "extra": "чем + Т."}, {"term": "объяви́ть", "level": "A", "g": true, "meaning": "宣布", "extra": "与 прояви́ть / вы́явить / предъяви́ть 做构词辨析"}, {"term": "прояви́ть", "level": "A", "g": true, "meaning": "表现出", "extra": "прояви́ть интере́с / инициа́тиву"}, {"term": "вы́явить", "level": "A", "g": true, "meaning": "查明；发现隐藏的问题", "extra": "вы́явить причи́ну"}, {"term": "предъяви́ть", "level": "A", "g": true, "meaning": "出示；提出", "extra": "предъяви́ть докуме́нты / тре́бования"}, {"term": "угова́ривать кого + инф.", "level": "A", "g": true, "meaning": "劝说某人做……", "extra": "кого + В. + инф."}, {"term": "отгова́ривать кого от + Р.", "level": "A", "g": true, "meaning": "劝某人不要……", "extra": "кого + В.; от + Р."}, {"term": "приучи́ть кого к + Д. / + инф.", "level": "A", "g": true, "meaning": "使某人养成……习惯", "extra": "кого + В.; к + Д. / + инф."}, {"term": "изучи́ть", "level": "A", "g": false, "meaning": "深入研究；学透", "extra": ""}, {"term": "заголо́вок", "level": "A", "g": false, "meaning": "标题，尤指文章标题", "extra": ""}, {"term": "назва́ние", "level": "A", "g": false, "meaning": "名称；作品名", "extra": ""}, {"term": "разбо́рчивый", "level": "A", "g": false, "meaning": "清晰易辨认的", "extra": "разбо́рчивый по́черк — 清晰易辨认的笔迹"}, {"term": "сно́сно", "level": "A", "g": false, "meaning": "还过得去；尚可", "extra": ""}, {"term": "ста́вить па́лки в колёса", "level": "A", "g": false, "meaning": "给某人使绊子；阻碍某人", "extra": "固定表达"}, {"term": "скре́пя се́рдце", "level": "A", "g": false, "meaning": "很不情愿地；勉强地", "extra": "固定表达"}, {"term": "взять верх над кем/чем", "level": "A", "g": true, "meaning": "占上风；压倒……", "extra": "над + Т."}, {"term": "наплы́в", "level": "A", "g": false, "meaning": "大量涌入", "extra": "наплы́в туристов / посетителей"}, {"term": "вспы́шка", "level": "A", "g": false, "meaning": "突然爆发；闪现", "extra": "вспы́шка интере́са / эпиде́мии"}, {"term": "публи́ка", "level": "A", "g": false, "meaning": "公众；观众", "extra": ""}, {"term": "энтузиа́зм", "level": "R", "g": false, "meaning": "热情；热忱", "extra": ""}, {"term": "нащу́пывать опо́ры", "level": "R", "g": false, "meaning": "摸索依据、支撑点", "extra": ""}, {"term": "хрящ", "level": "R", "g": false, "meaning": "软骨", "extra": ""}, {"term": "жи́дкость", "level": "R", "g": false, "meaning": "液体", "extra": ""}, {"term": "деформа́ция", "level": "R", "g": false, "meaning": "变形", "extra": ""}, {"term": "си́нтез", "level": "R", "g": false, "meaning": "综合；合成", "extra": ""}, {"term": "нагля́дный", "level": "R", "g": false, "meaning": "直观的；明显的", "extra": ""}, {"term": "кле́точный", "level": "R", "g": false, "meaning": "细胞的", "extra": ""}, {"term": "вымира́ние", "level": "R", "g": false, "meaning": "灭绝", "extra": ""}, {"term": "мелково́дье", "level": "R", "g": false, "meaning": "浅水区", "extra": ""}, {"term": "магни́тное по́ле", "level": "R", "g": false, "meaning": "磁场", "extra": ""}, {"term": "уде́л", "level": "R", "g": false, "meaning": "命运；宿命", "extra": ""}, {"term": "пости́чь кого", "level": "R", "g": true, "meaning": "降临到某人身上，多用于不幸", "extra": "его пости́гла неуда́ча"}, {"term": "вре́дность", "level": "R", "g": false, "meaning": "有害因素；危害性", "extra": ""}, {"term": "па́сынок", "level": "R", "g": false, "meaning": "继子；比喻“被冷落、不受重视者”", "extra": ""}, {"term": "биопрепара́т", "level": "R", "g": false, "meaning": "生物制剂", "extra": ""}, {"term": "лине́йно-функциона́льная структу́ра", "level": "R", "g": false, "meaning": "直线职能制结构", "extra": ""}, {"term": "репли́ка", "level": "R", "g": false, "meaning": "一句发言；台词", "extra": ""}, {"term": "оборва́ться", "level": "R", "g": false, "meaning": "突然中断", "extra": "жизнь оборвала́сь — 生命戛然而止"}, {"term": "ходу́льный", "level": "R", "g": false, "meaning": "程式化、生硬做作的", "extra": ""}, {"term": "немо́е кино́", "level": "R", "g": false, "meaning": "默片", "extra": ""}, {"term": "тяну́ться шле́йф", "level": "R", "g": false, "meaning": "留有长久影响、传统或余波", "extra": ""}, {"term": "глаза́ на лоб поле́зли", "level": "R", "g": false, "meaning": "惊得目瞪口呆", "extra": ""}, {"term": "переси́лить", "level": "R", "g": false, "meaning": "克服；压过", "extra": ""}, {"term": "побеси́ться", "level": "R", "g": false, "meaning": "疯闹一阵；折腾一阵（口语）", "extra": ""}, {"term": "кочева́ть", "level": "R", "g": false, "meaning": "游牧；不断辗转迁移", "extra": ""}, {"term": "ядро́ тру́ппы", "level": "R", "g": false, "meaning": "剧团核心", "extra": ""}, {"term": "подмо́стки", "level": "R", "g": false, "meaning": "舞台（偏文学/报刊语体）", "extra": ""}, {"term": "путеводи́тель", "level": "R", "g": false, "meaning": "旅行指南", "extra": ""}, {"term": "ро́бкий", "level": "R", "g": false, "meaning": "胆怯的", "extra": ""}, {"term": "сбо́рная", "level": "R", "g": false, "meaning": "代表队；国家队", "extra": ""}, {"term": "глазу́рь", "level": "R", "g": false, "meaning": "糖衣；釉；甜品表面的淋层", "extra": ""}, {"term": "съе́хаться", "level": "R", "g": false, "meaning": "从不同地方聚到一起", "extra": ""}, {"term": "пристро́ить", "level": "R", "g": false, "meaning": "附建；安置；设法安排", "extra": ""}, {"term": "пере́ехать", "level": "R", "g": false, "meaning": "搬家；迁居", "extra": ""}, {"term": "загова́ривать", "level": "R", "g": false, "meaning": "开始搭话；另有念咒等义", "extra": ""}, {"term": "выгова́ривать", "level": "R", "g": false, "meaning": "清楚发音；训斥", "extra": ""}, {"term": "озабо́чен", "level": "R", "g": false, "meaning": "忧心忡忡的", "extra": ""}, {"term": "су́дорожный", "level": "R", "g": false, "meaning": "痉挛般的；异常紧张的", "extra": ""}, {"term": "мра́чная бле́дность", "level": "R", "g": false, "meaning": "阴沉、可怕的苍白脸色", "extra": ""}, {"term": "прерва́ть молча́ние", "level": "R", "g": false, "meaning": "打破沉默", "extra": ""}, {"term": "разлу́ка", "level": "R", "g": false, "meaning": "离别", "extra": ""}, {"term": "посторо́ннее мне́ние", "level": "R", "g": false, "meaning": "外人的意见", "extra": ""}, {"term": "тя́гостно", "level": "R", "g": false, "meaning": "沉重、痛苦、难受地", "extra": ""}, {"term": "сумасбро́д", "level": "R", "g": false, "meaning": "鲁莽、疯疯癫癫的人", "extra": ""}, {"term": "подверга́ть себя́ чему", "level": "R", "g": true, "meaning": "使自己遭受；置于……之中", "extra": "чему + Д."}, {"term": "пощёчина", "level": "R", "g": false, "meaning": "耳光", "extra": ""}, {"term": "изумле́ние", "level": "R", "g": false, "meaning": "惊讶", "extra": ""}, {"term": "перве́нствовать", "level": "R", "g": false, "meaning": "居首；争第一", "extra": ""}, {"term": "бу́йство", "level": "R", "g": false, "meaning": "狂放；暴烈行为", "extra": ""}, {"term": "хва́статься чем", "level": "R", "g": true, "meaning": "以……炫耀", "extra": "чем + Т."}, {"term": "пья́нство", "level": "R", "g": false, "meaning": "酗酒；醉酒成风", "extra": ""}, {"term": "сча́стливец", "level": "R", "g": false, "meaning": "幸运儿", "extra": ""}, {"term": "блиста́тельный", "level": "R", "g": false, "meaning": "光彩夺目的；卓越的", "extra": ""}, {"term": "беспе́чный", "level": "R", "g": false, "meaning": "无忧无虑的；漫不经心的", "extra": ""}, {"term": "поколеба́ться", "level": "R", "g": false, "meaning": "动摇", "extra": ""}, {"term": "обольщённый", "level": "R", "g": false, "meaning": "被迷住的；受到诱惑的", "extra": ""}, {"term": "отча́яние", "level": "R", "g": false, "meaning": "绝望", "extra": ""}, {"term": "эпигра́мма", "level": "R", "g": false, "meaning": "讽刺短诗；讽刺诗句", "extra": ""}, {"term": "зло́бствовать", "level": "R", "g": false, "meaning": "怀恨；恶意发作", "extra": ""}, {"term": "жре́бий", "level": "R", "g": false, "meaning": "签；抽签", "extra": "бро́сить жре́бий — 抽签决定"}, {"term": "прице́литься", "level": "R", "g": false, "meaning": "瞄准", "extra": ""}, {"term": "равноду́шие", "level": "R", "g": false, "meaning": "冷漠；无动于衷", "extra": ""}, {"term": "взбеси́ть кого", "level": "R", "g": true, "meaning": "把某人激怒", "extra": "кого + В."}, {"term": "дорожи́ть чем", "level": "R", "g": true, "meaning": "珍惜……", "extra": "дорожи́ть жи́знью; чем + Т."}, {"term": "мелькну́ть в уме́", "level": "R", "g": false, "meaning": "念头一闪而过", "extra": ""}, {"term": "изво́лить + инф.", "level": "R", "g": true, "meaning": "愿意；请（旧式或带讽刺色彩）", "extra": "+ инф."}, {"term": "возрази́ть кому", "level": "R", "g": true, "meaning": "反驳某人", "extra": "кому + Д."}, {"term": "пое́динок", "level": "R", "g": false, "meaning": "决斗；对决", "extra": ""}, {"term": "отста́вка", "level": "R", "g": false, "meaning": "退役；辞职", "extra": ""}, {"term": "мще́ние", "level": "R", "g": false, "meaning": "复仇", "extra": ""}];
+const STORAGE_KEY = "trki_c1_flashcards_state_v2";
+
+let state = {
+  ratings: {},
+  updatedAt: null
+};
+let deck = [...ALL];
+let idx = 0;
+let flipped = false;
+let storageAvailable = false;
+
+const $ = id => document.getElementById(id);
+
+function cardKey(c) { return c.term; }
+
+function badgeHTML(c) {
+  let s = `<span class="badge ${c.level.toLowerCase()}">${c.level}</span>`;
+  if (c.g) s += `<span class="badge g">G</span>`;
+  return s;
+}
+
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 1700);
+}
+
+function checkStorage() {
+  try {
+    const k = "__trki_test__";
+    localStorage.setItem(k, "1");
+    localStorage.removeItem(k);
+    storageAvailable = true;
+    $("saveStatus").textContent = "自动保存：可用";
+    $("saveStatus").className = "save-ok";
+    return true;
+  } catch (e) {
+    storageAvailable = false;
+    $("saveStatus").textContent = "自动保存：当前浏览器未开放（请定期导出 JSON）";
+    $("saveStatus").className = "save-warn";
+    return false;
+  }
+}
+
+function loadState() {
+  if (!checkStorage()) return;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    if (saved && typeof saved === "object") {
+      state.ratings = saved.ratings || {};
+      state.updatedAt = saved.updatedAt || null;
+    }
+  } catch (e) {
+    console.warn("读取本地进度失败", e);
+  }
+}
+
+function saveState() {
+  state.updatedAt = new Date().toISOString();
+  if (!storageAvailable) return;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {
+    storageAvailable = false;
+    $("saveStatus").textContent = "自动保存失败（请导出 JSON）";
+    $("saveStatus").className = "save-warn";
+  }
+}
+
+function currentRating(c) {
+  const r = state.ratings[cardKey(c)];
+  return r ? r.rating : null;
+}
+
+function applyFilter(resetIndex=true) {
+  const filter = $("filter").value;
+  const q = $("search").value.trim().toLowerCase();
+
+  deck = ALL.filter(c => {
+    const rating = currentRating(c);
+    let ok = true;
+    if (filter === "AG") ok = c.level === "A" && c.g;
+    else if (filter === "A") ok = c.level === "A";
+    else if (filter === "RG") ok = c.level === "R" && c.g;
+    else if (filter === "R") ok = c.level === "R";
+    else if (filter === "unrated") ok = !rating;
+    else if (filter === "familiar") ok = rating === "familiar";
+    else if (filter === "fuzzy") ok = rating === "fuzzy";
+    else if (filter === "unknown") ok = rating === "unknown";
+
+    if (!ok) return false;
+    if (!q) return true;
+
+    const hay = `${c.term} ${c.meaning} ${c.extra || ""}`.toLowerCase();
+    return hay.includes(q);
+  });
+
+  if (resetIndex) idx = 0;
+  if (idx >= deck.length) idx = 0;
+  flipped = false;
+  render();
+}
+
+function render() {
+  updateStats();
+
+  if (!deck.length) {
+    $("term").textContent = "没有符合条件的卡片";
+    $("meaning").textContent = "请修改筛选条件或搜索关键词";
+    $("extra").textContent = "";
+    $("badgesFront").innerHTML = "";
+    $("badgesBack").innerHTML = "";
+    $("counter").textContent = "0 / 0";
+    $("bar").style.width = "0%";
+    $("card").classList.remove("flipped");
+    $("rateBox").classList.add("hidden");
+    return;
+  }
+
+  const c = deck[idx];
+  $("badgesFront").innerHTML = badgeHTML(c);
+  $("badgesBack").innerHTML = badgeHTML(c);
+  $("term").textContent = c.term;
+  $("meaning").textContent = c.meaning;
+  $("extra").textContent = c.extra || (c.g ? "重点：格支配 / 固定搭配" : "—");
+  $("counter").textContent = `${idx + 1} / ${deck.length}`;
+  $("bar").style.width = `${((idx + 1) / deck.length) * 100}%`;
+
+  $("card").classList.toggle("flipped", flipped);
+
+  const reviewMode = $("mode").value === "review";
+  $("rateBox").classList.toggle("hidden", !reviewMode);
+
+  document.querySelectorAll("[data-rating]").forEach(btn => btn.classList.remove("active"));
+  const r = currentRating(c);
+  if (r) {
+    const btn = document.querySelector(`[data-rating="${r}"]`);
+    if (btn) btn.classList.add("active");
+  }
+}
+
+function updateStats() {
+  let familiar = 0, fuzzy = 0, unknown = 0;
+  for (const c of ALL) {
+    const r = currentRating(c);
+    if (r === "familiar") familiar++;
+    else if (r === "fuzzy") fuzzy++;
+    else if (r === "unknown") unknown++;
+  }
+  $("sFamiliar").textContent = familiar;
+  $("sFuzzy").textContent = fuzzy;
+  $("sUnknown").textContent = unknown;
+  $("sUnrated").textContent = ALL.length - familiar - fuzzy - unknown;
+}
+
+function nextCard() {
+  if (!deck.length) return;
+  idx = (idx + 1) % deck.length;
+  flipped = false;
+  render();
+}
+
+function prevCard() {
+  if (!deck.length) return;
+  idx = (idx - 1 + deck.length) % deck.length;
+  flipped = false;
+  render();
+}
+
+function setRating(rating) {
+  if ($("mode").value !== "review" || !deck.length) return;
+  const c = deck[idx];
+  const k = cardKey(c);
+  const prev = state.ratings[k] || {};
+  state.ratings[k] = {
+    rating,
+    selfAssessment: true,
+    reviewCount: (prev.reviewCount || 0) + 1,
+    lastRatedAt: new Date().toISOString()
+  };
+  saveState();
+  updateStats();
+  render();
+  toast(rating === "familiar" ? "已标记：熟悉" : rating === "fuzzy" ? "已标记：模糊" : "已标记：不认识");
+  setTimeout(nextCard, 180);
+}
+
+function download(filename, text, type) {
+  const blob = new Blob([text], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function exportJSON() {
+  const payload = {
+    format: "TRKI-C1 flashcard progress",
+    version: 2,
+    exportedAt: new Date().toISOString(),
+    totals: { total: ALL.length, A: 77, R: 71, G: 42 },
+    ratings: state.ratings,
+    cards: ALL.map(c => ({
+      term: c.term,
+      level: c.level,
+      g: !!c.g,
+      meaning: c.meaning,
+      extra: c.extra || "",
+      rating: currentRating(c),
+      ratingMeta: state.ratings[cardKey(c)] || null
+    }))
+  };
+  download(
+    `TRKI_C1_progress_${new Date().toISOString().slice(0,10)}.json`,
+    JSON.stringify(payload, null, 2),
+    "application/json;charset=utf-8"
+  );
+}
+
+function csvEscape(v) {
+  const s = String(v ?? "");
+  return `"${s.replace(/"/g, '""')}"`;
+}
+
+function exportCSV() {
+  const header = ["term","level","G","meaning","extra","rating","lastRatedAt","reviewCount"];
+  const rows = ALL.map(c => {
+    const meta = state.ratings[cardKey(c)] || {};
+    return [
+      c.term, c.level, c.g ? "1" : "0", c.meaning, c.extra || "",
+      meta.rating || "", meta.lastRatedAt || "", meta.reviewCount || 0
+    ];
+  });
+  const csv = [header, ...rows].map(row => row.map(csvEscape).join(",")).join("\n");
+  download(
+    `TRKI_C1_progress_${new Date().toISOString().slice(0,10)}.csv`,
+    "\ufeff" + csv,
+    "text/csv;charset=utf-8"
+  );
+}
+
+function importJSON(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const payload = JSON.parse(e.target.result);
+      const incoming = payload.ratings || (payload.state && payload.state.ratings);
+      if (!incoming || typeof incoming !== "object") throw new Error("记录格式不正确");
+      state.ratings = incoming;
+      state.updatedAt = new Date().toISOString();
+      saveState();
+      applyFilter(true);
+      toast("进度已导入");
+    } catch (err) {
+      alert("导入失败：这不是可识别的 TRKI-C1 进度 JSON。");
+    }
+  };
+  reader.readAsText(file);
+}
+
+$("card").addEventListener("click", () => {
+  if (!deck.length) return;
+  flipped = !flipped;
+  render();
+});
+
+$("nextBtn").addEventListener("click", nextCard);
+$("prevBtn").addEventListener("click", prevCard);
+
+$("mode").addEventListener("change", () => {
+  flipped = false;
+  render();
+});
+
+$("filter").addEventListener("change", () => applyFilter(true));
+$("search").addEventListener("input", () => applyFilter(true));
+
+$("shuffleBtn").addEventListener("click", () => {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  idx = 0;
+  flipped = false;
+  render();
+  toast("已打乱当前卡组");
+});
+
+document.querySelectorAll("[data-rating]").forEach(btn => {
+  btn.addEventListener("click", e => {
+    e.stopPropagation();
+    setRating(btn.dataset.rating);
+  });
+});
+
+$("exportJson").addEventListener("click", exportJSON);
+$("exportCsv").addEventListener("click", exportCSV);
+
+$("importFile").addEventListener("change", e => {
+  const file = e.target.files && e.target.files[0];
+  if (file) importJSON(file);
+  e.target.value = "";
+});
+
+$("clearRatings").addEventListener("click", () => {
+  if (!confirm("确定要清空全部“熟悉 / 模糊 / 不认识”自评吗？此操作不会删除词库。")) return;
+  state.ratings = {};
+  saveState();
+  applyFilter(true);
+  toast("全部自评已清空");
+});
+
+loadState();
+applyFilter(true);
+</script>
+</body>
+</html>
