@@ -8,7 +8,7 @@
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Noto Sans SC",Arial,sans-serif}
+*{box-sizing:border-box}html{overflow-anchor:none}#pageTop{height:1px;scroll-margin-top:12px}body{margin:0;background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Noto Sans SC",Arial,sans-serif}
 .wrap{max-width:820px;margin:auto;padding:calc(18px + env(safe-area-inset-top, 0px)) 16px calc(42px + env(safe-area-inset-bottom, 0px))}h1{font-size:22px;margin:0 0 5px}.sub,.muted{color:var(--m);font-size:13px;line-height:1.6}
 .panel{background:var(--p);border:1px solid var(--l);border-radius:20px;padding:15px;margin-top:13px}.panel h3{margin:0 0 10px;font-size:16px}
 .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.stat{text-align:center;background:var(--bg);padding:11px 4px;border-radius:13px}.stat b{font-size:20px;display:block}.stat span{font-size:11px;color:var(--m)}
@@ -27,6 +27,7 @@ button,input,select,.filebtn{width:100%;border:1px solid var(--l);background:var
 </style>
 </head>
 <body><div class="wrap">
+<div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
 <h1>ТРКИ-C1 智能词汇测试</h1>
@@ -125,7 +126,11 @@ function reviewedIdsOn(date){return all().filter(c=>historyOnDate(c,date)).map(i
 function firstLearnedIdsOn(date){return all().filter(c=>firstHistoryDate(c)===date).map(id)}
 function resetInitialScroll(){
   try{if("scrollRestoration" in history)history.scrollRestoration="manual"}catch(e){}
-  requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:"auto"}))
+  const topEl=document.getElementById("pageTop");
+  if(!topEl)return;
+  topEl.scrollIntoView({block:"start",inline:"nearest",behavior:"auto"});
+  document.documentElement.scrollTop=0;
+  document.body.scrollTop=0;
 }
 
 function mergeContent(existing,seed){
@@ -421,5 +426,6 @@ $("importVocab").onchange=e=>readJSON(e.target.files[0],x=>{
 
 
 load();updateHome();
-resetInitialScroll();
+[0,80,250,700,1400,2200].forEach(ms=>setTimeout(resetInitialScroll,ms));
+window.addEventListener("pageshow",()=>[0,120,500,1200].forEach(ms=>setTimeout(resetInitialScroll,ms)));
 </script></body></html>
