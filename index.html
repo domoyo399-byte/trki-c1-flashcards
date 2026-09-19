@@ -23,6 +23,24 @@ button,input,select,.filebtn{width:100%;border:1px solid var(--l);background:var
 .smallbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.hidden{display:none!important}
 .conjgrid{display:grid;grid-template-columns:52px 1fr;gap:8px 10px;align-items:center;margin-top:12px}.conjgrid input{padding:11px}.person{font-weight:700;text-align:right}
 .browser-card{background:var(--p);border:1px solid var(--l);border-radius:24px;min-height:390px;padding:24px;display:flex;flex-direction:column;justify-content:center;cursor:pointer}.browser-term{text-align:center;font-family:"Times New Roman",serif;font-size:40px}.browser-back{display:none}.browser-card.flipped .browser-front{display:none}.browser-card.flipped .browser-back{display:block}.browser-meaning{text-align:center;font-size:25px;line-height:1.5}.detail{border-top:1px solid var(--l);margin-top:16px;padding-top:14px;line-height:1.65}.badges{text-align:center;margin-bottom:15px}.badge{display:inline-block;background:var(--chip);padding:5px 9px;border-radius:999px;font-size:12px;margin:0 3px}.browsernav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+
+details.fold{margin-top:13px}
+details.fold>summary{
+  list-style:none;cursor:pointer;background:var(--p);border:1px solid var(--l);
+  border-radius:20px;padding:16px 18px;font-weight:700;font-size:16px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary::after{
+  content:"⌄";font-size:20px;color:var(--m);transition:transform .2s ease
+}
+details.fold[open]>summary::after{transform:rotate(180deg)}
+details.fold[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:0}
+details.fold>.panel{
+  margin-top:0;border-top:0;border-top-left-radius:0;border-top-right-radius:0
+}
+.fold-note{font-weight:400;color:var(--m);font-size:12px}
+
 @media(max-width:560px){.grid4{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:1fr}.prompt{font-size:24px}.ru{font-size:33px}.qbox{padding:20px}.smallbtns{grid-template-columns:1fr}}
 </style>
 </head>
@@ -63,18 +81,32 @@ button,input,select,.filebtn{width:100%;border:1px solid var(--l);background:var
 </div>
 </div>
 
+<details class="fold">
+<summary>
+  <span>词卡浏览</span>
+  <span class="fold-note">需要时展开</span>
+</summary>
 <div class="panel">
-<h3>词卡浏览</h3>
 <div class="muted">正面保持俄语词条；翻面可看释义、搭配/构词提示，以及特殊动词的 я / ты / они 变位。</div>
 <button id="openBrowser" style="margin-top:10px">打开词卡浏览</button>
 </div>
+</details>
 
-<div class="panel"><h3>词库与备份</h3><div class="actions">
+<details class="fold">
+<summary>
+  <span>词库与备份</span>
+  <span class="fold-note">导入 / 导出 / 恢复</span>
+</summary>
+<div class="panel">
+<div class="actions">
 <label class="filebtn" for="importVocab">导入新词包 JSON</label><input id="importVocab" type="file" accept=".json">
 <button id="exportBackup">导出完整备份</button>
 <label class="filebtn" for="importBackup">恢复完整备份</label><input id="importBackup" type="file" accept=".json">
 <button id="resetToday">重建“今天”任务</button>
-</div><div class="muted" style="margin-top:10px">重建今天只影响今日队列，不删除历史成绩。为了避免误吃明天的新词，系统不会在同一天自动追加未分配的新词。</div></div>
+</div>
+<div class="muted" style="margin-top:10px">重建今天只影响今日队列，不删除历史成绩。为了避免误吃明天的新词，系统不会在同一天自动追加未分配的新词。</div>
+</div>
+</details>
 </section>
 
 <section id="test">
