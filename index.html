@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>ТРКИ-C1 智能词汇测试 v5.4</title>
+<title>ТРКИ-C1 智能词汇测试 v5.5</title>
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
@@ -60,7 +60,7 @@ details.fold>.panel{
 
 <section id="home">
 <h1>ТРКИ-C1 智能词汇测试</h1>
-<div class="sub">A 类主动输出 · R 类快速识别 · G 类额外检查格支配/搭配。今日新词批次一旦生成就锁定，不会把“明天的新词”提前塞进今天。</div>
+<div class="sub">A 类主动输出 · R 类快速识别 · G 类额外检查格支配/搭配。词汇召回中，真正的体对可作为可接受变体；语法专项再严格区分体。今日新词批次一旦生成就锁定。</div>
 
 <div class="panel"><div class="grid4">
 <div class="stat"><b id="total">0</b><span>总词库</span></div>
@@ -301,16 +301,88 @@ function updateHome(){
 $("newCap").onchange=()=>{db.settings.newCap=Number($("newCap").value);save();updateHome()};
 
 function baseTarget(c){
-  let s=c.term;
-  s=s.replace(/\s*\+\s*[ДРВТП]\.?/gi,"");
-  s=s.replace(/\s+(кого\/что|кого|чем с кем|чем|кому|чему|с кем|кем\/чем|кем)\b/gi,"");
+  let s=(c.term||"").trim();
+  // 中文→俄语：去掉格支配尾巴，但保留真正的体对（如 находить / найти）
+  s=s.replace(/\s+(кого\/что|кого|что|кому|чему|чем\s+с\s+кем|чем|с\s+кем|кем\/чем|кем)\b.*$/i,"");
+  s=s.replace(/\s+(на|от|к|с|за|из|до|по|о|об|у|для|в|над|под|при|перед|между)\s*\+\s*(?:[ДРВТП](?:\.?\s*п\.?)?|инф\.?)\s*$/i,"");
+  s=s.replace(/\s*\+\s*(?:[ДРВТП](?:\.?\s*п\.?)?|инф\.?)\s*$/i,"");
   return s.trim()
 }
-function grammarHint(c){
-  const m=c.term.match(/(?:[а-яё\/ ]+)?\+\s*[ДРВТП]\.?/i);
-  if(m)return m[0].trim();
-  if(c.extra&&/[ДРВТП]\./.test(c.extra))return c.extra.split(/[；;]/)[0].trim();
-  return c.extra||""
+function govPromptHead(c){
+  let s=(c.term||"").trim();
+  // 支配题题干只显示词/核心表达，不把“на / от / к ...”提前泄露
+  s=s.replace(/\s+(кого\/что|кого|что|кому|чему|чем\s+с\s+кем|чем|с\s+кем|кем\/чем|кем)\b.*$/i,"");
+  s=s.replace(/\s+(на|от|к|с|за|из|до|по|о|об|у|для|в|над|под|при|перед|между)\s*\+\s*(?:[ДРВТП](?:\.?\s*п\.?)?|инф\.?)\s*$/i,"");
+  s=s.replace(/\s*\+\s*(?:[ДРВТП](?:\.?\s*п\.?)?|инф\.?)\s*$/i,"");
+  return s.trim()
+}
+function governanceSpec(c){
+  const extra=(c.extra||"").trim();
+  if(extra){
+    const useful=extra.split(/[；;]/).map(x=>x.trim()).filter(x=>
+      /(?:\+\s*[ДРВТП]|[ДРВТП]\.?\s*п\.?|кого\?|что\?|кому\?|чему\?|чем\?|с кем\?|кем\?)/i.test(x)
+    );
+    if(useful.length)return useful.join("; ");
+  }
+  let t=(c.term||"").trim(), head=govPromptHead(c);
+  if(head&&t.startsWith(head))t=t.slice(head.length).trim();
+  // “представлять кого/что” 这类没有显式格缩写的，也保留作固定支配
+  return t||""
+}
+function grammarHint(c){return governanceSpec(c)}
+function canonicalCaseText(s){
+  let x=stripMarks(s||"").toLowerCase().replace(/ё/g,"е");
+  // 兼容 Д. / Д.п. / дательный падеж 等写法
+  const reps=[
+    [/дательн\w*\s+падеж\w*|д\s*\.?\s*п\s*\.?/g,"д"],
+    [/родительн\w*\s+падеж\w*|р\s*\.?\s*п\s*\.?/g,"р"],
+    [/винительн\w*\s+падеж\w*|в\s*\.?\s*п\s*\.?/g,"в"],
+    [/творительн\w*\s+падеж\w*|т\s*\.?\s*п\s*\.?/g,"т"],
+    [/предложн\w*\s+падеж\w*|п\s*\.?\s*п\s*\.?/g,"п"]
+  ];
+  reps.forEach(([r,v])=>x=x.replace(r,v));
+  x=x.replace(/[.,，。:：!?！？()（）]/g," ");
+  x=x.replace(/\+/g," ");
+  x=x.replace(/\?/g,"");
+  x=x.replace(/\s+/g," ").trim();
+  return x
+}
+function govComponents(s,head=""){
+  let x=s||"";
+  if(head){
+    const h=canonicalCaseText(head),nx=canonicalCaseText(x);
+    if(nx.startsWith(h+" "))x=nx.slice(h.length).trim();
+    else x=nx;
+  }else x=canonicalCaseText(x);
+  return x.split(/[;；,，]/).map(canonicalCaseText).map(x=>x.trim()).filter(Boolean).sort()
+}
+function sameGovAnswer(c,v){
+  const head=govPromptHead(c), target=governanceSpec(c);
+  const a=govComponents(v,head), b=govComponents(target,head);
+  if(!b.length)return false;
+  if(a.length===b.length&&a.every((x,i)=>x===b[i]))return true;
+  return (c.acceptedGovAnswers||[]).some(x=>{
+    const z=govComponents(x,head);
+    return z.length===a.length&&z.every((q,i)=>q===a[i])
+  })
+}
+function typingAnswers(c){
+  let arr=[baseTarget(c),...(Array.isArray(c.acceptedAnswers)?c.acceptedAnswers:[])];
+  const bt=baseTarget(c);
+  const pair=bt.split(/\s*\/\s*/).map(x=>x.trim()).filter(Boolean);
+  if(pair.length===2&&pair.every(x=>/^[А-Яа-яЁё́-]+$/u.test(x)))arr.push(...pair);
+  // 旧库中这条原先只存了完成体；词汇测试允许对应未完成体作为等价召回
+  const knownAspectPairs={
+    "изучить":["изучать"],
+    "изучать":["изучить"]
+  };
+  const key=norm(bt);
+  if(knownAspectPairs[key])arr.push(...knownAspectPairs[key]);
+  return [...new Set(arr.filter(Boolean))]
+}
+function typingMatch(c,v){
+  const nv=norm(v);
+  return typingAnswers(c).find(x=>norm(x)===nv)||null
 }
 function distractors(c){
   let pool=all().filter(x=>id(x)!==id(c)&&x.level==="R").map(x=>x.meaning);
@@ -322,7 +394,7 @@ function distractors(c){
 function qType(c){
   if(c.level==="R")return "mc";
   if(c.conjugation&&db.settings.conjugationQuiz!==false&&(c.seen||0)>=2&&(c.seen||0)%5===2)return "conj";
-  if(c.g&&(c.seen||0)>=1&&(c.seen||0)%3===1)return "gov";
+  if(c.g&&governanceSpec(c)&&(c.seen||0)>=1&&(c.seen||0)%3===1)return "gov";
   return "typing"
 }
 function detailHTML(c){
@@ -413,7 +485,7 @@ function showQ(){
     let opts=[c.meaning,...distractors(c)].sort(()=>Math.random()-.5),box=document.createElement("div");box.className="choices";
     opts.forEach(o=>{let b=document.createElement("button");b.textContent=o;b.onclick=()=>gradeMC(c,o);box.appendChild(b)});$("answer").appendChild(box)
   }else if(type==="gov"){
-    $("qKind").textContent="格支配 / 固定搭配 · 输入";$("prompt").innerHTML=`请写出 <span class="ru">${baseTarget(c)}</span> 的支配关系 / 固定搭配`;
+    $("qKind").textContent="格支配 / 固定搭配 · 输入";$("prompt").innerHTML=`请写出 <span class="ru">${govPromptHead(c)}</span> 的支配结构 / 固定搭配`;
     makeInput(c,"gov")
   }else if(type==="conj"){
     $("qKind").textContent="特殊变位 · я / ты / они";$("prompt").innerHTML=`<span class="ru">${c.conjugation.lemma}</span>`;
@@ -423,7 +495,7 @@ function showQ(){
   }
 }
 function makeInput(c,type){
-  let inp=document.createElement("input");inp.placeholder=type==="gov"?"例如：к + Д. / от + Р.":"输入俄语词 / 表达";inp.autocapitalize="off";inp.autocomplete="off";inp.spellcheck=false;
+  let inp=document.createElement("input");inp.placeholder=type==="gov"?"例如：на + В. / от + Р. / кого + В.":"输入俄语词 / 表达";inp.autocapitalize="off";inp.autocomplete="off";inp.spellcheck=false;
   let b=document.createElement("button");b.textContent="提交";b.style.marginTop="9px";b.onclick=()=>gradeText(c,inp.value,type);inp.onkeydown=e=>{if(e.key==="Enter")b.click()};
   $("answer").append(inp,b);setTimeout(()=>inp.focus(),80)
 }
@@ -463,16 +535,51 @@ $("next").onclick=()=>{
   if(pendingCorrectMC){const c=db.cards[queue[qi]];mark(c,"correct",null);pendingCorrectMC=false}
   qi++;persistSession(qi);showQ()
 }
+function rememberAccepted(c,v,type){
+  const val=(v||"").trim();if(!val)return;
+  const key=type==="gov"?"acceptedGovAnswers":"acceptedAnswers";
+  c[key]=Array.isArray(c[key])?c[key]:[];
+  if(!c[key].some(x=>norm(x)===norm(val)))c[key].push(val)
+}
+function offerManualJudgement(c,v,type,errorType){
+  answered=true;$("dontKnow").classList.add("hidden");$("next").classList.add("hidden");
+  const f=$("feedback");f.className="feedback mid";
+  f.innerHTML=`△ 你的答案与库中标准答案不完全一致。<br>
+  <b>你的答案：</b>${v||"（空）"}<br>
+  <b>库中答案：</b>${type==="gov"?governanceSpec(c):typingAnswers(c).join(" / ")}
+  <div class="backdetails">${detailHTML(c)}</div>
+  <div class="actions" style="margin-top:12px">
+    <button id="judgeAccept" class="primary">我的答案也可接受</button>
+    <button id="judgeWrong">确实答错了</button>
+  </div>`;
+  $("judgeAccept").onclick=()=>{
+    rememberAccepted(c,v,type);mark(c,"correct",null);
+    showFeedback(c,"ok","✅ 已按可接受答案记录；以后同样写法也会接受");
+    after(c)
+  };
+  $("judgeWrong").onclick=()=>{
+    mark(c,"wrong",errorType);
+    showFeedback(c,"bad","❌ 需要复习");
+    after(c)
+  }
+}
 function gradeText(c,v,type){
   if(answered)return;
-  let ok=false,errorType=type==="gov"?"governance":"spelling";
-  if(type==="typing"){ok=norm(v)===norm(baseTarget(c)); if(!ok&&norm(v).length<2)errorType="recall"}
-  else{
-    const target=grammarHint(c),vs=norm(v),ts=norm(target);
-    const chunks=ts.split(/[；;\/]/).map(x=>x.trim()).filter(Boolean);
-    ok=vs===ts||chunks.some(x=>vs===x)||chunks.some(x=>vs.includes(x)&&x.length>=3);
+  let ok=false,errorType=type==="gov"?"governance":"spelling",matched=null;
+  if(type==="typing"){
+    matched=typingMatch(c,v);ok=!!matched;
+    if(!ok&&norm(v).length<2)errorType="recall";
+  }else ok=sameGovAnswer(c,v);
+  if(ok){
+    mark(c,"correct",null);
+    let title="✅ 正确";
+    if(type==="typing"&&matched&&norm(matched)!==norm(baseTarget(c))){
+      title="✅ 词汇召回正确；你用了可接受的对应体 / 变体";
+    }
+    showFeedback(c,"ok",title);after(c);return
   }
-  mark(c,ok?"correct":"wrong",ok?null:errorType);showFeedback(c,ok?"ok":"bad",ok?"✅ 正确":"❌ 需要复习");after(c)
+  // 静态网页无法穷尽所有合法俄语变体：不立即把“不一致”硬判错，交给用户确认。
+  offerManualJudgement(c,v,type,errorType)
 }
 function gradeConj(c,inputs){
   if(answered)return;const x=c.conjugation;
