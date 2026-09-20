@@ -42,9 +42,20 @@ details.fold>.panel{
 .fold-note{font-weight:400;color:var(--m);font-size:12px}
 
 @media(max-width:560px){.grid4{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:1fr}.prompt{font-size:24px}.ru{font-size:33px}.qbox{padding:20px}.smallbtns{grid-template-columns:1fr}}
+
+.hub-home-link{
+  position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));
+  z-index:9999;text-decoration:none;background:var(--p);color:var(--t);
+  border:1px solid var(--l);border-radius:999px;padding:10px 13px;
+  font-weight:800;font-size:13px;box-shadow:0 4px 18px rgba(0,0,0,.12)
+}
+.hub-home-link:active{transform:scale(.98)}
+
 </style>
 </head>
-<body><div class="wrap">
+<body>
+<a class="hub-home-link" href="https://domoyo399-byte.github.io/trki-c1-hub/" aria-label="返回 C1 学习中心">⌂ 学习中心</a>
+<div class="wrap">
 <div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
