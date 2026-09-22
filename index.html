@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>ТРКИ-C1 智能词汇学习 v6.3</title>
+<title>ТРКИ-C1 智能词汇学习 v6.3.1</title>
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
@@ -23,6 +23,7 @@ button,input,select,.filebtn{width:100%;border:1px solid var(--l);background:var
 .qbox{background:var(--p);border:1px solid var(--l);border-radius:24px;padding:24px;min-height:370px;display:flex;flex-direction:column;justify-content:center}.tag{font-size:12px;color:var(--m);text-align:center;margin-bottom:14px}.prompt{font-size:27px;text-align:center;line-height:1.5}.ru{font-family:"Times New Roman",serif;font-size:38px}
 .answer{margin-top:22px}.answer input{font-family:"Times New Roman",serif;font-size:21px;padding:14px}.choices{display:grid;gap:9px;margin-top:20px}.choices button{text-align:left;padding:14px}
 .feedback{margin-top:14px;padding:14px;border-radius:13px;line-height:1.65;display:none}.feedback.ok{display:block;background:var(--ok)}.feedback.bad{display:block;background:var(--bad)}.feedback.mid{display:block;background:var(--mid)}.backdetails{margin-top:8px;padding-top:8px;border-top:1px solid var(--l)}
+.feedback .ru{font-size:24px;line-height:1.25;font-weight:700}.feedback b{font-size:16px}.feedback{line-height:1.5}.feedback .backdetails{font-size:15px}
 .smallbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.hidden{display:none!important}
 .conjgrid{display:grid;grid-template-columns:52px 1fr;gap:8px 10px;align-items:center;margin-top:12px}.conjgrid input{padding:11px}.person{font-weight:700;text-align:right}
 .browser-card{background:var(--p);border:1px solid var(--l);border-radius:24px;min-height:390px;padding:24px;display:flex;flex-direction:column;justify-content:center;cursor:pointer}.browser-term{text-align:center;font-family:"Times New Roman",serif;font-size:40px}.browser-back{display:none}.browser-card.flipped .browser-front{display:none}.browser-card.flipped .browser-back{display:block}.browser-meaning{text-align:center;font-size:25px;line-height:1.5}.detail{border-top:1px solid var(--l);margin-top:16px;padding-top:14px;line-height:1.65}.badges{text-align:center;margin-bottom:15px}.badge{display:inline-block;background:var(--chip);padding:5px 9px;border-radius:999px;font-size:12px;margin:0 3px}.browsernav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
@@ -53,7 +54,7 @@ details.fold>.panel{
 
 
 .progress-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.progress-note{margin-top:11px}.progressline{display:grid;grid-template-columns:130px 1fr 54px;align-items:center;gap:9px;margin-top:10px;font-size:12px}.mini-bar{height:8px;background:var(--l);border-radius:999px;overflow:hidden}.mini-bar>div{height:100%;background:var(--ac)}.zone-title{font-size:13px;font-weight:900;letter-spacing:.08em;color:var(--m);margin:22px 4px 6px}.statusline{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.statuspill{background:var(--chip);border-radius:999px;padding:6px 9px;font-size:12px}.browser-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.browser-jump{background:var(--p);border:1px solid var(--l);border-radius:16px;padding:12px;margin-bottom:10px}.browser-jump input[type=range]{padding:0;border:0;background:transparent}.jump-row{display:grid;grid-template-columns:1fr 100px;gap:8px;margin-top:8px}.compact-line{border-top:1px solid var(--l);margin-top:14px;padding-top:12px;line-height:1.65}.browser-meta{font-size:12px;color:var(--m);margin-top:10px;line-height:1.65}.empty-state{background:var(--p);border:1px dashed var(--l);border-radius:18px;padding:30px;text-align:center;color:var(--m)}
-@media(max-width:560px){.progress-grid{grid-template-columns:repeat(2,1fr)}.browser-tools{grid-template-columns:1fr}.jump-row{grid-template-columns:1fr 90px}.progressline{grid-template-columns:100px 1fr 44px}.grid4{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:1fr}.prompt{font-size:24px}.ru{font-size:33px}.qbox{padding:20px}.smallbtns{grid-template-columns:1fr}.intro-actions{grid-template-columns:1fr}.intro-term{font-size:36px}}
+@media(max-width:560px){.progress-grid{grid-template-columns:repeat(2,1fr)}.browser-tools{grid-template-columns:1fr}.jump-row{grid-template-columns:1fr 90px}.progressline{grid-template-columns:100px 1fr 44px}.grid4{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:1fr}.prompt{font-size:24px}.ru{font-size:33px}.feedback .ru{font-size:22px}.feedback{padding:12px;line-height:1.45}.feedback .backdetails{font-size:14px;margin-top:6px;padding-top:6px}.qbox{padding:20px}.smallbtns{grid-template-columns:1fr}.intro-actions{grid-template-columns:1fr}.intro-term{font-size:36px}}
 
 .hub-home-link{
   position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));
@@ -71,7 +72,7 @@ details.fold>.panel{
 <div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
-<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.3</span></h1>
+<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.3.1</span></h1>
 <div class="sub">A 类主动输出 · R 类快速识别 · G 类额外检查格支配/搭配。学习页与测试页完全分开：学习页看完整构词/前缀/后缀/同根/词源；测试页只保留题目、核心释义和必要的一条用法提示。新词先经过“不评分的首次学习轮”，再进入 SRS 测试。</div>
 
 <div class="panel">
