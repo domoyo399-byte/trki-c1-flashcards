@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>ТРКИ-C1 智能词汇学习 v6.2</title>
+<title>ТРКИ-C1 智能词汇学习 v6.3</title>
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
@@ -71,7 +71,7 @@ details.fold>.panel{
 <div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
-<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.2</span></h1>
+<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.3</span></h1>
 <div class="sub">A 类主动输出 · R 类快速识别 · G 类额外检查格支配/搭配。学习页与测试页完全分开：学习页看完整构词/前缀/后缀/同根/词源；测试页只保留题目、核心释义和必要的一条用法提示。新词先经过“不评分的首次学习轮”，再进入 SRS 测试。</div>
 
 <div class="panel">
@@ -352,6 +352,35 @@ function mergeContent(existing,incoming){
 function normalizeDB(obj){
   const out={...obj};out.settings={...(obj.settings||{})};if(out.settings.newCap===undefined)out.settings.newCap=20;out.cards={};Object.values(obj.cards||{}).forEach(c=>{const nc=normalizeCard(c);out.cards[id(nc)]=nc});return out
 }
+
+function baselineCard(c){
+  const k=id(c);
+  return SEED.find(x=>id(x)===k)||null
+}
+function coreMeaning(c){
+  const m=(c&&c.meaning!==undefined&&c.meaning!==null)?String(c.meaning).trim():"";
+  if(m)return m;
+  const b=baselineCard(c);
+  const bm=(b&&b.meaning!==undefined&&b.meaning!==null)?String(b.meaning).trim():"";
+  return bm||"（词义数据缺失）"
+}
+function repairMissingCoreFields(){
+  let repairedCards=0,repairedFields=0;
+  for(const c of all()){
+    const b=baselineCard(c);if(!b)continue;
+    let changed=false;
+    const copyIfMissing=(k)=>{
+      const missing=(c[k]===undefined||c[k]===null||(k==="meaning"&&String(c[k]).trim()===""));
+      if(missing&&b[k]!==undefined){
+        c[k]=JSON.parse(JSON.stringify(b[k]));
+        changed=true;repairedFields++
+      }
+    };
+    ["term","level","g","meaning","extra","backNote","conjugation"].forEach(copyIfMissing);
+    if(changed)repairedCards++
+  }
+  return {repairedCards,repairedFields}
+}
 function findLegacy(){
   try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k===KEY)continue;if(!/trki/i.test(k))continue;try{let x=JSON.parse(localStorage.getItem(k));let obj=x&&x.db?x.db:x;if(obj&&obj.cards&&Object.keys(obj.cards).length>20)return obj}catch(e){}}}catch(e){}return null
 }
@@ -360,7 +389,7 @@ function load(){
   if(!saved||!saved.cards)saved=findLegacy();
   if(saved&&saved.cards)db=normalizeDB(saved);
   else{const cards={};SEED.forEach(c=>{const nc=normalizeCard(c);cards[id(nc)]=nc});db=normalizeDB({cards,settings:{newCap:20},day:null})}
-  rolloverDay();repairTodayFromHistory();applyBuiltinEnrichment();save()
+  rolloverDay();repairTodayFromHistory();repairMissingCoreFields();applyBuiltinEnrichment();save()
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}
 function rolloverDay(){
@@ -520,8 +549,8 @@ function typingMatch(c,v){
   return typingAnswers(c).find(x=>norm(x)===nv)||null
 }
 function distractors(c){
-  let pool=all().filter(x=>id(x)!==id(c)&&x.level==="R").map(x=>x.meaning);
-  if(pool.length<3)pool=all().filter(x=>id(x)!==id(c)).map(x=>x.meaning);
+  let pool=all().filter(x=>id(x)!==id(c)&&x.level==="R").map(coreMeaning).filter(x=>x&&x!=="（词义数据缺失）");
+  if(pool.length<3)pool=all().filter(x=>id(x)!==id(c)).map(coreMeaning).filter(x=>x&&x!=="（词义数据缺失）");
   pool=[...new Set(pool)];
   for(let i=pool.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
   return pool.slice(0,3)
@@ -724,7 +753,7 @@ function showQ(){
   const type=qType(c);
   if(type==="mc"){
     $("qKind").textContent="俄语 → 中文 · 选择";$("prompt").innerHTML=`<span class="ru">${c.term}</span>`;
-    let opts=[c.meaning,...distractors(c)].sort(()=>Math.random()-.5),box=document.createElement("div");box.className="choices";
+    let opts=[coreMeaning(c),...distractors(c)].sort(()=>Math.random()-.5),box=document.createElement("div");box.className="choices";
     opts.forEach(o=>{let b=document.createElement("button");b.textContent=o;b.onclick=()=>gradeMC(c,o);box.appendChild(b)});$("answer").appendChild(box)
   }else if(type==="gov"){
     $("qKind").textContent="格支配 / 固定搭配 · 输入";$("prompt").innerHTML=`请写出 <span class="ru">${govPromptHead(c)}</span> 的支配结构 / 固定搭配`;
@@ -733,7 +762,7 @@ function showQ(){
     $("qKind").textContent="特殊变位 · я / ты / они";$("prompt").innerHTML=`<span class="ru">${c.conjugation.lemma}</span>`;
     makeConj(c)
   }else{
-    $("qKind").textContent="中文 → 俄语 · 输入";$("prompt").textContent=c.meaning;makeInput(c,"typing")
+    $("qKind").textContent="中文 → 俄语 · 输入";$("prompt").textContent=coreMeaning(c);makeInput(c,"typing")
   }
 }
 function makeInput(c,type){
@@ -762,11 +791,15 @@ function mark(c,grade,errorType){
   if(mode==="today")db.day.qi=Math.min((db.day.qi||0)+1,db.day.queue.length);
   save()
 }
-function showFeedback(c,cls,title){let f=$("feedback"),type=qType(c);f.className="feedback "+cls;f.innerHTML=`${title}<br><b>${c.term}</b> — ${c.meaning}<div class="backdetails">${testDetailHTML(c,type)}</div>`}
+function showFeedback(c,cls,title){
+  let f=$("feedback"),type=qType(c),m=coreMeaning(c);
+  f.className="feedback "+cls;
+  f.innerHTML=`${title}<br><b>正确答案：</b><span class="ru">${esc(c.term)}</span> — ${esc(m)}<div class="backdetails">${testDetailHTML(c,type)}</div>`
+}
 function after(c){answered=true;$("dontKnow").classList.add("hidden");$("next").classList.remove("hidden");save();persistSession(qi+1)}
 function gradeMC(c,o){
   if(answered)return;
-  if(o!==c.meaning){mark(c,"wrong","meaning");showFeedback(c,"bad","❌ 错误");after(c);return}
+  if(o!==coreMeaning(c)){mark(c,"wrong","meaning");showFeedback(c,"bad","❌ 错误");after(c);return}
   pendingCorrectMC=true;showFeedback(c,"ok","✅ 选对了。若是蒙的/不稳，请点下面“模糊 / 蒙的”。");
   $("dontKnow").classList.add("hidden");$("fuzzyBtn").classList.remove("hidden");$("next").classList.remove("hidden");
 }
@@ -888,10 +921,10 @@ function renderBrowser(){
 // Import / export
 function download(name,text){let a=document.createElement("a"),u=URL.createObjectURL(new Blob([text],{type:"application/json;charset=utf-8"}));a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),800)}
 function snapshotRollback(reason){try{localStorage.setItem(ROLLBACK_KEY,JSON.stringify({format:"TRKI-C1-VOCAB-ROLLBACK",version:1,reason,savedAt:Date.now(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")}))}catch(e){}}
-$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:6.2,exportedAt:new Date().toISOString(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")},null,2))
+$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:6.3,exportedAt:new Date().toISOString(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")},null,2))
 function readJSON(file,cb){if(!file)return;let r=new FileReader();r.onload=()=>{try{cb(JSON.parse(r.result))}catch(e){alert("JSON 读取失败："+e.message)}};r.readAsText(file)}
 $("importBackup").onchange=e=>readJSON(e.target.files[0],x=>{
-  let obj=x&&x.db?x.db:x;if(!obj||!obj.cards){alert("不是有效备份");return}snapshotRollback("before-backup-restore");db=normalizeDB(obj);rolloverDay();applyBuiltinEnrichment();save();
+  let obj=x&&x.db?x.db:x;if(!obj||!obj.cards){alert("不是有效备份");return}snapshotRollback("before-backup-restore");db=normalizeDB(obj);rolloverDay();repairMissingCoreFields();applyBuiltinEnrichment();save();
   if(x&&x.session)localStorage.setItem(SESSION_KEY,JSON.stringify(x.session));else localStorage.removeItem(SESSION_KEY);if(x&&x.introSession)localStorage.setItem(INTRO_SESSION_KEY,JSON.stringify(x.introSession));else localStorage.removeItem(INTRO_SESSION_KEY);if(x&&x.browserState)localStorage.setItem(BROWSER_STATE_KEY,JSON.stringify(x.browserState));
   updateHome();renderResume();renderIntroResume();alert(`备份已原样恢复：${all().length} 个词。测试历史、streak、lapses、到期时间和可接受答案均按备份保留；未给旧词伪造加入日期。`)
 })
