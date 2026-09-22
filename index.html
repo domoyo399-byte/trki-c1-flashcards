@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>ТРКИ-C1 智能词汇测试 v5.5</title>
+<title>ТРКИ-C1 智能词汇学习 v6.0</title>
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
@@ -16,13 +16,20 @@ button,input,select,.filebtn{width:100%;border:1px solid var(--l);background:var
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.filebtn{text-align:center;display:block}input[type=file]{display:none}
 .taskrow{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--l)}.taskrow:last-child{border:0}.taskrow span:last-child{text-align:right}
 .freeze{background:var(--chip);padding:10px 12px;border-radius:12px;margin-top:10px;font-size:13px;line-height:1.55}
-#test,#browser{display:none}.topline{display:flex;justify-content:space-between;gap:10px;color:var(--m);font-size:13px;margin-bottom:10px}.bar{height:7px;background:var(--l);border-radius:99px;overflow:hidden;margin-bottom:14px}.bar div{height:100%;background:var(--ac)}
+#test,#browser,#intro{display:none}.topline{display:flex;justify-content:space-between;gap:10px;color:var(--m);font-size:13px;margin-bottom:10px}.bar{height:7px;background:var(--l);border-radius:99px;overflow:hidden;margin-bottom:14px}.bar div{height:100%;background:var(--ac)}
 .qbox{background:var(--p);border:1px solid var(--l);border-radius:24px;padding:24px;min-height:370px;display:flex;flex-direction:column;justify-content:center}.tag{font-size:12px;color:var(--m);text-align:center;margin-bottom:14px}.prompt{font-size:27px;text-align:center;line-height:1.5}.ru{font-family:"Times New Roman",serif;font-size:38px}
 .answer{margin-top:22px}.answer input{font-family:"Times New Roman",serif;font-size:21px;padding:14px}.choices{display:grid;gap:9px;margin-top:20px}.choices button{text-align:left;padding:14px}
 .feedback{margin-top:14px;padding:14px;border-radius:13px;line-height:1.65;display:none}.feedback.ok{display:block;background:var(--ok)}.feedback.bad{display:block;background:var(--bad)}.feedback.mid{display:block;background:var(--mid)}.backdetails{margin-top:8px;padding-top:8px;border-top:1px solid var(--l)}
 .smallbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.hidden{display:none!important}
 .conjgrid{display:grid;grid-template-columns:52px 1fr;gap:8px 10px;align-items:center;margin-top:12px}.conjgrid input{padding:11px}.person{font-weight:700;text-align:right}
 .browser-card{background:var(--p);border:1px solid var(--l);border-radius:24px;min-height:390px;padding:24px;display:flex;flex-direction:column;justify-content:center;cursor:pointer}.browser-term{text-align:center;font-family:"Times New Roman",serif;font-size:40px}.browser-back{display:none}.browser-card.flipped .browser-front{display:none}.browser-card.flipped .browser-back{display:block}.browser-meaning{text-align:center;font-size:25px;line-height:1.5}.detail{border-top:1px solid var(--l);margin-top:16px;padding-top:14px;line-height:1.65}.badges{text-align:center;margin-bottom:15px}.badge{display:inline-block;background:var(--chip);padding:5px 9px;border-radius:999px;font-size:12px;margin:0 3px}.browsernav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.intro-card{background:var(--p);border:1px solid var(--l);border-radius:24px;min-height:430px;padding:24px;display:flex;flex-direction:column;justify-content:center}
+.intro-front{text-align:center}.intro-term{font-family:"Times New Roman",serif;font-size:42px;line-height:1.35}.intro-hint{margin-top:12px;color:var(--m);font-size:13px;line-height:1.65}
+.intro-back{display:none}.intro-card.flipped .intro-front{display:none}.intro-card.flipped .intro-back{display:block}.intro-meaning{text-align:center;font-size:25px;line-height:1.5;margin-bottom:14px}
+.study-section{background:var(--bg);border-radius:14px;padding:12px 13px;margin-top:9px;line-height:1.7}.study-label{font-size:12px;font-weight:800;color:var(--m);margin-bottom:4px}.study-value{font-size:14px}
+.morph-grid{display:grid;gap:8px;margin-top:10px}.morph-item{background:var(--bg);border-radius:14px;padding:11px 12px}.morph-label{font-size:12px;font-weight:800;color:var(--ac);margin-bottom:4px}.morph-text{font-size:14px;line-height:1.7}
+.intro-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.intro-nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.copy-ok{font-size:12px;color:var(--m);text-align:center;margin-top:8px;min-height:18px}
 
 details.fold{margin-top:13px}
 details.fold>summary{
@@ -41,7 +48,9 @@ details.fold>.panel{
 }
 .fold-note{font-weight:400;color:var(--m);font-size:12px}
 
-@media(max-width:560px){.grid4{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:1fr}.prompt{font-size:24px}.ru{font-size:33px}.qbox{padding:20px}.smallbtns{grid-template-columns:1fr}}
+
+.progress-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.progress-note{margin-top:11px}.progressline{display:grid;grid-template-columns:130px 1fr 54px;align-items:center;gap:9px;margin-top:10px;font-size:12px}.mini-bar{height:8px;background:var(--l);border-radius:999px;overflow:hidden}.mini-bar>div{height:100%;background:var(--ac)}.zone-title{font-size:13px;font-weight:900;letter-spacing:.08em;color:var(--m);margin:22px 4px 6px}.statusline{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.statuspill{background:var(--chip);border-radius:999px;padding:6px 9px;font-size:12px}.browser-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.browser-jump{background:var(--p);border:1px solid var(--l);border-radius:16px;padding:12px;margin-bottom:10px}.browser-jump input[type=range]{padding:0;border:0;background:transparent}.jump-row{display:grid;grid-template-columns:1fr 100px;gap:8px;margin-top:8px}.compact-line{border-top:1px solid var(--l);margin-top:14px;padding-top:12px;line-height:1.65}.browser-meta{font-size:12px;color:var(--m);margin-top:10px;line-height:1.65}.empty-state{background:var(--p);border:1px dashed var(--l);border-radius:18px;padding:30px;text-align:center;color:var(--m)}
+@media(max-width:560px){.progress-grid{grid-template-columns:repeat(2,1fr)}.browser-tools{grid-template-columns:1fr}.jump-row{grid-template-columns:1fr 90px}.progressline{grid-template-columns:100px 1fr 44px}.grid4{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:1fr}.prompt{font-size:24px}.ru{font-size:33px}.qbox{padding:20px}.smallbtns{grid-template-columns:1fr}.intro-actions{grid-template-columns:1fr}.intro-term{font-size:36px}}
 
 .hub-home-link{
   position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));
@@ -59,15 +68,26 @@ details.fold>.panel{
 <div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
-<h1>ТРКИ-C1 智能词汇测试</h1>
-<div class="sub">A 类主动输出 · R 类快速识别 · G 类额外检查格支配/搭配。词汇召回中，真正的体对可作为可接受变体；语法专项再严格区分体。今日新词批次一旦生成就锁定。</div>
+<h1>ТРКИ-C1 智能词汇学习</h1>
+<div class="sub">A 类主动输出 · R 类快速识别 · G 类额外检查格支配/搭配。学习页与测试页完全分开：学习页看完整构词/前缀/后缀/同根/词源；测试页只保留题目、核心释义和必要的一条用法提示。新词先经过“不评分的首次学习轮”，再进入 SRS 测试。</div>
 
-<div class="panel"><div class="grid4">
+<div class="panel">
+<h3>学习进度</h3>
+<div class="progress-grid">
 <div class="stat"><b id="total">0</b><span>总词库</span></div>
-<div class="stat"><b id="aN">0</b><span>A</span></div>
-<div class="stat"><b id="rN">0</b><span>R</span></div>
-<div class="stat"><b id="gN">0</b><span>G</span></div>
-</div></div>
+<div class="stat"><b id="studiedN">0</b><span>已首次学习</span></div>
+<div class="stat"><b id="pendingN">0</b><span>待首次学习</span></div>
+<div class="stat"><b id="dueNowN">0</b><span>今日到期</span></div>
+<div class="stat"><b id="consolidatingN">0</b><span>正在巩固</span></div>
+<div class="stat"><b id="stableN">0</b><span>稳定掌握</span></div>
+<div class="stat"><b id="weekLearnedN">0</b><span>近7天首次学习</span></div>
+<div class="stat"><b id="weekAddedN">0</b><span>近7天新增入库</span></div>
+</div>
+<div class="progressline"><span>首次学习进度</span><div class="mini-bar"><div id="studyBar"></div></div><b id="studyPct">0%</b></div>
+<div class="progressline"><span>稳定掌握进度</span><div class="mini-bar"><div id="stableBar"></div></div><b id="stablePct">0%</b></div>
+<div class="statusline"><span class="statuspill">A <b id="aN">0</b></span><span class="statuspill">R <b id="rN">0</b></span><span class="statuspill">G <b id="gN">0</b></span></div>
+<div class="muted progress-note">“稳定掌握”不是“见过就算”：至少有 3 次测试、当前连续正确 ≥ 3，且最近 3 次都正确。旧词库没有真实导入日期时，不会伪造“最近新增”。</div>
+</div>
 
 
 <div class="panel hidden" id="resumePanel">
@@ -88,14 +108,29 @@ details.fold>.panel{
 <div class="muted" id="capNote" style="margin-top:8px"></div>
 </div>
 
+<div class="zone-title">📖 学习区</div>
+<div class="panel" id="introPanel">
+<h3>📖 首次学习轮</h3>
+<div class="taskrow"><span>待首次学习</span><span id="introPending">0</span></div>
+<div class="taskrow"><span>已完成首次学习</span><span id="introDoneN">0</span></div>
+<div class="taskrow"><span>本轮数量</span>
+<select id="introCap" style="max-width:150px">
+<option value="10">10</option><option value="20" selected>20</option><option value="30">30</option><option value="99999">全部</option>
+</select></div>
+<div class="muted" style="margin-top:9px">这一步不测试、不评分。先看词条，再翻面学习释义、搭配、构词、前缀/后缀、同根和有价值的词源信息。完成首次学习后，该词才会进入“新词测试”候选。</div>
+<button class="primary" id="startIntro" style="margin-top:12px">开始首次学习</button>
+<button id="continueIntro" class="hidden" style="margin-top:8px">继续上次首次学习</button>
+</div>
+
+<div class="zone-title">🎯 测试区</div>
 <div class="panel">
 <h3>今天 · <span id="todayLabel"></span></h3>
-<div class="taskrow"><span>🆕 今日固定新词</span><span id="todayNew">0</span></div>
+<div class="taskrow"><span>🆕 今日新词测试（已过学习轮）</span><span id="todayNew">0</span></div>
 <div class="taskrow"><span>🔁 今日到期/旧词复习</span><span id="todayReview">0</span></div>
 <div class="taskrow"><span>⚠️ 弱项复习</span><span id="weakN">0</span></div>
 <div class="taskrow"><span>✅ 今日已答</span><span id="doneN">0</span></div>
 <div class="freeze" id="freezeText"></div>
-<button class="primary" id="startToday" style="margin-top:12px">开始 / 继续今日任务</button>
+<button class="primary" id="startToday" style="margin-top:12px">开始 / 继续今日测试</button>
 <div class="actions">
 <button class="secondary" id="reviewToday">复习今天学过的词</button>
 <button class="secondary" id="reviewOld">只复习已学旧词（0 新词）</button>
@@ -108,7 +143,7 @@ details.fold>.panel{
   <span class="fold-note">需要时展开</span>
 </summary>
 <div class="panel">
-<div class="muted">正面保持俄语词条；翻面可看释义、搭配/构词提示，以及特殊动词的 я / ты / они 变位。</div>
+<div class="muted">这里是快速浏览，不等于学习页：只显示词义、一个核心用法和学习状态。支持左右滑动、筛选、排序、进度滑条与跳转；完整构词信息只在“首次学习轮”里出现。</div>
 <button id="openBrowser" style="margin-top:10px">打开词卡浏览</button>
 </div>
 </details>
@@ -124,10 +159,36 @@ details.fold>.panel{
 <button id="exportBackup">导出完整备份</button>
 <label class="filebtn" for="importBackup">恢复完整备份</label><input id="importBackup" type="file" accept=".json">
 <button id="resetToday">重建“今天”任务</button>
+<button id="undoLastImport">撤销最近一次导入 / 恢复</button>
 </div>
 <div class="muted" style="margin-top:10px">重建今天只影响今日队列，不删除历史成绩。为了避免误吃明天的新词，系统不会在同一天自动追加未分配的新词。</div>
 </div>
 </details>
+</section>
+
+
+<section id="intro">
+<div class="topline"><span id="introCount"></span><span>首次学习 · 不评分</span></div><div class="bar"><div id="introProg"></div></div>
+<div class="intro-card" id="introCard">
+  <div class="intro-front">
+    <div class="badges" id="introBadges"></div>
+    <div class="intro-term" id="introTerm"></div>
+    <div class="intro-hint">先看一眼这个词。这里不是测试，不认识也完全没关系。准备好后翻面学习。</div>
+    <button class="primary" id="introFlip" style="margin-top:20px">翻面学习</button>
+  </div>
+  <div class="intro-back">
+    <div class="badges" id="introBadges2"></div>
+    <div class="intro-meaning" id="introMeaning"></div>
+    <div id="introDetails"></div>
+    <div class="intro-actions">
+      <button id="introAsk">💬 复制当前词提问包</button>
+      <button class="primary" id="introDone">看完本词 →</button>
+    </div>
+    <div class="copy-ok" id="introCopyStatus"></div>
+  </div>
+</div>
+<div class="intro-nav"><button id="introPrev">← 上一词</button><button id="introSkip">暂时跳过 →</button></div>
+<button id="introExit" style="margin-top:10px">暂存并返回首页</button>
 </section>
 
 <section id="test">
@@ -145,12 +206,39 @@ details.fold>.panel{
 </section>
 
 <section id="browser">
-<div class="topline"><span id="bCount"></span><span>点卡片翻面</span></div>
+<div class="topline"><span id="bCount"></span><span>左右滑动切卡 · 点卡片翻面</span></div>
+<div class="browser-tools">
+<select id="bFilter" aria-label="词卡筛选">
+<option value="all">全部</option>
+<option value="recent">最近7天新增</option>
+<option value="unlearned">未首次学习</option>
+<option value="consolidating">正在巩固</option>
+<option value="stable">稳定掌握</option>
+<option value="weak">薄弱</option>
+<option value="A">A 主动</option>
+<option value="R">R 识别</option>
+<option value="G">G 支配/搭配</option>
+</select>
+<select id="bSort" aria-label="词卡排序">
+<option value="original">词库原顺序</option>
+<option value="newest">最近新增优先</option>
+<option value="alpha">俄语字母顺序</option>
+<option value="due">到期时间优先</option>
+<option value="mastery">掌握较弱优先</option>
+</select>
+</div>
+<div class="browser-jump">
+<input id="bSlider" type="range" min="1" max="1" value="1" aria-label="词卡进度滑条">
+<div class="jump-row"><input id="bJump" type="number" min="1" value="1" inputmode="numeric" aria-label="跳转到第几张"><button id="bGo">跳转</button></div>
+</div>
+<div id="browserEmpty" class="empty-state hidden">当前筛选下没有词卡。</div>
+<div id="browserMain">
 <div class="browser-card" id="browserCard">
 <div class="browser-front"><div class="badges" id="bBadges"></div><div class="browser-term" id="bTerm"></div></div>
-<div class="browser-back"><div class="badges" id="bBadges2"></div><div class="browser-meaning" id="bMeaning"></div><div class="detail" id="bDetail"></div></div>
+<div class="browser-back"><div class="badges" id="bBadges2"></div><div class="browser-meaning" id="bMeaning"></div><div class="compact-line" id="bCompact"></div><div class="browser-meta" id="bMeta"></div></div>
 </div>
 <div class="browsernav"><button id="bPrev">← 上一张</button><button id="bNext">下一张 →</button></div>
+</div>
 <button id="closeBrowser" style="margin-top:10px">返回首页</button>
 </section>
 
@@ -159,10 +247,14 @@ details.fold>.panel{
 const SEED=[{"term": "диссерта́ция", "level": "A", "g": false, "meaning": "学位论文；论文", "extra": "", "backNote": "常见搭配：защити́ть диссерта́цию；рабо́тать над диссерта́цией", "conjugation": null, "contentId": "диссертация"}, {"term": "заседа́ние", "level": "A", "g": false, "meaning": "会议", "extra": "заседа́ние комиссии — 委员会会议", "backNote": "常见搭配：провести́ заседа́ние；заседа́ние комиссии", "conjugation": null, "contentId": "заседание"}, {"term": "постановле́ние", "level": "A", "g": false, "meaning": "决议；决定", "extra": "", "backNote": "常见搭配：приня́ть постановле́ние；в соответствии с постановле́нием", "conjugation": null, "contentId": "постановление"}, {"term": "подведе́ние ито́гов", "level": "A", "g": true, "meaning": "总结；汇总结果", "extra": "подвести́ ито́ги — 作总结", "backNote": "固定表达：подвести́ ито́ги；по ито́гам + Р.", "conjugation": null, "contentId": "подведение итогов"}, {"term": "недоразуме́ние", "level": "A", "g": false, "meaning": "误会", "extra": "", "backNote": "常见搭配：возни́кло недоразуме́ние；по недоразуме́нию", "conjugation": null, "contentId": "недоразумение"}, {"term": "по недоразуме́нию", "level": "A", "g": true, "meaning": "由于误会", "extra": "固定表达", "backNote": "", "conjugation": null, "contentId": "по недоразумению"}, {"term": "вопреки́ + Д.", "level": "A", "g": true, "meaning": "尽管；与……相反", "extra": "вопреки́ обстоятельствам", "backNote": "", "conjugation": null, "contentId": "вопреки + д."}, {"term": "типи́чный для + Р.", "level": "A", "g": true, "meaning": "对……而言典型的", "extra": "для + Р.", "backNote": "", "conjugation": null, "contentId": "типичныи для + р."}, {"term": "характе́рный для + Р.", "level": "A", "g": true, "meaning": "……所特有的", "extra": "для + Р.", "backNote": "", "conjugation": null, "contentId": "характерныи для + р."}, {"term": "назрева́ть", "level": "A", "g": false, "meaning": "逐渐形成；酝酿", "extra": "назрева́ет конфли́кт — 冲突正在酝酿", "backNote": "", "conjugation": null, "contentId": "назревать"}, {"term": "взве́сить", "level": "A", "g": false, "meaning": "权衡", "extra": "обду́мать и взве́сить — 深思并权衡", "backNote": "常见搭配：взве́сить все за и про́тив；обду́мать и взве́сить", "conjugation": {"lemma": "взве́сить", "я": "взве́шу", "ты": "взве́сишь", "они": "взве́сят", "note": "辅音交替：с → ш（я）"}, "contentId": "взвесить"}, {"term": "ориенти́р", "level": "A", "g": false, "meaning": "参照；方向；目标", "extra": "", "backNote": "常见搭配：служи́ть ориенти́ром；ориенти́роваться на + В.", "conjugation": null, "contentId": "ориентир"}, {"term": "ориентиро́вка", "level": "A", "g": false, "meaning": "导向；定位；判断方向的能力", "extra": "", "backNote": "同根：ориенти́р；ориенти́ровка；ориенти́роваться", "conjugation": null, "contentId": "ориентировка"}, {"term": "претендова́ть на + В.", "level": "A", "g": true, "meaning": "声称具有；争取；企图取得", "extra": "претендова́ть на пе́рвенство", "backNote": "常见搭配：претендова́ть на до́лжность / ли́дерство / пе́рвенство", "conjugation": null, "contentId": "претендовать на + в."}, {"term": "мировоззре́ние", "level": "A", "g": false, "meaning": "世界观", "extra": "", "backNote": "", "conjugation": null, "contentId": "мировоззрение"}, {"term": "бескоры́стный", "level": "A", "g": false, "meaning": "无私的；不计个人利益的", "extra": "", "backNote": "", "conjugation": null, "contentId": "бескорыстныи"}, {"term": "прикладно́й", "level": "A", "g": false, "meaning": "应用性的", "extra": "прикладны́е иссле́дования — 应用研究", "backNote": "", "conjugation": null, "contentId": "прикладнои"}, {"term": "ску́дный", "level": "A", "g": false, "meaning": "贫乏的；匮乏的", "extra": "", "backNote": "", "conjugation": null, "contentId": "скудныи"}, {"term": "востре́бованность", "level": "A", "g": false, "meaning": "需求度；受欢迎、受需要的程度", "extra": "", "backNote": "常见搭配：высо́кая востре́бованность；востре́бованный специали́ст", "conjugation": null, "contentId": "востребованность"}, {"term": "про́рыв", "level": "A", "g": false, "meaning": "突破", "extra": "нау́чный про́рыв — 科学突破", "backNote": "常见搭配：нау́чный / технологи́ческий про́рыв", "conjugation": null, "contentId": "прорыв"}, {"term": "насу́щный", "level": "A", "g": false, "meaning": "迫切的；基本生活所需的", "extra": "насу́щная пробле́ма — 迫切问题", "backNote": "常见搭配：насу́щная пробле́ма；насу́щная необходи́мость", "conjugation": null, "contentId": "насущныи"}, {"term": "продле́ние жи́зни", "level": "A", "g": true, "meaning": "延长寿命", "extra": "", "backNote": "", "conjugation": null, "contentId": "продление жизни"}, {"term": "приспоса́бливаться к + Д.", "level": "A", "g": true, "meaning": "适应……", "extra": "к + Д.", "backNote": "常见搭配：приспоса́бливаться к но́вым усло́виям / измене́ниям", "conjugation": null, "contentId": "приспосабливаться к + д."}, {"term": "домини́рующий", "level": "A", "g": false, "meaning": "占主导地位的", "extra": "", "backNote": "", "conjugation": null, "contentId": "доминирующии"}, {"term": "изоли́рованный", "level": "A", "g": false, "meaning": "孤立的；隔离的", "extra": "", "backNote": "", "conjugation": null, "contentId": "изолированныи"}, {"term": "ото́рванный от + Р.", "level": "A", "g": true, "meaning": "与……脱节的；脱离……的", "extra": "от + Р.", "backNote": "常见搭配：ото́рванный от реа́льности / жи́зни", "conjugation": null, "contentId": "оторванныи от + р."}, {"term": "масшта́б", "level": "A", "g": false, "meaning": "规模；尺度", "extra": "", "backNote": "常见搭配：масшта́б пробле́мы；в мирово́м масшта́бе", "conjugation": null, "contentId": "масштаб"}, {"term": "сбаланси́рованность", "level": "A", "g": false, "meaning": "平衡性；均衡状态", "extra": "", "backNote": "同根：сбаланси́рованный；常见：сбаланси́рованное разви́тие", "conjugation": null, "contentId": "сбалансированность"}, {"term": "нестаби́льность", "level": "A", "g": false, "meaning": "不稳定性", "extra": "", "backNote": "", "conjugation": null, "contentId": "нестабильность"}, {"term": "у исто́ков + Р.", "level": "A", "g": true, "meaning": "位于……的源头；是……的开端", "extra": "+ Р.", "backNote": "", "conjugation": null, "contentId": "у истоков + р."}, {"term": "нелине́йный", "level": "A", "g": false, "meaning": "非线性的", "extra": "", "backNote": "", "conjugation": null, "contentId": "нелинеиныи"}, {"term": "реда́кция", "level": "A", "g": false, "meaning": "编辑部；编辑工作", "extra": "", "backNote": "常见搭配：реда́кция журна́ла / газе́ты；гла́вный реда́ктор", "conjugation": null, "contentId": "редакция"}, {"term": "преодоле́ние", "level": "A", "g": false, "meaning": "克服", "extra": "пути́ преодоле́ния пробле́мы — 克服问题的途径", "backNote": "", "conjugation": null, "contentId": "преодоление"}, {"term": "представля́ть кого/что", "level": "A", "g": true, "meaning": "代表；呈现", "extra": "представля́ть компа́нию — 代表公司", "backNote": "常见：представля́ть компа́нию / интере́сы；представля́ть собо́й", "conjugation": null, "contentId": "представлять кого/что"}, {"term": "разрабо́тка", "level": "A", "g": false, "meaning": "开发；研发；制定", "extra": "", "backNote": "常见：разрабо́тка прое́кта / ме́тодики；动词：разрабо́тать", "conjugation": null, "contentId": "разработка"}, {"term": "единомы́шленник", "level": "A", "g": false, "meaning": "志同道合者", "extra": "", "backNote": "", "conjugation": null, "contentId": "единомышленник"}, {"term": "конкурентоспосо́бный", "level": "A", "g": false, "meaning": "有竞争力的", "extra": "", "backNote": "", "conjugation": null, "contentId": "конкурентоспособныи"}, {"term": "неукосни́тельный", "level": "A", "g": false, "meaning": "严格的；必须遵守的", "extra": "неукосни́тельное выполне́ние — 严格执行", "backNote": "", "conjugation": null, "contentId": "неукоснительныи"}, {"term": "взять на себя́ отве́тственность за + В.", "level": "A", "g": true, "meaning": "承担对……的责任", "extra": "за + В.", "backNote": "常见：взять на себя́ отве́тственность за реше́ние / результа́т", "conjugation": null, "contentId": "взять на себя ответственность за + в."}, {"term": "коне́чный результа́т", "level": "A", "g": false, "meaning": "最终结果", "extra": "", "backNote": "", "conjugation": null, "contentId": "конечныи результат"}, {"term": "работоспосо́бный", "level": "A", "g": false, "meaning": "有工作能力的；高效运转的", "extra": "работоспосо́бная кома́нда — 高效运转的团队", "backNote": "", "conjugation": null, "contentId": "работоспособныи"}, {"term": "затра́гивать + В.", "level": "A", "g": true, "meaning": "涉及；触及", "extra": "затра́гивать вопро́с / пробле́му", "backNote": "常见：затра́гивать вопро́с / пробле́му / интере́сы", "conjugation": null, "contentId": "затрагивать + в."}, {"term": "зало́г + Р.", "level": "A", "g": true, "meaning": "……的保障", "extra": "зало́г успе́ха — 成功的保障", "backNote": "常见：зало́г успе́ха / стаби́льности", "conjugation": null, "contentId": "залог + р."}, {"term": "заде́йствовать + В.", "level": "A", "g": true, "meaning": "启用；调动；投入使用", "extra": "заде́йствовать механи́зм", "backNote": "常见：заде́йствовать ресу́рсы / механи́змы / персона́л", "conjugation": null, "contentId": "задеиствовать + в."}, {"term": "подбо́р персона́ла", "level": "A", "g": false, "meaning": "人员选拔；招聘筛选", "extra": "", "backNote": "", "conjugation": null, "contentId": "подбор персонала"}, {"term": "интуи́ция", "level": "A", "g": false, "meaning": "直觉", "extra": "", "backNote": "", "conjugation": null, "contentId": "интуиция"}, {"term": "вы́браться из + Р.", "level": "A", "g": true, "meaning": "从……出去；摆脱……", "extra": "из + Р.", "backNote": "", "conjugation": null, "contentId": "выбраться из + р."}, {"term": "дозвони́ться до + Р.", "level": "A", "g": true, "meaning": "打通某人的电话", "extra": "до + Р.", "backNote": "", "conjugation": null, "contentId": "дозвониться до + р."}, {"term": "отговори́ть кого от + Р.", "level": "A", "g": true, "meaning": "劝某人不要做某事", "extra": "кого + В.; от + Р.", "backNote": "", "conjugation": null, "contentId": "отговорить кого от + р."}, {"term": "подели́ться чем с кем", "level": "A", "g": true, "meaning": "与某人分享某事", "extra": "чем + Т.; с кем + Т.", "backNote": "", "conjugation": null, "contentId": "поделиться чем с кем"}, {"term": "довести́сь + инф.", "level": "A", "g": true, "meaning": "碰巧；有机会做某事", "extra": "мне довело́сь познакомиться…", "backNote": "", "conjugation": null, "contentId": "довестись + инф."}, {"term": "очути́ться в/на + П.", "level": "A", "g": true, "meaning": "突然发现自己身处……", "extra": "в/на + П.", "backNote": "", "conjugation": null, "contentId": "очутиться в/на + п."}, {"term": "приступи́ть к + Д.", "level": "A", "g": true, "meaning": "着手；开始进行……", "extra": "к + Д.", "backNote": "", "conjugation": null, "contentId": "приступить к + д."}, {"term": "нае́сться + Р.", "level": "A", "g": true, "meaning": "吃很多；吃饱", "extra": "+ Р.", "backNote": "", "conjugation": {"lemma": "нае́сться", "я": "нае́мся", "ты": "нае́шься", "они": "наедя́тся", "note": "есть 系列特殊变位"}, "contentId": "наесться + р."}, {"term": "созвони́ться с кем", "level": "A", "g": true, "meaning": "与某人通过电话联系上", "extra": "с + Т.", "backNote": "", "conjugation": null, "contentId": "созвониться с кем"}, {"term": "заня́ть ме́сто", "level": "A", "g": true, "meaning": "占据位置；就座", "extra": "固定搭配", "backNote": "", "conjugation": {"lemma": "заня́ть", "я": "займу́", "ты": "займёшь", "они": "займу́т", "note": "词干变化较明显"}, "contentId": "занять место"}, {"term": "расстро́иться", "level": "A", "g": false, "meaning": "难过；沮丧；心情受影响", "extra": "", "backNote": "", "conjugation": null, "contentId": "расстроиться"}, {"term": "смути́ть кого", "level": "A", "g": true, "meaning": "使某人窘迫、困惑", "extra": "кого + В.", "backNote": "", "conjugation": null, "contentId": "смутить кого"}, {"term": "смущённый чем", "level": "A", "g": true, "meaning": "因……而窘迫/困惑", "extra": "чем + Т.", "backNote": "", "conjugation": null, "contentId": "смущенныи чем"}, {"term": "объяви́ть", "level": "A", "g": true, "meaning": "宣布", "extra": "与 прояви́ть / вы́явить / предъяви́ть 做构词辨析", "backNote": "常见：объяви́ть реше́ние / ко́нкурс / результа́ты", "conjugation": null, "contentId": "объявить"}, {"term": "прояви́ть", "level": "A", "g": true, "meaning": "表现出", "extra": "прояви́ть интере́с / инициа́тиву", "backNote": "常见：прояви́ть интере́с / инициа́тиву / терпе́ние", "conjugation": null, "contentId": "проявить"}, {"term": "вы́явить", "level": "A", "g": true, "meaning": "查明；发现隐藏的问题", "extra": "вы́явить причи́ну", "backNote": "常见：вы́явить причи́ну / пробле́му / наруше́ние", "conjugation": null, "contentId": "выявить"}, {"term": "предъяви́ть", "level": "A", "g": true, "meaning": "出示；提出", "extra": "предъяви́ть докуме́нты / тре́бования", "backNote": "常见：предъяви́ть докуме́нты / тре́бования / прете́нзию", "conjugation": null, "contentId": "предъявить"}, {"term": "угова́ривать кого + инф.", "level": "A", "g": true, "meaning": "劝说某人做……", "extra": "кого + В. + инф.", "backNote": "", "conjugation": null, "contentId": "уговаривать кого + инф."}, {"term": "отгова́ривать кого от + Р.", "level": "A", "g": true, "meaning": "劝某人不要……", "extra": "кого + В.; от + Р.", "backNote": "", "conjugation": null, "contentId": "отговаривать кого от + р."}, {"term": "приучи́ть кого к + Д. / + инф.", "level": "A", "g": true, "meaning": "使某人养成……习惯", "extra": "кого + В.; к + Д. / + инф.", "backNote": "", "conjugation": null, "contentId": "приучить кого к + д. / + инф."}, {"term": "изучи́ть", "level": "A", "g": false, "meaning": "深入研究；学透", "extra": "", "backNote": "", "conjugation": null, "contentId": "изучить"}, {"term": "заголо́вок", "level": "A", "g": false, "meaning": "标题，尤指文章标题", "extra": "", "backNote": "辨析：заголо́вок 常指文章/新闻标题；назва́ние 是名称、作品名等更广泛", "conjugation": null, "contentId": "заголовок"}, {"term": "назва́ние", "level": "A", "g": false, "meaning": "名称；作品名", "extra": "", "backNote": "辨析：назва́ние 范围更广；заголо́вок 常指文章、新闻等标题", "conjugation": null, "contentId": "название"}, {"term": "разбо́рчивый", "level": "A", "g": false, "meaning": "清晰易辨认的", "extra": "разбо́рчивый по́черк — 清晰易辨认的笔迹", "backNote": "", "conjugation": null, "contentId": "разборчивыи"}, {"term": "сно́сно", "level": "A", "g": false, "meaning": "还过得去；尚可", "extra": "", "backNote": "", "conjugation": null, "contentId": "сносно"}, {"term": "ста́вить па́лки в колёса", "level": "A", "g": false, "meaning": "给某人使绊子；阻碍某人", "extra": "固定表达", "backNote": "", "conjugation": null, "contentId": "ставить палки в колеса"}, {"term": "скрепя́ се́рдце", "level": "A", "g": false, "meaning": "很不情愿地；勉强地", "extra": "固定表达", "backNote": "固定成语：скрепя́ се́рдце — 很不情愿地、勉强地", "conjugation": null, "contentId": "скрепя сердце"}, {"term": "взять верх над кем/чем", "level": "A", "g": true, "meaning": "占上风；压倒……", "extra": "над + Т.", "backNote": "固定搭配：взять верх над + Т.", "conjugation": null, "contentId": "взять верх над кем/чем"}, {"term": "наплы́в", "level": "A", "g": false, "meaning": "大量涌入", "extra": "наплы́в туристов / посетителей", "backNote": "", "conjugation": null, "contentId": "наплыв"}, {"term": "вспы́шка", "level": "A", "g": false, "meaning": "突然爆发；闪现", "extra": "вспы́шка интере́са / эпиде́мии", "backNote": "", "conjugation": null, "contentId": "вспышка"}, {"term": "пу́блика", "level": "A", "g": false, "meaning": "公众；观众", "extra": "", "backNote": "常见：широ́кая пу́блика；театра́льная пу́блика；рабо́тать на пу́блику", "conjugation": null, "contentId": "публика"}, {"term": "энтузиа́зм", "level": "R", "g": false, "meaning": "热情；热忱", "extra": "", "backNote": "", "conjugation": null, "contentId": "энтузиазм"}, {"term": "нащу́пывать опо́ры", "level": "R", "g": false, "meaning": "摸索依据、支撑点", "extra": "", "backNote": "", "conjugation": null, "contentId": "нащупывать опоры"}, {"term": "хрящ", "level": "R", "g": false, "meaning": "软骨", "extra": "", "backNote": "", "conjugation": null, "contentId": "хрящ"}, {"term": "жи́дкость", "level": "R", "g": false, "meaning": "液体", "extra": "", "backNote": "", "conjugation": null, "contentId": "жидкость"}, {"term": "деформа́ция", "level": "R", "g": false, "meaning": "变形", "extra": "", "backNote": "", "conjugation": null, "contentId": "деформация"}, {"term": "си́нтез", "level": "R", "g": false, "meaning": "综合；合成", "extra": "", "backNote": "", "conjugation": null, "contentId": "синтез"}, {"term": "нагля́дный", "level": "R", "g": false, "meaning": "直观的；明显的", "extra": "", "backNote": "", "conjugation": null, "contentId": "наглядныи"}, {"term": "кле́точный", "level": "R", "g": false, "meaning": "细胞的", "extra": "", "backNote": "", "conjugation": null, "contentId": "клеточныи"}, {"term": "вымира́ние", "level": "R", "g": false, "meaning": "灭绝", "extra": "", "backNote": "", "conjugation": null, "contentId": "вымирание"}, {"term": "мелково́дье", "level": "R", "g": false, "meaning": "浅水区", "extra": "", "backNote": "", "conjugation": null, "contentId": "мелководье"}, {"term": "магни́тное по́ле", "level": "R", "g": false, "meaning": "磁场", "extra": "", "backNote": "", "conjugation": null, "contentId": "магнитное поле"}, {"term": "уде́л", "level": "R", "g": false, "meaning": "命运；宿命", "extra": "", "backNote": "", "conjugation": null, "contentId": "удел"}, {"term": "пости́чь кого", "level": "R", "g": true, "meaning": "降临到某人身上，多用于不幸", "extra": "его пости́гла неуда́ча", "backNote": "", "conjugation": null, "contentId": "постичь кого"}, {"term": "вре́дность", "level": "R", "g": false, "meaning": "有害因素；危害性", "extra": "", "backNote": "", "conjugation": null, "contentId": "вредность"}, {"term": "па́сынок", "level": "R", "g": false, "meaning": "继子；比喻“被冷落、不受重视者”", "extra": "", "backNote": "", "conjugation": null, "contentId": "пасынок"}, {"term": "биопрепара́т", "level": "R", "g": false, "meaning": "生物制剂", "extra": "", "backNote": "", "conjugation": null, "contentId": "биопрепарат"}, {"term": "лине́йно-функциона́льная структу́ра", "level": "R", "g": false, "meaning": "直线职能制结构", "extra": "", "backNote": "", "conjugation": null, "contentId": "линеино-функциональная структура"}, {"term": "репли́ка", "level": "R", "g": false, "meaning": "一句发言；台词", "extra": "", "backNote": "", "conjugation": null, "contentId": "реплика"}, {"term": "оборва́ться", "level": "R", "g": false, "meaning": "突然中断", "extra": "жизнь оборвала́сь — 生命戛然而止", "backNote": "", "conjugation": null, "contentId": "оборваться"}, {"term": "ходу́льный", "level": "R", "g": false, "meaning": "程式化、生硬做作的", "extra": "", "backNote": "", "conjugation": null, "contentId": "ходульныи"}, {"term": "немо́е кино́", "level": "R", "g": false, "meaning": "默片", "extra": "", "backNote": "", "conjugation": null, "contentId": "немое кино"}, {"term": "тяну́ться шле́йф", "level": "R", "g": false, "meaning": "留有长久影响、传统或余波", "extra": "", "backNote": "", "conjugation": null, "contentId": "тянуться шлеиф"}, {"term": "глаза́ на лоб поле́зли", "level": "R", "g": false, "meaning": "惊得目瞪口呆", "extra": "", "backNote": "", "conjugation": null, "contentId": "глаза на лоб полезли"}, {"term": "переси́лить", "level": "R", "g": false, "meaning": "克服；压过", "extra": "", "backNote": "", "conjugation": null, "contentId": "пересилить"}, {"term": "побеси́ться", "level": "R", "g": false, "meaning": "疯闹一阵；折腾一阵（口语）", "extra": "", "backNote": "", "conjugation": null, "contentId": "побеситься"}, {"term": "кочева́ть", "level": "R", "g": false, "meaning": "游牧；不断辗转迁移", "extra": "", "backNote": "", "conjugation": null, "contentId": "кочевать"}, {"term": "ядро́ тру́ппы", "level": "R", "g": false, "meaning": "剧团核心", "extra": "", "backNote": "", "conjugation": null, "contentId": "ядро труппы"}, {"term": "подмо́стки", "level": "R", "g": false, "meaning": "舞台（偏文学/报刊语体）", "extra": "", "backNote": "", "conjugation": null, "contentId": "подмостки"}, {"term": "путеводи́тель", "level": "R", "g": false, "meaning": "旅行指南", "extra": "", "backNote": "", "conjugation": null, "contentId": "путеводитель"}, {"term": "ро́бкий", "level": "R", "g": false, "meaning": "胆怯的", "extra": "", "backNote": "", "conjugation": null, "contentId": "робкии"}, {"term": "сбо́рная", "level": "R", "g": false, "meaning": "代表队；国家队", "extra": "", "backNote": "", "conjugation": null, "contentId": "сборная"}, {"term": "глазу́рь", "level": "R", "g": false, "meaning": "糖衣；釉；甜品表面的淋层", "extra": "", "backNote": "", "conjugation": null, "contentId": "глазурь"}, {"term": "съе́хаться", "level": "R", "g": false, "meaning": "从不同地方聚到一起", "extra": "", "backNote": "", "conjugation": {"lemma": "съе́хаться", "я": "съе́дусь", "ты": "съе́дешься", "они": "съе́дутся", "note": "R 类仅作参考，不主动考变位"}, "contentId": "съехаться"}, {"term": "пристро́ить", "level": "R", "g": false, "meaning": "附建；安置；设法安排", "extra": "", "backNote": "", "conjugation": null, "contentId": "пристроить"}, {"term": "пере́ехать", "level": "R", "g": false, "meaning": "搬家；迁居", "extra": "", "backNote": "", "conjugation": {"lemma": "перее́хать", "я": "перее́ду", "ты": "перее́дешь", "они": "перее́дут", "note": "R 类仅作参考，不主动考变位"}, "contentId": "переехать"}, {"term": "загова́ривать", "level": "R", "g": false, "meaning": "开始搭话；另有念咒等义", "extra": "", "backNote": "", "conjugation": null, "contentId": "заговаривать"}, {"term": "выгова́ривать", "level": "R", "g": false, "meaning": "清楚发音；训斥", "extra": "", "backNote": "", "conjugation": null, "contentId": "выговаривать"}, {"term": "озабо́чен", "level": "R", "g": false, "meaning": "忧心忡忡的", "extra": "", "backNote": "", "conjugation": null, "contentId": "озабочен"}, {"term": "су́дорожный", "level": "R", "g": false, "meaning": "痉挛般的；异常紧张的", "extra": "", "backNote": "", "conjugation": null, "contentId": "судорожныи"}, {"term": "мра́чная бле́дность", "level": "R", "g": false, "meaning": "阴沉、可怕的苍白脸色", "extra": "", "backNote": "", "conjugation": null, "contentId": "мрачная бледность"}, {"term": "прерва́ть молча́ние", "level": "R", "g": false, "meaning": "打破沉默", "extra": "", "backNote": "", "conjugation": null, "contentId": "прервать молчание"}, {"term": "разлу́ка", "level": "R", "g": false, "meaning": "离别", "extra": "", "backNote": "", "conjugation": null, "contentId": "разлука"}, {"term": "посторо́ннее мне́ние", "level": "R", "g": false, "meaning": "外人的意见", "extra": "", "backNote": "", "conjugation": null, "contentId": "постороннее мнение"}, {"term": "тя́гостно", "level": "R", "g": false, "meaning": "沉重、痛苦、难受地", "extra": "", "backNote": "", "conjugation": null, "contentId": "тягостно"}, {"term": "сумасбро́д", "level": "R", "g": false, "meaning": "鲁莽、疯疯癫癫的人", "extra": "", "backNote": "", "conjugation": null, "contentId": "сумасброд"}, {"term": "подверга́ть себя́ чему", "level": "R", "g": true, "meaning": "使自己遭受；置于……之中", "extra": "чему + Д.", "backNote": "", "conjugation": null, "contentId": "подвергать себя чему"}, {"term": "пощёчина", "level": "R", "g": false, "meaning": "耳光", "extra": "", "backNote": "", "conjugation": null, "contentId": "пощечина"}, {"term": "изумле́ние", "level": "R", "g": false, "meaning": "惊讶", "extra": "", "backNote": "", "conjugation": null, "contentId": "изумление"}, {"term": "пе́рвенствовать", "level": "R", "g": false, "meaning": "居首；争第一", "extra": "", "backNote": "", "conjugation": null, "contentId": "первенствовать"}, {"term": "бу́йство", "level": "R", "g": false, "meaning": "狂放；暴烈行为", "extra": "", "backNote": "", "conjugation": null, "contentId": "буиство"}, {"term": "хва́статься чем", "level": "R", "g": true, "meaning": "以……炫耀", "extra": "чем + Т.", "backNote": "", "conjugation": null, "contentId": "хвастаться чем"}, {"term": "пья́нство", "level": "R", "g": false, "meaning": "酗酒；醉酒成风", "extra": "", "backNote": "", "conjugation": null, "contentId": "пьянство"}, {"term": "сча́стливец", "level": "R", "g": false, "meaning": "幸运儿", "extra": "", "backNote": "", "conjugation": null, "contentId": "счастливец"}, {"term": "блиста́тельный", "level": "R", "g": false, "meaning": "光彩夺目的；卓越的", "extra": "", "backNote": "", "conjugation": null, "contentId": "блистательныи"}, {"term": "беспе́чный", "level": "R", "g": false, "meaning": "无忧无虑的；漫不经心的", "extra": "", "backNote": "", "conjugation": null, "contentId": "беспечныи"}, {"term": "поколеба́ться", "level": "R", "g": false, "meaning": "动摇", "extra": "", "backNote": "", "conjugation": null, "contentId": "поколебаться"}, {"term": "обольщённый", "level": "R", "g": false, "meaning": "被迷住的；受到诱惑的", "extra": "", "backNote": "", "conjugation": null, "contentId": "обольщенныи"}, {"term": "отча́яние", "level": "R", "g": false, "meaning": "绝望", "extra": "", "backNote": "", "conjugation": null, "contentId": "отчаяние"}, {"term": "эпигра́мма", "level": "R", "g": false, "meaning": "讽刺短诗；讽刺诗句", "extra": "", "backNote": "", "conjugation": null, "contentId": "эпиграмма"}, {"term": "зло́бствовать", "level": "R", "g": false, "meaning": "怀恨；恶意发作", "extra": "", "backNote": "", "conjugation": null, "contentId": "злобствовать"}, {"term": "жре́бий", "level": "R", "g": false, "meaning": "签；抽签", "extra": "бро́сить жре́бий — 抽签决定", "backNote": "", "conjugation": null, "contentId": "жребии"}, {"term": "прице́литься", "level": "R", "g": false, "meaning": "瞄准", "extra": "", "backNote": "", "conjugation": null, "contentId": "прицелиться"}, {"term": "равноду́шие", "level": "R", "g": false, "meaning": "冷漠；无动于衷", "extra": "", "backNote": "", "conjugation": null, "contentId": "равнодушие"}, {"term": "взбеси́ть кого", "level": "R", "g": true, "meaning": "把某人激怒", "extra": "кого + В.", "backNote": "", "conjugation": null, "contentId": "взбесить кого"}, {"term": "дорожи́ть чем", "level": "R", "g": true, "meaning": "珍惜……", "extra": "дорожи́ть жи́знью; чем + Т.", "backNote": "", "conjugation": null, "contentId": "дорожить чем"}, {"term": "мелькну́ть в уме́", "level": "R", "g": false, "meaning": "念头一闪而过", "extra": "", "backNote": "", "conjugation": null, "contentId": "мелькнуть в уме"}, {"term": "изво́лить + инф.", "level": "R", "g": true, "meaning": "愿意；请（旧式或带讽刺色彩）", "extra": "+ инф.", "backNote": "", "conjugation": null, "contentId": "изволить + инф."}, {"term": "возрази́ть кому", "level": "R", "g": true, "meaning": "反驳某人", "extra": "кому + Д.", "backNote": "", "conjugation": {"lemma": "возрази́ть", "я": "возражу́", "ты": "возрази́шь", "они": "возразя́т", "note": "я 形式有 ж 交替"}, "contentId": "возразить кому"}, {"term": "поеди́нок", "level": "R", "g": false, "meaning": "决斗；对决", "extra": "", "backNote": "", "conjugation": null, "contentId": "поединок"}, {"term": "отста́вка", "level": "R", "g": false, "meaning": "退役；辞职", "extra": "", "backNote": "", "conjugation": null, "contentId": "отставка"}, {"term": "мще́ние", "level": "R", "g": false, "meaning": "复仇", "extra": "", "backNote": "", "conjugation": null, "contentId": "мщение"}, {"term": "заба́вный", "level": "A", "g": false, "meaning": "有趣的、好笑的", "extra": "прил.；заба́вная исто́рия — 有趣的故事；заба́вный слу́чай — 有趣的事情", "backNote": "", "conjugation": null, "contentId": "забавныи"}, {"term": "многокварти́рный", "level": "R", "g": false, "meaning": "多户住宅的", "extra": "прил.；многокварти́рный дом — 多户住宅楼", "backNote": "", "conjugation": null, "contentId": "многоквартирныи"}, {"term": "находи́ть / найти́", "level": "A", "g": true, "meaning": "找到、发现", "extra": "нсв. / св.；найти́ что? + В.п.；найти́ информа́цию — 找到信息", "backNote": "", "conjugation": null, "contentId": "находить / наити"}, {"term": "подъе́зд", "level": "A", "g": false, "meaning": "单元门、楼道入口", "extra": "сущ. м.；выходи́ть из подъе́зда — 从单元门出来；заходи́ть в подъе́зд — 走进楼道", "backNote": "", "conjugation": null, "contentId": "подъезд"}, {"term": "коля́ска", "level": "A", "g": false, "meaning": "婴儿车、推车", "extra": "сущ. ж.；в коля́ске — 在婴儿车里；с коля́ской — 推着/带着婴儿车；загляну́ть в коля́ску — 往婴儿车里看", "backNote": "", "conjugation": null, "contentId": "коляска"}, {"term": "береме́нный", "level": "A", "g": false, "meaning": "怀孕的", "extra": "прил.；береме́нная же́нщина — 孕妇；быть бере́менной — 怀孕", "backNote": "", "conjugation": null, "contentId": "беременныи"}, {"term": "прибавле́ние", "level": "R", "g": true, "meaning": "增加、增添；此处指家庭增员", "extra": "сущ. ср.；поздра́вить с прибавле́нием — 祝贺添丁/家庭增员；с + Т.п.", "backNote": "", "conjugation": null, "contentId": "прибавление"}, {"term": "выгу́ливать / вы́гулять", "level": "A", "g": true, "meaning": "遛、带出去活动", "extra": "нсв. / св.；выгу́ливать кого? + В.п.；выгу́ливать соба́ку / кота́ — 遛狗/遛猫", "backNote": "", "conjugation": null, "contentId": "выгуливать / выгулять"}, {"term": "загля́дывать / загляну́ть", "level": "A", "g": true, "meaning": "往里面看、探头看、顺便看一下", "extra": "нсв. / св.；загляну́ть куда? в + В.п.；загляну́ть в коля́ску — 往婴儿车里看", "backNote": "", "conjugation": null, "contentId": "заглядывать / заглянуть"}, {"term": "боя́ться / побоя́ться", "level": "A", "g": true, "meaning": "害怕；没敢", "extra": "нсв. / св.；боя́ться чего? + Р.п.；побоя́ться + инф.；побоя́ться спроси́ть — 没敢问", "backNote": "", "conjugation": {"lemma": "боя́ться", "я": "бою́сь", "ты": "бои́шься", "они": "боя́тся", "note": "R 类仅作参考；这里列 боя́ться"}, "contentId": "бояться / побояться"}, {"term": "вози́ть", "level": "A", "g": true, "meaning": "用交通工具运送、载着来回走", "extra": "гл., нсв.，非定向运动动词；вози́ть кого? / что? + В.п.；与定向 везти́ 对应；不强行配固定完成体", "backNote": "", "conjugation": {"lemma": "вози́ть", "я": "вожу́", "ты": "во́зишь", "они": "во́зят", "note": "R 类仅作参考；я 形式辅音交替"}, "contentId": "возить"}, {"term": "подбо́рка", "level": "A", "g": true, "meaning": "选集、合集、汇编", "extra": "сущ. ж.；подбо́рка чего? + Р.п.；подбо́рка стате́й / материа́лов / упражне́ний — 文章/材料/练习合集", "backNote": "", "conjugation": null, "contentId": "подборка"}, {"term": "поводо́к", "level": "A", "g": false, "meaning": "牵引绳、宠物牵引带", "extra": "сущ. м.；на пово́дке — 用牵引绳牵着；выгу́ливать соба́ку на пово́дке — 用牵引绳遛狗", "backNote": "常见：держа́ть соба́ку на поводке́；спусти́ть с поводка́", "conjugation": null, "contentId": "поводок"}, {"term": "председа́тель", "level": "A", "g": false, "meaning": "主席、主持人、负责人", "extra": "сущ. м.；председа́тель собра́ния — 会议主席；女性也可以使用 председа́тель；原文后面的 пожа́ловалась 表明这里指女性", "backNote": "", "conjugation": null, "contentId": "председатель"}, {"term": "жа́ловаться / пожа́ловаться", "level": "A", "g": true, "meaning": "抱怨、投诉", "extra": "нсв. / св.；жа́ловаться кому? + Д.п.；на кого? / что? + В.п.；пожа́ловаться на сосе́да — 抱怨邻居", "backNote": "", "conjugation": null, "contentId": "жаловаться / пожаловаться"}, {"term": "ле́стничная кле́тка", "level": "R", "g": false, "meaning": "楼梯间、楼层公共区域", "extra": "сущ. ж.；сосе́д по ле́стничной кле́тке — 同一楼梯间/同层附近的邻居", "backNote": "", "conjugation": null, "contentId": "лестничная клетка"}, {"term": "замеча́ние", "level": "A", "g": true, "meaning": "意见、批评、提醒", "extra": "сущ. ср.；сде́лать замеча́ние кому? + Д.п. — 提醒/批评某人；реаги́ровать на замеча́ние — 对批评作出反应", "backNote": "", "conjugation": null, "contentId": "замечание"}, {"term": "выпуска́ть / вы́пустить", "level": "A", "g": true, "meaning": "放开、放走、释放", "extra": "нсв. / св.；выпуска́ть что? из рук — 把某物从手中放开；не выпуска́ть из рук — 一直拿在手上", "backNote": "", "conjugation": null, "contentId": "выпускать / выпустить"}, {"term": "спуска́ться / спусти́ться", "level": "A", "g": true, "meaning": "下去、下楼", "extra": "нсв. / св.；спуска́ться по чему? + Д.п.；спуска́ться по ле́стнице — 下楼梯；【变位注意】спуска́юсь, спуска́ешься, спуска́ются；标准现代俄语这里是 спуска́юсь，不是 спуска́юся", "backNote": "", "conjugation": null, "contentId": "спускаться / спуститься"}, {"term": "ле́стница", "level": "A", "g": false, "meaning": "楼梯", "extra": "сущ. ж.；по ле́стнице — 沿楼梯、走楼梯（по + Д.п.）", "backNote": "", "conjugation": null, "contentId": "лестница"}, {"term": "раски́дывать / раскида́ть", "level": "A", "g": true, "meaning": "扔得到处都是、散乱地丢", "extra": "нсв. / св.；раски́дывать что? + В.п.；раски́дывать му́сор — 乱扔垃圾；раскида́ть ве́щи по ко́мнате — 把东西扔得满屋都是", "backNote": "", "conjugation": null, "contentId": "раскидывать / раскидать"}, {"term": "груби́ть / нагруби́ть", "level": "A", "g": true, "meaning": "对人说话粗鲁、顶撞", "extra": "нсв. / св.；груби́ть кому? + Д.п.；груби́ть роди́телям — 对父母说话无礼；нагруби́ть преподава́телю — 顶撞老师；【变位注意】я грублю́ — ты груби́шь — они грубя́т，第一人称单数有 б → бл 的词干变化", "backNote": "", "conjugation": null, "contentId": "грубить / нагрубить"}, {"term": "шля́ться", "level": "R", "g": false, "meaning": "闲逛、到处晃荡（常带贬义或不耐烦色彩）", "extra": "гл., нсв.；шля́ться где? / с кем?；шля́ться с хулига́нами — 跟一群小混混到处晃；шля́ться по го́роду — 在城里瞎逛；没有完全中性的固定完成体对应，пошля́ться 表示“闲逛一阵”", "backNote": "", "conjugation": null, "contentId": "шляться"}, {"term": "отвора́чиваться / отверну́ться", "level": "A", "g": true, "meaning": "转过脸去、转身避开", "extra": "нсв. / св.；отвора́чиваться от кого? / чего? + Р.п.；ре́зко отверну́ться от кого-то — 突然转开不看某人；原文 па́рень от меня́ ре́зко отвора́чивается — 那个男生突然把脸从我这边转开", "backNote": "", "conjugation": null, "contentId": "отворачиваться / отвернуться"}, {"term": "непрезента́бельный", "level": "R", "g": false, "meaning": "不够体面美观的、不够像样的、不宜示人的", "extra": "прил.；в непрезента́бельном ви́де — 处于不太像样的状态/外观不佳", "backNote": "", "conjugation": null, "contentId": "непрезентабельныи"}, {"term": "прете́нзия", "level": "A", "g": true, "meaning": "不满、抱怨、异议", "extra": "сущ. ж.；обрати́ться к кому? + Д.п. с прете́нзией + Т.п. — 向某人提出不满；предъяви́ть прете́нзию кому? + Д.п. — 向某人提出异议/投诉", "backNote": "", "conjugation": null, "contentId": "претензия"}];
 const KEY="trki_c1_srs_v5";
 const SESSION_KEY="trki_c1_vocab_session_v1";
+const INTRO_SESSION_KEY="trki_c1_vocab_intro_session_v1";
+const BROWSER_STATE_KEY="trki_c1_vocab_browser_state_v2";
+const ROLLBACK_KEY="trki_c1_vocab_rollback_v6";
 const DAY=86400000;
 let db={cards:{},settings:{newCap:20,conjugationQuiz:true,dailyFreeze:true},day:null};
 let queue=[],qi=0,mode="today",answered=false,pendingCorrectMC=false;
-let browserDeck=[],bi=0;
+let browserDeck=[],bi=0,browserFilter="all",browserSort="original",browserSwipeX=null,browserSwipeY=null,browserSwiped=false;
+let introQueue=[],introI=0;
 
 const $=id=>document.getElementById(id);
 function stripMarks(s){return (s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
@@ -171,6 +263,36 @@ function id(c){return c.contentId||norm(c.term)}
 function localDate(ts=Date.now()){let d=new Date(ts);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function all(){return Object.values(db.cards)}
 function unique(xs){return [...new Set(xs)]}
+function hasInitialStudy(c){return !!(c.firstStudyAt||(c.seen||0)>0||(c.history||[]).length)}
+function introPendingCards(){return all().filter(c=>c.status==="new"&&!hasInitialStudy(c))}
+function eligibleNewCards(){return all().filter(c=>c.status==="new"&&hasInitialStudy(c))}
+function recentGrades(c,n=3){return (c.history||[]).slice(-n).map(h=>h&&h.grade).filter(Boolean)}
+function isStable(c){const g=recentGrades(c,3);return hasInitialStudy(c)&&(c.seen||0)>=3&&(c.streak||0)>=3&&g.length===3&&g.every(x=>x==="correct")}
+function isConsolidating(c){return hasInitialStudy(c)&&!isStable(c)}
+function withinDays(ts,days){if(!ts)return false;const t=typeof ts==="number"?ts:Date.parse(ts);return Number.isFinite(t)&&Date.now()-t>=0&&Date.now()-t<days*DAY}
+function firstStudyTime(c){if(c.firstStudyAt)return Number(c.firstStudyAt);const xs=(c.history||[]).map(h=>h&&h.time).filter(Boolean);return xs.length?Math.min(...xs):null}
+function compactUsage(c,type="general"){
+  if(type==="gov"){const g=governanceSpec(c);if(g)return g}
+  if(type==="conj"&&c.conjugation){const x=c.conjugation;return `я ${x["я"]} · ты ${x["ты"]} · они ${x["они"]}`}
+  const parts=(c.extra||"").split(/[；;]/).map(x=>x.trim()).filter(Boolean);
+  const useful=parts.find(x=>!(/^(сущ\.|прил\.|нареч\.|гл\.|нсв\.|св\.|нсв\s*\/\s*св\.|св\s*\/\s*нсв\.)$/i.test(x)))||parts[0];
+  if(useful)return useful;
+  const raw=(c.backNote||"").trim();
+  const lab=raw.match(/【(?:搭配|用法|易混)】([^【]+)/);if(lab&&lab[1])return lab[1].replace(/^[：:\s；;|｜]+|[；;|｜\s]+$/g,"").trim().split(/[；;]/)[0];
+  const plain=raw.match(/^(?:常见搭配|固定表达|同根)[:：]\s*(.+)$/);if(plain&&plain[1])return plain[1].split(/[；;]/)[0].trim();
+  return ""
+}
+function masteryLabel(c){if(!hasInitialStudy(c))return "未首次学习";if(isStable(c))return "稳定掌握";if(c.status==="new")return "已学习 · 待首次测试";if((c.streak||0)<2||(c.lapses||0)>0)return "巩固中";return "巩固中"}
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function labeledBackNoteHTML(note){
+  const s=(note||"").trim();if(!s)return "";
+  const re=/【([^】]+)】/g,matches=[...s.matchAll(re)];
+  if(!matches.length)return `<div class="study-section"><div class="study-label">补充提示</div><div class="study-value">${esc(s)}</div></div>`;
+  let out='<div class="morph-grid">';
+  matches.forEach((m,i)=>{const start=m.index+m[0].length,end=i+1<matches.length?matches[i+1].index:s.length;let val=s.slice(start,end).replace(/^[：:\s；;|｜]+|[；;|｜\s]+$/g,"").trim();if(val)out+=`<div class="morph-item"><div class="morph-label">${esc(m[1])}</div><div class="morph-text">${esc(val)}</div></div>`});
+  return out+'</div>'
+}
 function historyOnDate(c,date){return (c.history||[]).some(h=>h&&h.time&&localDate(h.time)===date)}
 function firstHistoryDate(c){
   const times=(c.history||[]).map(h=>h&&h.time).filter(Boolean).sort((a,b)=>a-b);
@@ -187,42 +309,27 @@ function resetInitialScroll(){
   document.body.scrollTop=0;
 }
 
-function mergeContent(existing,seed){
-  const progressKeys=["status","streak","lapses","seen","lastReviewed","nextDue","lastWrong","errors","history"];
-  const out={...seed};
-  if(existing){for(const k of progressKeys) if(existing[k]!==undefined) out[k]=existing[k]}
-  out.status=out.status||"new";out.streak=out.streak||0;out.lapses=out.lapses||0;out.seen=out.seen||0;
-  out.errors=out.errors||{meaning:0,recall:0,spelling:0,governance:0,conjugation:0};
-  if(out.errors.conjugation===undefined)out.errors.conjugation=0;
-  out.history=out.history||[]; return out;
+function normalizeCard(c){
+  const out={...c};out.contentId=id(out);out.status=out.status||"new";out.streak=Number(out.streak||0);out.lapses=Number(out.lapses||0);out.seen=Number(out.seen||0);
+  out.errors=out.errors||{meaning:0,recall:0,spelling:0,governance:0,conjugation:0};if(out.errors.conjugation===undefined)out.errors.conjugation=0;out.history=Array.isArray(out.history)?out.history:[];return out
+}
+function mergeContent(existing,incoming){
+  const progressKeys=["status","streak","lapses","seen","lastReviewed","nextDue","lastWrong","errors","history","acceptedAnswers","acceptedGovAnswers","firstStudyAt","addedAt","importBatch"];
+  const out={...incoming};if(existing){for(const k of progressKeys)if(existing[k]!==undefined)out[k]=existing[k]}
+  return normalizeCard(out)
+}
+function normalizeDB(obj){
+  const out={...obj};out.settings={...(obj.settings||{})};if(out.settings.newCap===undefined)out.settings.newCap=20;out.cards={};Object.values(obj.cards||{}).forEach(c=>{const nc=normalizeCard(c);out.cards[id(nc)]=nc});return out
 }
 function findLegacy(){
-  try{
-    for(let i=0;i<localStorage.length;i++){
-      const k=localStorage.key(i); if(k===KEY)continue;
-      if(!/trki/i.test(k))continue;
-      try{
-        let x=JSON.parse(localStorage.getItem(k)); let obj=x&&x.db?x.db:x;
-        if(obj&&obj.cards&&Object.keys(obj.cards).length>20)return obj;
-      }catch(e){}
-    }
-  }catch(e){}
-  return null
+  try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k===KEY)continue;if(!/trki/i.test(k))continue;try{let x=JSON.parse(localStorage.getItem(k));let obj=x&&x.db?x.db:x;if(obj&&obj.cards&&Object.keys(obj.cards).length>20)return obj}catch(e){}}}catch(e){}return null
 }
 function load(){
-  let saved=null;
-  try{saved=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
+  let saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
   if(!saved||!saved.cards)saved=findLegacy();
-  if(saved&&saved.cards)db=saved;
-  db.settings=db.settings||{newCap:20}; if(db.settings.newCap===undefined)db.settings.newCap=20;
-  const oldCards=db.cards||{}; const byNorm={}; Object.values(oldCards).forEach(c=>byNorm[id(c)]=c);
-  const merged={}; SEED.forEach(s=>{let k=id(s);merged[k]=mergeContent(byNorm[k],s)});
-  // Keep any user-imported cards not present in seed.
-  Object.values(oldCards).forEach(c=>{let k=id(c);if(!merged[k])merged[k]=c});
-  db.cards=merged;
-  rolloverDay();
-  repairTodayFromHistory();
-  save();
+  if(saved&&saved.cards)db=normalizeDB(saved);
+  else{const cards={};SEED.forEach(c=>{const nc=normalizeCard(c);cards[id(nc)]=nc});db=normalizeDB({cards,settings:{newCap:20},day:null})}
+  rolloverDay();repairTodayFromHistory();save()
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}
 function rolloverDay(){
@@ -270,7 +377,7 @@ function buildToday(force=false){
   const due=dueCards();
   const weak=weakCards().filter(c=>!due.some(d=>id(d)===id(c))).sort((a,b)=>(b.lapses||0)-(a.lapses||0)).slice(0,20);
   const cap=Number(db.settings.newCap||0);
-  const news=all().filter(c=>c.status==="new").slice(0,cap);
+  const news=eligibleNewCards().slice(0,cap);
   db.day.newIds=news.map(id); db.day.reviewIds=due.map(id); db.day.weakIds=weak.map(id);
   let mixed=[],pools=[news.slice(),due.slice(),weak.slice()];
   while(pools.some(p=>p.length)){for(const p of pools)if(p.length)mixed.push(id(p.shift()))}
@@ -278,23 +385,20 @@ function buildToday(force=false){
   db.day.queue=mixed;db.day.qi=0;db.day.initialized=true;db.day.completed=[];save()
 }
 function updateHome(){
-  rolloverDay();
-  const arr=all(); $("total").textContent=arr.length;$("aN").textContent=arr.filter(c=>c.level==="A").length;
-  $("rN").textContent=arr.filter(c=>c.level==="R").length;$("gN").textContent=arr.filter(c=>c.g).length;
+  rolloverDay();const arr=all(),studied=arr.filter(hasInitialStudy),stable=arr.filter(isStable),consolidating=arr.filter(isConsolidating),pending=introPendingCards();
+  $("total").textContent=arr.length;$("studiedN").textContent=studied.length;$("pendingN").textContent=pending.length;$("dueNowN").textContent=dueCards().length;$("consolidatingN").textContent=consolidating.length;$("stableN").textContent=stable.length;
+  $("weekLearnedN").textContent=arr.filter(c=>withinDays(firstStudyTime(c),7)).length;$("weekAddedN").textContent=arr.filter(c=>withinDays(c.addedAt,7)).length;
+  const sp=arr.length?Math.round(studied.length/arr.length*100):0,stp=arr.length?Math.round(stable.length/arr.length*100):0;$("studyPct").textContent=sp+"%";$("stablePct").textContent=stp+"%";$("studyBar").style.width=sp+"%";$("stableBar").style.width=stp+"%";
+  $("aN").textContent=arr.filter(c=>c.level==="A").length;$("rN").textContent=arr.filter(c=>c.level==="R").length;$("gN").textContent=arr.filter(c=>c.g).length;
+  $("introPending").textContent=pending.length;$("introDoneN").textContent=studied.length;renderIntroResume();
   $("todayLabel").textContent=db.day.date;$("newCap").value=String(db.settings.newCap??20);
   if(db.day.initialized){
-    $("todayNew").textContent=db.day.newIds.length;$("todayReview").textContent=db.day.reviewIds.length;
-    $("weakN").textContent=db.day.weakIds.length;$("doneN").textContent=new Set(db.day.reviewedToday||[]).size;
+    $("todayNew").textContent=db.day.newIds.length;$("todayReview").textContent=db.day.reviewIds.length;$("weakN").textContent=db.day.weakIds.length;$("doneN").textContent=new Set(db.day.reviewedToday||[]).size;
     $("freezeText").textContent=`今日批次已锁定：${db.day.newIds.length} 个新词。明日新词尚未分配，不会提前出现。`;
     $("capNote").textContent="今天的批次已经生成。这里改成 0 不会删除今天已分配的词；它会影响下一次生成的新批次。若现在只想复习旧词，请点“只复习已学旧词”。";
   }else{
-    const cap=Number(db.settings.newCap||0);
-    $("todayNew").textContent=Math.min(cap,arr.filter(c=>c.status==="new").length);
-    const reviewedNow=new Set(reviewedIdsOn(db.day.date));
-    $("todayReview").textContent=dueCards().filter(c=>!reviewedNow.has(id(c))).length;
-    $("weakN").textContent=Math.min(20,weakCards().filter(c=>!reviewedNow.has(id(c))).length);
-    $("doneN").textContent=reviewedNow.size;
-    $("freezeText").textContent=`今天的批次还没生成。点击“开始今日任务”后，会按当前新词上限（${cap}）生成并锁定今天内容。`;
+    const cap=Number(db.settings.newCap||0),reviewedNow=new Set(reviewedIdsOn(db.day.date));$("todayNew").textContent=Math.min(cap,eligibleNewCards().length);$("todayReview").textContent=dueCards().filter(c=>!reviewedNow.has(id(c))).length;$("weakN").textContent=Math.min(20,weakCards().filter(c=>!reviewedNow.has(id(c))).length);$("doneN").textContent=reviewedNow.size;
+    $("freezeText").textContent=`今天的测试批次还没生成。已完成首次学习、可进入测试的新词有 ${eligibleNewCards().length} 个；点击“开始今日测试”后按上限（${cap}）生成并锁定。`;
     $("capNote").textContent=cap===0?"当前为 0：今天生成任务时不会加入任何新词，只安排复习。":"你可以在生成今天任务前改为 0 / 10 / 20 / 30。";
   }
 }
@@ -397,16 +501,79 @@ function qType(c){
   if(c.g&&governanceSpec(c)&&(c.seen||0)>=1&&(c.seen||0)%3===1)return "gov";
   return "typing"
 }
-function detailHTML(c){
-  let parts=[];
-  if(c.extra)parts.push(`<b>搭配 / 支配：</b>${c.extra}`);
-  if(c.backNote)parts.push(`<b>常见用法 / 构词：</b>${c.backNote}`);
-  if(c.conjugation){
-    const x=c.conjugation;
-    parts.push(`<b>变位（${x.lemma}）：</b>я ${x["я"]} · ты ${x["ты"]} · они ${x["они"]}${x.note?`<br><span class="muted">${x.note}</span>`:""}`);
-  }
-  return parts.join("<br><br>")||"—"
+function testDetailHTML(c,type="general"){
+  const usage=compactUsage(c,type);let out="";
+  if(usage)out+=`<b>${type==="gov"?"支配 / 固定搭配":"核心用法"}：</b>${esc(usage)}`;
+  if(type==="conj"&&c.conjugation&&c.conjugation.note)out+=`${out?"<br>":""}<span class="muted">${esc(c.conjugation.note)}</span>`;
+  return out||'<span class="muted">本题只保留核心释义，不展开构词与词源。</span>'
 }
+function introDetailHTML(c){
+  let out="";
+  if(c.extra)out+=`<div class="study-section"><div class="study-label">搭配 / 支配 / 用法</div><div class="study-value">${esc(c.extra)}</div></div>`;
+  if(c.backNote)out+=labeledBackNoteHTML(c.backNote);
+  else out+=`<div class="study-section"><div class="study-label">构词学习信息</div><div class="study-value muted">这张旧词卡暂时没有增强构词说明。以后用新版同步包重新导入该词条后，这里会自动显示前缀、后缀、同根、词源等可用信息。</div></div>`;
+  if(c.conjugation){const x=c.conjugation;out+=`<div class="study-section"><div class="study-label">特殊变位</div><div class="study-value">${esc(x.lemma)}：я ${esc(x["я"])} · ты ${esc(x["ты"])} · они ${esc(x["они"])}${x.note?`<br><span class="muted">${esc(x.note)}</span>`:""}</div></div>`}
+  return out||"—"
+}
+
+
+function savedIntroSession(){
+  try{
+    const s=JSON.parse(localStorage.getItem(INTRO_SESSION_KEY)||"null");
+    if(!s||!Array.isArray(s.queue))return null;
+    s.queue=s.queue.filter(k=>db.cards[k]&&db.cards[k].status==="new");
+    s.i=Math.max(0,Math.min(Number(s.i)||0,s.queue.length));
+    if(!s.queue.length||s.i>=s.queue.length){localStorage.removeItem(INTRO_SESSION_KEY);return null}
+    return s
+  }catch(e){return null}
+}
+function saveIntroSession(){
+  if(!introQueue.length||introI>=introQueue.length){localStorage.removeItem(INTRO_SESSION_KEY);renderIntroResume();return}
+  localStorage.setItem(INTRO_SESSION_KEY,JSON.stringify({format:"TRKI-C1-VOCAB-FIRST-STUDY",version:1,queue:[...introQueue],i:introI,savedAt:Date.now()}));renderIntroResume()
+}
+function renderIntroResume(){
+  const s=savedIntroSession(),b=$("continueIntro");if(!b)return;
+  if(!s){b.classList.add("hidden");return}
+  b.textContent=`继续上次首次学习 · ${s.i+1}/${s.queue.length}`;b.classList.remove("hidden")
+}
+function openIntro(q,start=0){
+  introQueue=q.filter(k=>db.cards[k]);introI=Math.max(0,Math.min(start,introQueue.length-1));
+  if(!introQueue.length){alert("目前没有待首次学习的新词。新导入的词会出现在这里。");return}
+  $("home").style.display="none";$("test").style.display="none";$("browser").style.display="none";$("intro").style.display="block";saveIntroSession();renderIntro()
+}
+$("startIntro").onclick=()=>{
+  const cap=Number($("introCap").value||20),ids=introPendingCards().slice(0,cap).map(id);openIntro(ids,0)
+};
+$("continueIntro").onclick=()=>{const s=savedIntroSession();if(s)openIntro(s.queue,s.i)};
+$("introFlip").onclick=()=>{$("introCard").classList.add("flipped")};
+function renderIntro(){
+  if(introI>=introQueue.length){finishIntro();return}
+  const c=db.cards[introQueue[introI]];if(!c){introI++;saveIntroSession();renderIntro();return}
+  $("introCard").classList.remove("flipped");$("introCopyStatus").textContent="";
+  $("introCount").textContent=`${introI+1} / ${introQueue.length}`;$("introProg").style.width=`${(introI/Math.max(1,introQueue.length))*100}%`;
+  const badges=`<span class="badge">${esc(c.level)}</span>${c.g?'<span class="badge">G</span>':""}${c.addedAt?'<span class="badge">新导入</span>':""}`;
+  $("introBadges").innerHTML=$("introBadges2").innerHTML=badges;$("introTerm").textContent=c.term;$("introMeaning").textContent=c.meaning;$("introDetails").innerHTML=introDetailHTML(c)
+}
+function markIntroDone(c){if(!c.firstStudyAt)c.firstStudyAt=Date.now();save()}
+$("introDone").onclick=()=>{const c=db.cards[introQueue[introI]];if(c)markIntroDone(c);introI++;saveIntroSession();renderIntro()};
+$("introSkip").onclick=()=>{introI++;saveIntroSession();renderIntro()};
+$("introPrev").onclick=()=>{if(introI>0){introI--;saveIntroSession();renderIntro()}};
+$("introExit").onclick=()=>{saveIntroSession();$("intro").style.display="none";$("home").style.display="block";updateHome()};
+function finishIntro(){
+  localStorage.removeItem(INTRO_SESSION_KEY);$("intro").style.display="none";$("home").style.display="block";updateHome();
+  if(db.day&&db.day.initialized)alert("这轮首次学习完成。今天的测试批次已经锁定，因此这些新词不会自动插入今天的队列；如果你确实想今天马上测，可以使用“重建今天任务”。");
+  else alert("这轮首次学习完成。刚学过的新词现在已经可以进入今天的新词测试。")
+}
+async function copyText(text){
+  try{await navigator.clipboard.writeText(text);return true}catch(e){
+    try{const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.focus();ta.select();const ok=document.execCommand("copy");ta.remove();return ok}catch(_){return false}
+  }
+}
+$("introAsk").onclick=async()=>{
+  const c=db.cards[introQueue[introI]];if(!c)return;
+  const msg=[`我正在首次学习俄语 C1 单词：${c.term}`,`词义：${c.meaning}`,c.extra?`词卡用法/支配：${c.extra}`:"",c.backNote?`词卡构词/学习提示：${c.backNote}`:"",c.conjugation?`词卡变位：${c.conjugation.lemma}；я ${c.conjugation["я"]}；ты ${c.conjugation["ты"]}；они ${c.conjugation["они"]}`:"",`请基于这张词卡回答我接下来关于构词、前缀/后缀、同根词、词源、搭配或用法的问题；这不是测试。`].filter(Boolean).join("\n");
+  const ok=await copyText(msg);$("introCopyStatus").textContent=ok?"已复制。回到 ChatGPT 直接粘贴后继续问我就可以。":"复制失败，请长按手动复制当前词条。"
+};
 
 function savedSession(){
   try{
@@ -446,10 +613,13 @@ $("resumeSession").onclick=resumeSavedSession;
 $("discardSession").onclick=()=>{if(confirm("放弃这轮未完成训练？已经记录的答题成绩不会删除。"))clearSession()}
 
 function launch(q,whichMode){
-  queue=q.slice();qi=0;mode=whichMode;persistSession(0);$("home").style.display="none";$("browser").style.display="none";$("test").style.display="block";showQ()
+  queue=q.slice();qi=0;mode=whichMode;persistSession(0);$("home").style.display="none";$("browser").style.display="none";$("intro").style.display="none";$("test").style.display="block";showQ()
 }
 $("startToday").onclick=()=>{
   repairTodayFromHistory();
+  if(!db.day.initialized&&Number(db.settings.newCap||0)>0&&eligibleNewCards().length===0&&introPendingCards().length>0){
+    if(!confirm(`还有 ${introPendingCards().length} 个新词没过首次学习轮。现在继续的话，本轮只会安排旧词复习；是否继续？`))return
+  }
   buildToday(false);
   const start=Math.min(db.day.qi||0,db.day.queue.length);
   const pending=db.day.queue.slice(start);
@@ -520,7 +690,7 @@ function mark(c,grade,errorType){
   if(mode==="today")db.day.qi=Math.min((db.day.qi||0)+1,db.day.queue.length);
   save()
 }
-function showFeedback(c,cls,title){let f=$("feedback");f.className="feedback "+cls;f.innerHTML=`${title}<br><b>${c.term}</b> — ${c.meaning}<div class="backdetails">${detailHTML(c)}</div>`}
+function showFeedback(c,cls,title){let f=$("feedback"),type=qType(c);f.className="feedback "+cls;f.innerHTML=`${title}<br><b>${c.term}</b> — ${c.meaning}<div class="backdetails">${testDetailHTML(c,type)}</div>`}
 function after(c){answered=true;$("dontKnow").classList.add("hidden");$("next").classList.remove("hidden");save();persistSession(qi+1)}
 function gradeMC(c,o){
   if(answered)return;
@@ -547,7 +717,7 @@ function offerManualJudgement(c,v,type,errorType){
   f.innerHTML=`△ 你的答案与库中标准答案不完全一致。<br>
   <b>你的答案：</b>${v||"（空）"}<br>
   <b>库中答案：</b>${type==="gov"?governanceSpec(c):typingAnswers(c).join(" / ")}
-  <div class="backdetails">${detailHTML(c)}</div>
+  <div class="backdetails">${testDetailHTML(c,type)}</div>
   <div class="actions" style="margin-top:12px">
     <button id="judgeAccept" class="primary">我的答案也可接受</button>
     <button id="judgeWrong">确实答错了</button>
@@ -601,32 +771,67 @@ $("resetToday").onclick=()=>{
 }
 
 // Browser
-$("openBrowser").onclick=()=>{browserDeck=all();bi=0;$("home").style.display="none";$("browser").style.display="block";renderBrowser()}
-$("closeBrowser").onclick=()=>{$("browser").style.display="none";$("home").style.display="block";updateHome()}
-$("browserCard").onclick=()=>{$("browserCard").classList.toggle("flipped")}
-$("bPrev").onclick=()=>{bi=(bi-1+browserDeck.length)%browserDeck.length;renderBrowser()}
-$("bNext").onclick=()=>{bi=(bi+1)%browserDeck.length;renderBrowser()}
+function loadBrowserState(){try{const x=JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null");if(x){browserFilter=x.filter||"all";browserSort=x.sort||"original";return x}}catch(e){}return {}}
+function saveBrowserState(){const c=browserDeck[bi];localStorage.setItem(BROWSER_STATE_KEY,JSON.stringify({filter:browserFilter,sort:browserSort,currentId:c?id(c):null,savedAt:Date.now()}))}
+function browserFiltered(){
+  let arr=all().slice();
+  if(browserFilter==="recent")arr=arr.filter(c=>withinDays(c.addedAt,7));
+  else if(browserFilter==="unlearned")arr=arr.filter(c=>!hasInitialStudy(c));
+  else if(browserFilter==="consolidating")arr=arr.filter(isConsolidating);
+  else if(browserFilter==="stable")arr=arr.filter(isStable);
+  else if(browserFilter==="weak")arr=arr.filter(c=>c.status!=="new"&&((c.lapses||0)>0||(c.streak||0)<2));
+  else if(browserFilter==="A")arr=arr.filter(c=>c.level==="A");
+  else if(browserFilter==="R")arr=arr.filter(c=>c.level==="R");
+  else if(browserFilter==="G")arr=arr.filter(c=>c.g);
+  if(browserSort==="newest")arr.sort((a,b)=>(Date.parse(b.addedAt||0)||0)-(Date.parse(a.addedAt||0)||0));
+  else if(browserSort==="alpha")arr.sort((a,b)=>norm(a.term).localeCompare(norm(b.term),"ru"));
+  else if(browserSort==="due")arr.sort((a,b)=>(a.nextDue||Infinity)-(b.nextDue||Infinity));
+  else if(browserSort==="mastery")arr.sort((a,b)=>{const sa=isStable(a)?2:hasInitialStudy(a)?1:0,sb=isStable(b)?2:hasInitialStudy(b)?1:0;return sa-sb||((a.streak||0)-(b.streak||0))||((b.lapses||0)-(a.lapses||0))});
+  return arr
+}
+function rebuildBrowser(preferId=null){
+  browserDeck=browserFiltered();let idx=preferId?browserDeck.findIndex(c=>id(c)===preferId):-1;bi=idx>=0?idx:Math.min(bi,Math.max(0,browserDeck.length-1));renderBrowser()
+}
+$("openBrowser").onclick=()=>{const st=loadBrowserState();$("bFilter").value=browserFilter;$("bSort").value=browserSort;$("home").style.display="none";$("intro").style.display="none";$("test").style.display="none";$("browser").style.display="block";rebuildBrowser(st.currentId||null)}
+$("closeBrowser").onclick=()=>{saveBrowserState();$("browser").style.display="none";$("home").style.display="block";updateHome()}
+$("bFilter").onchange=()=>{const cur=browserDeck[bi];browserFilter=$("bFilter").value;bi=0;rebuildBrowser(cur?id(cur):null);saveBrowserState()}
+$("bSort").onchange=()=>{const cur=browserDeck[bi];browserSort=$("bSort").value;rebuildBrowser(cur?id(cur):null);saveBrowserState()}
+function browserMove(delta){if(!browserDeck.length)return;bi=Math.max(0,Math.min(browserDeck.length-1,bi+delta));renderBrowser();saveBrowserState()}
+$("bPrev").onclick=()=>browserMove(-1);$("bNext").onclick=()=>browserMove(1);
+$("bSlider").oninput=()=>{if(!browserDeck.length)return;bi=Math.max(0,Math.min(browserDeck.length-1,Number($("bSlider").value)-1));renderBrowser();saveBrowserState()}
+$("bGo").onclick=()=>{if(!browserDeck.length)return;let n=Number($("bJump").value)||1;bi=Math.max(0,Math.min(browserDeck.length-1,n-1));renderBrowser();saveBrowserState()}
+$("bJump").onkeydown=e=>{if(e.key==="Enter")$("bGo").click()};
+$("browserCard").addEventListener("touchstart",e=>{const t=e.changedTouches&&e.changedTouches[0];if(!t)return;browserSwipeX=t.clientX;browserSwipeY=t.clientY;browserSwiped=false},{passive:true});
+$("browserCard").addEventListener("touchend",e=>{const t=e.changedTouches&&e.changedTouches[0];if(!t||browserSwipeX===null)return;const dx=t.clientX-browserSwipeX,dy=t.clientY-browserSwipeY;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.2){browserSwiped=true;browserMove(dx<0?1:-1);setTimeout(()=>browserSwiped=false,250)}browserSwipeX=browserSwipeY=null},{passive:true});
+$("browserCard").onclick=()=>{if(browserSwiped)return;$("browserCard").classList.toggle("flipped")};
 function renderBrowser(){
-  if(!browserDeck.length)return;const c=browserDeck[bi];$("browserCard").classList.remove("flipped");
-  $("bCount").textContent=`${bi+1} / ${browserDeck.length}`;$("bBadges").innerHTML=$("bBadges2").innerHTML=`<span class="badge">${c.level}</span>${c.g?'<span class="badge">G</span>':""}`;
-  $("bTerm").textContent=c.term;$("bMeaning").textContent=c.meaning;$("bDetail").innerHTML=detailHTML(c)
+  const empty=!browserDeck.length;$("browserEmpty").classList.toggle("hidden",!empty);$("browserMain").classList.toggle("hidden",empty);$("bSlider").disabled=empty;$("bJump").disabled=empty;$("bGo").disabled=empty;
+  if(empty){$("bCount").textContent="0 / 0";$("bSlider").min=1;$("bSlider").max=1;$("bSlider").value=1;$("bJump").value=1;return}
+  const c=browserDeck[bi];$("browserCard").classList.remove("flipped");$("bCount").textContent=`${bi+1} / ${browserDeck.length}`;$("bSlider").min=1;$("bSlider").max=browserDeck.length;$("bSlider").value=bi+1;$("bJump").min=1;$("bJump").max=browserDeck.length;$("bJump").value=bi+1;
+  const badges=`<span class="badge">${esc(c.level)}</span>${c.g?'<span class="badge">G</span>':""}<span class="badge">${esc(masteryLabel(c))}</span>`;$("bBadges").innerHTML=$("bBadges2").innerHTML=badges;$("bTerm").textContent=c.term;$("bMeaning").textContent=c.meaning;
+  const usage=compactUsage(c);$("bCompact").innerHTML=usage?`<b>核心用法：</b>${esc(usage)}`:'<span class="muted">这张词卡暂无额外核心用法。</span>';
+  const added=c.addedAt?new Date(c.addedAt).toLocaleDateString():"旧库数据 · 无精确加入日期";$("bMeta").textContent=`${masteryLabel(c)} · 测试 ${c.seen||0} 次 · 连续正确 ${c.streak||0} · 加入：${added}`;saveBrowserState()
 }
 
 // Import / export
 function download(name,text){let a=document.createElement("a"),u=URL.createObjectURL(new Blob([text],{type:"application/json;charset=utf-8"}));a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),800)}
-$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:5.4,exportedAt:new Date().toISOString(),db,session:savedSession()},null,2))
-function readJSON(file,cb){if(!file)return;let r=new FileReader();r.onload=()=>{try{cb(JSON.parse(r.result))}catch(e){alert("JSON 读取失败")}};r.readAsText(file)}
+function snapshotRollback(reason){try{localStorage.setItem(ROLLBACK_KEY,JSON.stringify({format:"TRKI-C1-VOCAB-ROLLBACK",version:1,reason,savedAt:Date.now(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")}))}catch(e){}}
+$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:6.0,exportedAt:new Date().toISOString(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")},null,2))
+function readJSON(file,cb){if(!file)return;let r=new FileReader();r.onload=()=>{try{cb(JSON.parse(r.result))}catch(e){alert("JSON 读取失败："+e.message)}};r.readAsText(file)}
 $("importBackup").onchange=e=>readJSON(e.target.files[0],x=>{
-  let obj=x&&x.db?x.db:x;if(!obj||!obj.cards){alert("不是有效备份");return}
-  db=obj;const old=Object.values(db.cards);const by={};old.forEach(c=>by[id(c)]=c);const merged={};SEED.forEach(s=>merged[id(s)]=mergeContent(by[id(s)],s));old.forEach(c=>{if(!merged[id(c)])merged[id(c)]=c});db.cards=merged;rolloverDay();save();if(x&&x.session)localStorage.setItem(SESSION_KEY,JSON.stringify(x.session));else localStorage.removeItem(SESSION_KEY);updateHome();renderResume();alert("备份已恢复，并已套用新版词条内容。")
+  let obj=x&&x.db?x.db:x;if(!obj||!obj.cards){alert("不是有效备份");return}snapshotRollback("before-backup-restore");db=normalizeDB(obj);rolloverDay();save();
+  if(x&&x.session)localStorage.setItem(SESSION_KEY,JSON.stringify(x.session));else localStorage.removeItem(SESSION_KEY);if(x&&x.introSession)localStorage.setItem(INTRO_SESSION_KEY,JSON.stringify(x.introSession));else localStorage.removeItem(INTRO_SESSION_KEY);if(x&&x.browserState)localStorage.setItem(BROWSER_STATE_KEY,JSON.stringify(x.browserState));
+  updateHome();renderResume();renderIntroResume();alert(`备份已原样恢复：${all().length} 个词。测试历史、streak、lapses、到期时间和可接受答案均按备份保留；未给旧词伪造加入日期。`)
 })
 $("importVocab").onchange=e=>readJSON(e.target.files[0],x=>{
-  let arr=Array.isArray(x)?x:(x.cards||x.vocabulary||[]);if(!Array.isArray(arr)){alert("词包格式不正确");return}
-  let before=all().length;arr.forEach(s=>{if(!s.term||!s.level)return;let k=id(s),ex=db.cards[k];db.cards[k]=mergeContent(ex,{...s,contentId:k})});save();updateHome();alert("导入完成：新增 "+(all().length-before)+" 个词；重复词已合并且保留旧进度。")
+  let arr=Array.isArray(x)?x:(x.cards||x.vocabulary||[]);if(!Array.isArray(arr)){alert("词包格式不正确");return}snapshotRollback("before-vocab-import");
+  let before=all().length,updated=0,nowISO=new Date().toISOString(),batch="import-"+nowISO;
+  arr.forEach(s=>{if(!s.term||!s.level)return;let k=id(s),ex=db.cards[k],incoming={...s,contentId:k};if(!ex){incoming.addedAt=incoming.addedAt||nowISO;incoming.importBatch=incoming.importBatch||batch}else updated++;db.cards[k]=mergeContent(ex,incoming)});
+  save();updateHome();alert(`导入完成：新增 ${all().length-before} 个，更新 ${updated} 个。重复词只更新学习内容，原有测试进度与首次学习状态全部保留。`)
 })
+$("undoLastImport").onclick=()=>{let x=null;try{x=JSON.parse(localStorage.getItem(ROLLBACK_KEY)||"null")}catch(e){}if(!x||!x.db){alert("没有可撤销的最近一次导入 / 恢复。 ");return}if(!confirm("恢复到最近一次导入 / 恢复之前的词库状态？"))return;const current={db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")};db=normalizeDB(x.db);save();if(x.session)localStorage.setItem(SESSION_KEY,JSON.stringify(x.session));else localStorage.removeItem(SESSION_KEY);if(x.introSession)localStorage.setItem(INTRO_SESSION_KEY,JSON.stringify(x.introSession));else localStorage.removeItem(INTRO_SESSION_KEY);if(x.browserState)localStorage.setItem(BROWSER_STATE_KEY,JSON.stringify(x.browserState));localStorage.setItem(ROLLBACK_KEY,JSON.stringify({format:"TRKI-C1-VOCAB-ROLLBACK",version:1,reason:"undo-swap",savedAt:Date.now(),...current}));updateHome();renderResume();renderIntroResume();alert(`已恢复：当前 ${all().length} 个词。`)}
 
-
-load();updateHome();renderResume();
+load();updateHome();renderResume();renderIntroResume();
 [0,80,250,700,1400,2200].forEach(ms=>setTimeout(resetInitialScroll,ms));
 window.addEventListener("pageshow",()=>[0,120,500,1200].forEach(ms=>setTimeout(resetInitialScroll,ms)));
 </script></body></html>
