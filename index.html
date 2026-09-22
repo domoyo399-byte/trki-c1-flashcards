@@ -117,7 +117,7 @@ details.fold>.panel{
 <select id="introCap" style="max-width:150px">
 <option value="10">10</option><option value="20" selected>20</option><option value="30">30</option><option value="99999">全部</option>
 </select></div>
-<div class="muted" style="margin-top:9px">这一步不测试、不评分。先看词条，再翻面学习释义、搭配、构词、前缀/后缀、同根和有价值的词源信息。完成首次学习后，该词才会进入“新词测试”候选。</div>
+<div class="muted" style="margin-top:9px">这一步不测试、不评分。动词优先显示未完成体/完成体；变位有明显特殊点时显示 я / ты / они。学习页再看搭配、构词、前缀/后缀、同根和有价值的词源。完成首次学习后，该词才会进入“新词测试”候选。</div>
 <button class="primary" id="startIntro" style="margin-top:12px">开始首次学习</button>
 <button id="continueIntro" class="hidden" style="margin-top:8px">继续上次首次学习</button>
 </div>
@@ -315,7 +315,9 @@ function normalizeCard(c){
 }
 function mergeContent(existing,incoming){
   const progressKeys=["status","streak","lapses","seen","lastReviewed","nextDue","lastWrong","errors","history","acceptedAnswers","acceptedGovAnswers","firstStudyAt","addedAt","importBatch"];
-  const out={...incoming};if(existing){for(const k of progressKeys)if(existing[k]!==undefined)out[k]=existing[k]}
+  // v6.1: 内容补充包可以只带 study / conjugation 等字段；未提供的旧内容不会被抹掉。
+  const out=existing?{...existing,...incoming}:{...incoming};
+  if(existing){for(const k of progressKeys)if(existing[k]!==undefined)out[k]=existing[k]}
   return normalizeCard(out)
 }
 function normalizeDB(obj){
@@ -507,13 +509,55 @@ function testDetailHTML(c,type="general"){
   if(type==="conj"&&c.conjugation&&c.conjugation.note)out+=`${out?"<br>":""}<span class="muted">${esc(c.conjugation.note)}</span>`;
   return out||'<span class="muted">本题只保留核心释义，不展开构词与词源。</span>'
 }
+function aspectFromLegacy(c){
+  const t=(c.term||"").trim(), e=(c.extra||"");
+  const parts=t.split(/\s*\/\s*/).map(x=>x.trim()).filter(Boolean);
+  if(parts.length===2 && /нсв\.\s*\/\s*св\./i.test(e))return {aspect:"体对",pair:`${parts[0]}（нсв.） — ${parts[1]}（св.）`};
+  let m=e.match(/НВ\s*:\s*([^；;。]+)/i);if(m)return {aspect:"св.",pair:`${m[1].trim()}（нсв.） — ${t.replace(/\s+\+.*$/,"")}（св.）`};
+  m=e.match(/СВ\s*:\s*([^；;。]+)/i);if(m)return {aspect:"нсв.",pair:`${t.replace(/\s+\+.*$/,"")}（нсв.） — ${m[1].trim()}（св.）`};
+  if(/\bнсв\b/i.test(e)&&!/\/\s*св/i.test(e))return {aspect:"нсв.",pair:""};
+  if(/\bсв\b/i.test(e)&&!/нсв\s*\//i.test(e))return {aspect:"св.",pair:""};
+  return null
+}
+function structuredStudyHTML(c){
+  const s=c.study||c.learning||null;if(!s)return "";
+  let out="";
+  if(s.pos)out+=`<div class="study-section"><div class="study-label">词性</div><div class="study-value">${esc(s.pos)}</div></div>`;
+  if(s.aspect||s.aspectPair){
+    let v=[s.aspect?`体：${esc(s.aspect)}`:"",s.aspectPair?`体对：${esc(s.aspectPair)}`:""].filter(Boolean).join("<br>");
+    out+=`<div class="study-section"><div class="study-label">动词体 / 体对</div><div class="study-value">${v}</div></div>`
+  }
+  if(s.formation)out+=`<div class="study-section"><div class="study-label">构词</div><div class="study-value">${esc(s.formation)}</div></div>`;
+  for(const p of (s.prefixes||[])){
+    let v=`<b>${esc(p.form||"")}</b>${p.roleHere?`：${esc(p.roleHere)}`:""}`;
+    if(p.commonMeaning)v+=`<br><span class="muted">常见可迁移意义：${esc(p.commonMeaning)}</span>`;
+    if(p.examples&&p.examples.length)v+=`<br><span class="muted">同类例子：${p.examples.map(esc).join("；")}</span>`;
+    out+=`<div class="study-section"><div class="study-label">前缀</div><div class="study-value">${v}</div></div>`
+  }
+  for(const p of (s.suffixes||[])){
+    let v=`<b>${esc(p.form||"")}</b>${p.roleHere?`：${esc(p.roleHere)}`:""}`;
+    if(p.commonFunction)v+=`<br><span class="muted">常见功能：${esc(p.commonFunction)}</span>`;
+    if(p.examples&&p.examples.length)v+=`<br><span class="muted">同构例子：${p.examples.map(esc).join("；")}</span>`;
+    out+=`<div class="study-section"><div class="study-label">后缀</div><div class="study-value">${v}</div></div>`
+  }
+  if(s.postfix)out+=`<div class="study-section"><div class="study-label">后置词缀</div><div class="study-value">${esc(s.postfix)}</div></div>`;
+  if(s.family&&s.family.length)out+=`<div class="study-section"><div class="study-label">同根 / 词族</div><div class="study-value">${s.family.map(esc).join("；")}</div></div>`;
+  if(s.etymology)out+=`<div class="study-section"><div class="study-label">词源</div><div class="study-value">${esc(s.etymology)}</div></div>`;
+  if(s.note)out+=`<div class="study-section"><div class="study-label">学习提示</div><div class="study-value">${esc(s.note)}</div></div>`;
+  return out
+}
 function introDetailHTML(c){
   let out="";
+  const legacyAspect=aspectFromLegacy(c), hasStructured=!!(c.study||c.learning);
+  if(!hasStructured&&legacyAspect){
+    out+=`<div class="study-section"><div class="study-label">动词体 / 体对</div><div class="study-value">${legacyAspect.aspect?`体：${esc(legacyAspect.aspect)}`:""}${legacyAspect.pair?`<br>体对：${esc(legacyAspect.pair)}`:""}</div></div>`
+  }
+  out+=structuredStudyHTML(c);
   if(c.extra)out+=`<div class="study-section"><div class="study-label">搭配 / 支配 / 用法</div><div class="study-value">${esc(c.extra)}</div></div>`;
   if(c.backNote)out+=labeledBackNoteHTML(c.backNote);
-  else out+=`<div class="study-section"><div class="study-label">构词学习信息</div><div class="study-value muted">这张旧词卡暂时没有增强构词说明。以后用新版同步包重新导入该词条后，这里会自动显示前缀、后缀、同根、词源等可用信息。</div></div>`;
   if(c.conjugation){const x=c.conjugation;out+=`<div class="study-section"><div class="study-label">特殊变位</div><div class="study-value">${esc(x.lemma)}：я ${esc(x["я"])} · ты ${esc(x["ты"])} · они ${esc(x["они"])}${x.note?`<br><span class="muted">${esc(x.note)}</span>`:""}</div></div>`}
-  return out||"—"
+  if(!out)out=`<div class="muted" style="padding:8px 2px">这张旧卡目前只有基础释义。可以之后用“旧词内容补充包”无损增加构词、体对或特殊变位，不会影响测试进度。</div>`;
+  return out
 }
 
 
@@ -816,7 +860,7 @@ function renderBrowser(){
 // Import / export
 function download(name,text){let a=document.createElement("a"),u=URL.createObjectURL(new Blob([text],{type:"application/json;charset=utf-8"}));a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),800)}
 function snapshotRollback(reason){try{localStorage.setItem(ROLLBACK_KEY,JSON.stringify({format:"TRKI-C1-VOCAB-ROLLBACK",version:1,reason,savedAt:Date.now(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")}))}catch(e){}}
-$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:6.0,exportedAt:new Date().toISOString(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")},null,2))
+$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:6.1,exportedAt:new Date().toISOString(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")},null,2))
 function readJSON(file,cb){if(!file)return;let r=new FileReader();r.onload=()=>{try{cb(JSON.parse(r.result))}catch(e){alert("JSON 读取失败："+e.message)}};r.readAsText(file)}
 $("importBackup").onchange=e=>readJSON(e.target.files[0],x=>{
   let obj=x&&x.db?x.db:x;if(!obj||!obj.cards){alert("不是有效备份");return}snapshotRollback("before-backup-restore");db=normalizeDB(obj);rolloverDay();save();
@@ -827,7 +871,7 @@ $("importVocab").onchange=e=>readJSON(e.target.files[0],x=>{
   let arr=Array.isArray(x)?x:(x.cards||x.vocabulary||[]);if(!Array.isArray(arr)){alert("词包格式不正确");return}snapshotRollback("before-vocab-import");
   let before=all().length,updated=0,nowISO=new Date().toISOString(),batch="import-"+nowISO;
   arr.forEach(s=>{if(!s.term||!s.level)return;let k=id(s),ex=db.cards[k],incoming={...s,contentId:k};if(!ex){incoming.addedAt=incoming.addedAt||nowISO;incoming.importBatch=incoming.importBatch||batch}else updated++;db.cards[k]=mergeContent(ex,incoming)});
-  save();updateHome();alert(`导入完成：新增 ${all().length-before} 个，更新 ${updated} 个。重复词只更新学习内容，原有测试进度与首次学习状态全部保留。`)
+  save();updateHome();alert(`导入完成：新增 ${all().length-before} 个，更新 ${updated} 个。重复词只补充/更新学习内容，未提供的旧内容不会被清空；原有测试进度与首次学习状态全部保留。`)
 })
 $("undoLastImport").onclick=()=>{let x=null;try{x=JSON.parse(localStorage.getItem(ROLLBACK_KEY)||"null")}catch(e){}if(!x||!x.db){alert("没有可撤销的最近一次导入 / 恢复。 ");return}if(!confirm("恢复到最近一次导入 / 恢复之前的词库状态？"))return;const current={db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")};db=normalizeDB(x.db);save();if(x.session)localStorage.setItem(SESSION_KEY,JSON.stringify(x.session));else localStorage.removeItem(SESSION_KEY);if(x.introSession)localStorage.setItem(INTRO_SESSION_KEY,JSON.stringify(x.introSession));else localStorage.removeItem(INTRO_SESSION_KEY);if(x.browserState)localStorage.setItem(BROWSER_STATE_KEY,JSON.stringify(x.browserState));localStorage.setItem(ROLLBACK_KEY,JSON.stringify({format:"TRKI-C1-VOCAB-ROLLBACK",version:1,reason:"undo-swap",savedAt:Date.now(),...current}));updateHome();renderResume();renderIntroResume();alert(`已恢复：当前 ${all().length} 个词。`)}
 
