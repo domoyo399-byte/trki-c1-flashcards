@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>ТРКИ-C1 智能词汇学习 v6.3.1</title>
+<title>ТРКИ-C1 智能词汇学习 v6.3.2</title>
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
@@ -64,6 +64,13 @@ details.fold>.panel{
 }
 .hub-home-link:active{transform:scale(.98)}
 
+
+.feedback .conj-correct{line-height:1.6}
+.feedback .conj-correct .ru{font-size:20px;font-weight:700}
+.feedback .person-inline{font-weight:700}
+.feedback .sep{margin:0 5px;color:var(--m)}
+@media(max-width:560px){.feedback .conj-correct .ru{font-size:19px}.feedback .sep{margin:0 3px}}
+
 </style>
 </head>
 <body>
@@ -72,7 +79,7 @@ details.fold>.panel{
 <div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
-<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.3.1</span></h1>
+<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.3.2</span></h1>
 <div class="sub">A 类主动输出 · R 类快速识别 · G 类额外检查格支配/搭配。学习页与测试页完全分开：学习页看完整构词/前缀/后缀/同根/词源；测试页只保留题目、核心释义和必要的一条用法提示。新词先经过“不评分的首次学习轮”，再进入 SRS 测试。</div>
 
 <div class="panel">
@@ -282,7 +289,7 @@ function applyBuiltinEnrichment(){
 }
 
 let db={cards:{},settings:{newCap:20,conjugationQuiz:true,dailyFreeze:true},day:null};
-let queue=[],qi=0,mode="today",answered=false,pendingCorrectMC=false;
+let queue=[],qi=0,mode="today",answered=false,pendingCorrectMC=false,currentQuestionType="";
 let browserDeck=[],bi=0,browserFilter="all",browserSort="original",browserSwipeX=null,browserSwipeY=null,browserSwiped=false;
 let introQueue=[],introI=0;
 
@@ -563,9 +570,21 @@ function qType(c){
   return "typing"
 }
 function testDetailHTML(c,type="general"){
-  const usage=compactUsage(c,type);let out="";
+  let out="";
+  if(type==="conj"&&c.conjugation){
+    const x=c.conjugation;
+    out+=`<div class="conj-correct"><b>正确变位：</b><br>
+      <span class="person-inline">я</span> <span class="ru">${esc(x["я"])}</span>
+      <span class="sep">·</span>
+      <span class="person-inline">ты</span> <span class="ru">${esc(x["ты"])}</span>
+      <span class="sep">·</span>
+      <span class="person-inline">они</span> <span class="ru">${esc(x["они"])}</span>
+    </div>`;
+    if(x.note)out+=`<div class="muted" style="margin-top:5px">${esc(x.note)}</div>`;
+    return out
+  }
+  const usage=compactUsage(c,type);
   if(usage)out+=`<b>${type==="gov"?"支配 / 固定搭配":"核心用法"}：</b>${esc(usage)}`;
-  if(type==="conj"&&c.conjugation&&c.conjugation.note)out+=`${out?"<br>":""}<span class="muted">${esc(c.conjugation.note)}</span>`;
   return out||'<span class="muted">本题只保留核心释义，不展开构词与词源。</span>'
 }
 function aspectFromLegacy(c){
@@ -751,7 +770,7 @@ function showQ(){
   const c=db.cards[queue[qi]];if(!c){qi++;showQ();return}
   $("qCount").textContent=`${qi+1} / ${queue.length}`;$("prog").style.width=`${(qi/Math.max(1,queue.length))*100}%`;
   $("tag").textContent=`${c.level}${c.g?" · G":""}`;$("answer").innerHTML="";
-  const type=qType(c);
+  const type=qType(c);currentQuestionType=type;
   if(type==="mc"){
     $("qKind").textContent="俄语 → 中文 · 选择";$("prompt").innerHTML=`<span class="ru">${c.term}</span>`;
     let opts=[coreMeaning(c),...distractors(c)].sort(()=>Math.random()-.5),box=document.createElement("div");box.className="choices";
@@ -792,20 +811,20 @@ function mark(c,grade,errorType){
   if(mode==="today")db.day.qi=Math.min((db.day.qi||0)+1,db.day.queue.length);
   save()
 }
-function showFeedback(c,cls,title){
-  let f=$("feedback"),type=qType(c),m=coreMeaning(c);
+function showFeedback(c,cls,title,typeOverride){
+  let f=$("feedback"),type=typeOverride||currentQuestionType||qType(c),m=coreMeaning(c);
   f.className="feedback "+cls;
   f.innerHTML=`${title}<br><b>正确答案：</b><span class="ru">${esc(c.term)}</span> — ${esc(m)}<div class="backdetails">${testDetailHTML(c,type)}</div>`
 }
 function after(c){answered=true;$("dontKnow").classList.add("hidden");$("next").classList.remove("hidden");save();persistSession(qi+1)}
 function gradeMC(c,o){
   if(answered)return;
-  if(o!==coreMeaning(c)){mark(c,"wrong","meaning");showFeedback(c,"bad","❌ 错误");after(c);return}
-  pendingCorrectMC=true;showFeedback(c,"ok","✅ 选对了。若是蒙的/不稳，请点下面“模糊 / 蒙的”。");
+  if(o!==coreMeaning(c)){mark(c,"wrong","meaning");showFeedback(c,"bad","❌ 错误","mc");after(c);return}
+  pendingCorrectMC=true;showFeedback(c,"ok","✅ 选对了。若是蒙的/不稳，请点下面“模糊 / 蒙的”。","mc");
   $("dontKnow").classList.add("hidden");$("fuzzyBtn").classList.remove("hidden");$("next").classList.remove("hidden");
 }
 $("fuzzyBtn").onclick=()=>{
-  if(!pendingCorrectMC)return;const c=db.cards[queue[qi]];mark(c,"fuzzy","meaning");pendingCorrectMC=false;showFeedback(c,"mid","△ 记为模糊 / 蒙对");$("fuzzyBtn").classList.add("hidden");after(c)
+  if(!pendingCorrectMC)return;const c=db.cards[queue[qi]];mark(c,"fuzzy","meaning");pendingCorrectMC=false;showFeedback(c,"mid","△ 记为模糊 / 蒙对","mc");$("fuzzyBtn").classList.add("hidden");after(c)
 }
 $("next").onclick=()=>{
   if(pendingCorrectMC){const c=db.cards[queue[qi]];mark(c,"correct",null);pendingCorrectMC=false}
@@ -835,7 +854,7 @@ function offerManualJudgement(c,v,type,errorType){
   };
   $("judgeWrong").onclick=()=>{
     mark(c,"wrong",errorType);
-    showFeedback(c,"bad","❌ 需要复习");
+    showFeedback(c,"bad","❌ 需要复习",type);
     after(c)
   }
 }
@@ -852,7 +871,7 @@ function gradeText(c,v,type){
     if(type==="typing"&&matched&&norm(matched)!==norm(baseTarget(c))){
       title="✅ 词汇召回正确；你用了可接受的对应体 / 变体";
     }
-    showFeedback(c,"ok",title);after(c);return
+    showFeedback(c,"ok",title,type);after(c);return
   }
   // 静态网页无法穷尽所有合法俄语变体：不立即把“不一致”硬判错，交给用户确认。
   offerManualJudgement(c,v,type,errorType)
@@ -860,9 +879,17 @@ function gradeText(c,v,type){
 function gradeConj(c,inputs){
   if(answered)return;const x=c.conjugation;
   let ok=["я","ты","они"].every(p=>norm(inputs[p].value)===norm(x[p]));
-  mark(c,ok?"correct":"wrong",ok?null:"conjugation");showFeedback(c,ok?"ok":"bad",ok?"✅ 变位正确":"❌ 变位需要复习");after(c)
+  mark(c,ok?"correct":"wrong",ok?null:"conjugation");showFeedback(c,ok?"ok":"bad",ok?"✅ 变位正确":"❌ 变位需要复习","conj");after(c)
 }
-$("dontKnow").onclick=()=>{if(answered)return;const c=db.cards[queue[qi]];mark(c,"wrong","recall");showFeedback(c,"bad","❌ 标记为不认识 / 想不起来");after(c)}
+$("dontKnow").onclick=()=>{
+  if(answered)return;
+  const c=db.cards[queue[qi]],type=currentQuestionType||qType(c);
+  const errorType=type==="conj"?"conjugation":type==="gov"?"governance":type==="mc"?"meaning":"recall";
+  mark(c,"wrong",errorType);
+  const title=type==="conj"?"❌ 想不起变位，已显示正确形式":"❌ 标记为不认识 / 想不起来";
+  showFeedback(c,"bad",title,type);
+  after(c)
+}
 function finish(){
   clearSession();
   alert("本轮完成。今天的新词批次不会自动追加；想继续可以复习今天或已学旧词。");
