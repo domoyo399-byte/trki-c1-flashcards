@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>ТРКИ-C1 智能词汇学习 v6.3.3</title>
+<title>ТРКИ-C1 智能词汇学习 v6.4</title>
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
@@ -79,6 +79,25 @@ details.fold>.panel{
 .accepted-row button{padding:5px 8px;font-size:12px;white-space:nowrap}
 .undo-accept{width:100%;margin-top:10px;font-weight:800}
 
+
+.lookup-panel{border:1px solid var(--l);background:var(--p);border-radius:18px;padding:14px;margin-top:10px}
+.lookup-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
+.lookup-row input{min-width:0}
+.lookup-note{font-size:12px;color:var(--m);line-height:1.6;margin-top:8px}
+.lookup-head{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px}
+.lookup-head input{min-width:0}
+.full-study{margin-top:14px;text-align:left}
+.copy-study{width:100%;margin-top:12px}
+.copy-status{font-size:12px;color:var(--m);text-align:center;margin-top:7px;min-height:18px}
+.browser-back .study-section{margin-top:10px}
+.browser-back .study-label{font-weight:800;font-size:12px;color:var(--m);margin-bottom:4px}
+.browser-back .study-value{line-height:1.65}
+.browser-back{max-height:none}
+@media(max-width:560px){
+  .lookup-row,.lookup-head{grid-template-columns:1fr}
+  .intro-actions{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -87,7 +106,7 @@ details.fold>.panel{
 <div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
-<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.3.3</span></h1>
+<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.4</span></h1>
 <div class="sub">A 类主动输出 · R 类快速识别 · G 类额外检查格支配/搭配。学习页与测试页完全分开：学习页看完整构词/前缀/后缀/同根/词源；测试页只保留题目、核心释义和必要的一条用法提示。新词先经过“不评分的首次学习轮”，再进入 SRS 测试。</div>
 
 <div class="panel">
@@ -127,6 +146,18 @@ details.fold>.panel{
 <div class="muted" id="capNote" style="margin-top:8px"></div>
 </div>
 
+
+<div class="zone-title">🔎 查词 / 复习</div>
+<div class="panel">
+<h3>词库查词</h3>
+<div class="muted">可用中文或俄语搜索整个词库，包括已经学过和还没首次学习的词。打开后能看到与“首次学习页”相同的完整学习信息，并可复制整张词卡到对话框继续学习。</div>
+<div class="lookup-row">
+<input id="homeLookupInput" placeholder="输入中文或俄语，如：有效 / эффе́кт / эффективность" autocomplete="off">
+<button id="homeLookupBtn" class="primary">查词</button>
+</div>
+<button id="homeLookupAll" style="width:100%;margin-top:8px">打开全部词库 / 复习旧词</button>
+</div>
+
 <div class="zone-title">📖 学习区</div>
 <div class="panel" id="introPanel">
 <h3>📖 首次学习轮</h3>
@@ -158,12 +189,12 @@ details.fold>.panel{
 
 <details class="fold">
 <summary>
-  <span>词卡浏览</span>
+  <span>词库浏览 / 查词</span>
   <span class="fold-note">需要时展开</span>
 </summary>
 <div class="panel">
-<div class="muted">这里是快速浏览，不等于学习页：只显示词义、一个核心用法和学习状态。支持左右滑动、筛选、排序、进度滑条与跳转；完整构词信息只在“首次学习轮”里出现。</div>
-<button id="openBrowser" style="margin-top:10px">打开词卡浏览</button>
+<div class="muted">这里既可以浏览全部词卡，也可以查词和复习旧词。翻到反面后会显示与首次学习页相同的完整学习信息，包括体对、搭配、构词、前后缀、同根词、词源和特殊变位（词卡有数据时）。</div>
+<button id="openBrowser" style="margin-top:10px">打开词库浏览 / 查词</button>
 </div>
 </details>
 
@@ -201,6 +232,7 @@ details.fold>.panel{
     <div class="intro-meaning" id="introMeaning"></div>
     <div id="introDetails"></div>
     <div class="intro-actions">
+      <button id="introLookup">🔎 查词 / 看旧词</button>
       <button id="introAsk">💬 复制当前词提问包</button>
       <button class="primary" id="introDone">看完本词 →</button>
     </div>
@@ -226,7 +258,11 @@ details.fold>.panel{
 </section>
 
 <section id="browser">
-<div class="topline"><span id="bCount"></span><span>左右滑动切卡 · 点卡片翻面</span></div>
+<div class="topline"><span id="bCount"></span><span>查词 / 复习详情 · 点卡片翻面</span></div>
+<div class="lookup-head">
+<input id="bSearch" placeholder="中文 / 俄语查词；可搜词义、搭配、同根、构词" autocomplete="off">
+<button id="bSearchClear">清空</button>
+</div>
 <div class="browser-tools">
 <select id="bFilter" aria-label="词卡筛选">
 <option value="all">全部</option>
@@ -255,7 +291,16 @@ details.fold>.panel{
 <div id="browserMain">
 <div class="browser-card" id="browserCard">
 <div class="browser-front"><div class="badges" id="bBadges"></div><div class="browser-term" id="bTerm"></div></div>
-<div class="browser-back"><div class="badges" id="bBadges2"></div><div class="browser-meaning" id="bMeaning"></div><div class="compact-line" id="bCompact"></div><div class="browser-meta" id="bMeta"></div><div id="bAccepted"></div></div>
+<div class="browser-back">
+<div class="badges" id="bBadges2"></div>
+<div class="browser-term" id="bTerm2" style="font-size:28px;margin-bottom:8px"></div>
+<div class="browser-meaning" id="bMeaning"></div>
+<div class="full-study" id="bStudyDetails"></div>
+<div class="browser-meta" id="bMeta"></div>
+<button id="bCopyPack" class="copy-study">💬 复制完整词卡学习包</button>
+<div id="bCopyStatus" class="copy-status"></div>
+<div id="bAccepted"></div>
+</div>
 </div>
 <div class="browsernav"><button id="bPrev">← 上一张</button><button id="bNext">下一张 →</button></div>
 </div>
@@ -298,7 +343,7 @@ function applyBuiltinEnrichment(){
 
 let db={cards:{},settings:{newCap:20,conjugationQuiz:true,dailyFreeze:true},day:null};
 let queue=[],qi=0,mode="today",answered=false,pendingCorrectMC=false,currentQuestionType="";
-let browserDeck=[],bi=0,browserFilter="all",browserSort="original",browserSwipeX=null,browserSwipeY=null,browserSwiped=false;
+let browserDeck=[],bi=0,browserFilter="all",browserSort="original",browserQuery="",browserReturnTarget="home",browserSwipeX=null,browserSwipeY=null,browserSwiped=false;
 let introQueue=[],introI=0;
 
 const $=id=>document.getElementById(id);
@@ -698,10 +743,25 @@ async function copyText(text){
     try{const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.focus();ta.select();const ok=document.execCommand("copy");ta.remove();return ok}catch(_){return false}
   }
 }
+
+function learningPackageText(c){
+  const lines=[
+    `我正在学习/复习俄语 C1 词卡：${c.term}`,
+    `等级：${c.level}${c.g?" + G":""}`,
+    `核心义：${c.meaning||""}`,
+    c.extra?`核心用法/支配：${c.extra}`:"",
+    c.study?`结构化学习信息：\n${JSON.stringify(c.study,null,2)}`:"",
+    c.backNote?`补充学习备注：${c.backNote}`:"",
+    c.conjugation?`特殊变位：${c.conjugation.lemma}；я ${c.conjugation["я"]}；ты ${c.conjugation["ты"]}；они ${c.conjugation["они"]}${c.conjugation.note?`；注意：${c.conjugation.note}`:""}`:"",
+    `请基于这张词卡回答我接下来关于词义辨析、构词、前缀/后缀、同根词、体、变位、搭配或用法的问题。不要把它当成测试。`
+  ];
+  return lines.filter(Boolean).join("\n")
+}
+
 $("introAsk").onclick=async()=>{
   const c=db.cards[introQueue[introI]];if(!c)return;
-  const msg=[`我正在首次学习俄语 C1 单词：${c.term}`,`词义：${c.meaning}`,c.extra?`词卡用法/支配：${c.extra}`:"",c.backNote?`词卡构词/学习提示：${c.backNote}`:"",c.conjugation?`词卡变位：${c.conjugation.lemma}；я ${c.conjugation["я"]}；ты ${c.conjugation["ты"]}；они ${c.conjugation["они"]}`:"",`请基于这张词卡回答我接下来关于构词、前缀/后缀、同根词、词源、搭配或用法的问题；这不是测试。`].filter(Boolean).join("\n");
-  const ok=await copyText(msg);$("introCopyStatus").textContent=ok?"已复制。回到 ChatGPT 直接粘贴后继续问我就可以。":"复制失败，请长按手动复制当前词条。"
+  const ok=await copyText(learningPackageText(c));
+  $("introCopyStatus").textContent=ok?"已复制完整词卡。回到 ChatGPT 直接粘贴后继续问我就可以。":"复制失败，请长按手动复制当前词条。"
 };
 
 function savedSession(){
@@ -940,10 +1000,39 @@ $("resetToday").onclick=()=>{
 }
 
 // Browser
-function loadBrowserState(){try{const x=JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null");if(x){browserFilter=x.filter||"all";browserSort=x.sort||"original";return x}}catch(e){}return {}}
-function saveBrowserState(){const c=browserDeck[bi];localStorage.setItem(BROWSER_STATE_KEY,JSON.stringify({filter:browserFilter,sort:browserSort,currentId:c?id(c):null,savedAt:Date.now()}))}
+function loadBrowserState(){
+  try{
+    const x=JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null");
+    if(x){
+      browserFilter=x.filter||"all";
+      browserSort=x.sort||"original";
+      browserQuery=x.query||"";
+      return x
+    }
+  }catch(e){}
+  return {}
+}
+function saveBrowserState(){
+  const c=browserDeck[bi];
+  localStorage.setItem(BROWSER_STATE_KEY,JSON.stringify({
+    filter:browserFilter,sort:browserSort,query:browserQuery,currentId:c?id(c):null,savedAt:Date.now()
+  }))
+}
+function searchNorm(s){return stripMarks(String(s||"")).toLowerCase().replace(/ё/g,"е").replace(/\s+/g," ").trim()}
+function cardSearchHaystack(c){
+  return searchNorm([
+    c.term,c.meaning,c.extra,c.backNote,
+    c.study?JSON.stringify(c.study):"",
+    c.conjugation?JSON.stringify(c.conjugation):""
+  ].filter(Boolean).join(" "))
+}
+function matchesBrowserQuery(c){
+  const q=searchNorm(browserQuery);
+  if(!q)return true;
+  return cardSearchHaystack(c).includes(q)
+}
 function browserFiltered(){
-  let arr=all().slice();
+  let arr=all().slice().filter(matchesBrowserQuery);
   if(browserFilter==="recent")arr=arr.filter(c=>withinDays(c.addedAt,7));
   else if(browserFilter==="unlearned")arr=arr.filter(c=>!hasInitialStudy(c));
   else if(browserFilter==="consolidating")arr=arr.filter(isConsolidating);
@@ -961,8 +1050,44 @@ function browserFiltered(){
 function rebuildBrowser(preferId=null){
   browserDeck=browserFiltered();let idx=preferId?browserDeck.findIndex(c=>id(c)===preferId):-1;bi=idx>=0?idx:Math.min(bi,Math.max(0,browserDeck.length-1));renderBrowser()
 }
-$("openBrowser").onclick=()=>{const st=loadBrowserState();$("bFilter").value=browserFilter;$("bSort").value=browserSort;$("home").style.display="none";$("intro").style.display="none";$("test").style.display="none";$("browser").style.display="block";rebuildBrowser(st.currentId||null)}
-$("closeBrowser").onclick=()=>{saveBrowserState();$("browser").style.display="none";$("home").style.display="block";updateHome()}
+function openBrowserView(opts={}){
+  const st=loadBrowserState();
+  browserReturnTarget=opts.returnTarget||"home";
+  if(opts.query!==undefined)browserQuery=opts.query;
+  $("bFilter").value=browserFilter;
+  $("bSort").value=browserSort;
+  $("bSearch").value=browserQuery;
+  $("home").style.display="none";$("intro").style.display="none";$("test").style.display="none";$("browser").style.display="block";
+  $("closeBrowser").textContent=browserReturnTarget==="intro"?"返回首次学习":"返回首页";
+  rebuildBrowser(opts.preferId||st.currentId||null);
+  setTimeout(()=>$("bSearch").focus(),100)
+}
+$("openBrowser").onclick=()=>openBrowserView({returnTarget:"home"});
+$("homeLookupAll").onclick=()=>{browserQuery="";openBrowserView({returnTarget:"home",query:""})};
+$("homeLookupBtn").onclick=()=>openBrowserView({returnTarget:"home",query:$("homeLookupInput").value||""});
+$("homeLookupInput").onkeydown=e=>{if(e.key==="Enter")$("homeLookupBtn").click()};
+$("introLookup").onclick=()=>{
+  saveIntroSession();
+  const c=db.cards[introQueue[introI]];
+  openBrowserView({returnTarget:"intro",query:"",preferId:c?id(c):null})
+};
+$("closeBrowser").onclick=()=>{
+  saveBrowserState();$("browser").style.display="none";
+  if(browserReturnTarget==="intro"&&introQueue.length&&introI<introQueue.length){
+    $("intro").style.display="block";renderIntro()
+  }else{
+    $("home").style.display="block";updateHome()
+  }
+}
+
+$("bSearch").oninput=()=>{
+  browserQuery=$("bSearch").value||"";
+  bi=0;rebuildBrowser();saveBrowserState()
+};
+$("bSearchClear").onclick=()=>{
+  browserQuery="";$("bSearch").value="";bi=0;rebuildBrowser();saveBrowserState();$("bSearch").focus()
+};
+
 $("bFilter").onchange=()=>{const cur=browserDeck[bi];browserFilter=$("bFilter").value;bi=0;rebuildBrowser(cur?id(cur):null);saveBrowserState()}
 $("bSort").onchange=()=>{const cur=browserDeck[bi];browserSort=$("bSort").value;rebuildBrowser(cur?id(cur):null);saveBrowserState()}
 function browserMove(delta){if(!browserDeck.length)return;bi=Math.max(0,Math.min(browserDeck.length-1,bi+delta));renderBrowser();saveBrowserState()}
@@ -972,13 +1097,15 @@ $("bGo").onclick=()=>{if(!browserDeck.length)return;let n=Number($("bJump").valu
 $("bJump").onkeydown=e=>{if(e.key==="Enter")$("bGo").click()};
 $("browserCard").addEventListener("touchstart",e=>{const t=e.changedTouches&&e.changedTouches[0];if(!t)return;browserSwipeX=t.clientX;browserSwipeY=t.clientY;browserSwiped=false},{passive:true});
 $("browserCard").addEventListener("touchend",e=>{const t=e.changedTouches&&e.changedTouches[0];if(!t||browserSwipeX===null)return;const dx=t.clientX-browserSwipeX,dy=t.clientY-browserSwipeY;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.2){browserSwiped=true;browserMove(dx<0?1:-1);setTimeout(()=>browserSwiped=false,250)}browserSwipeX=browserSwipeY=null},{passive:true});
-$("browserCard").onclick=e=>{if(browserSwiped)return;if(e.target.closest&&e.target.closest("#bAccepted"))return;$("browserCard").classList.toggle("flipped")};
+$("browserCard").onclick=e=>{if(browserSwiped)return;if(e.target.closest&&e.target.closest("#bAccepted, #bCopyPack"))return;$("browserCard").classList.toggle("flipped")};
 function renderBrowser(){
   const empty=!browserDeck.length;$("browserEmpty").classList.toggle("hidden",!empty);$("browserMain").classList.toggle("hidden",empty);$("bSlider").disabled=empty;$("bJump").disabled=empty;$("bGo").disabled=empty;
   if(empty){$("bCount").textContent="0 / 0";$("bSlider").min=1;$("bSlider").max=1;$("bSlider").value=1;$("bJump").value=1;return}
   const c=browserDeck[bi];$("browserCard").classList.remove("flipped");$("bCount").textContent=`${bi+1} / ${browserDeck.length}`;$("bSlider").min=1;$("bSlider").max=browserDeck.length;$("bSlider").value=bi+1;$("bJump").min=1;$("bJump").max=browserDeck.length;$("bJump").value=bi+1;
-  const badges=`<span class="badge">${esc(c.level)}</span>${c.g?'<span class="badge">G</span>':""}<span class="badge">${esc(masteryLabel(c))}</span>`;$("bBadges").innerHTML=$("bBadges2").innerHTML=badges;$("bTerm").textContent=c.term;$("bMeaning").textContent=c.meaning;
-  const usage=compactUsage(c);$("bCompact").innerHTML=usage?`<b>核心用法：</b>${esc(usage)}`:'<span class="muted">这张词卡暂无额外核心用法。</span>';
+  const badges=`<span class="badge">${esc(c.level)}</span>${c.g?'<span class="badge">G</span>':""}<span class="badge">${esc(masteryLabel(c))}</span>`;$("bBadges").innerHTML=$("bBadges2").innerHTML=badges;
+  $("bTerm").textContent=c.term;$("bTerm2").textContent=c.term;$("bMeaning").textContent=c.meaning;
+  $("bStudyDetails").innerHTML=introDetailHTML(c)||'<div class="muted">这张词卡目前只有基础释义，还没有额外学习信息。</div>';
+  $("bCopyStatus").textContent="";
   const added=c.addedAt?new Date(c.addedAt).toLocaleDateString():"旧库数据 · 无精确加入日期";$("bMeta").textContent=`${masteryLabel(c)} · 测试 ${c.seen||0} 次 · 连续正确 ${c.streak||0} · 加入：${added}`;
   const custom=[
     ...(Array.isArray(c.acceptedAnswers)?c.acceptedAnswers:[]).map(v=>({v,type:"typing",label:"词汇答案"})),
@@ -1000,10 +1127,18 @@ function renderBrowser(){
   saveBrowserState()
 }
 
+
+$("bCopyPack").onclick=async e=>{
+  e.stopPropagation();
+  const c=browserDeck[bi];if(!c)return;
+  const ok=await copyText(learningPackageText(c));
+  $("bCopyStatus").textContent=ok?"已复制完整词卡，可以回到 ChatGPT 继续学习/提问。":"复制失败，请长按手动复制。"
+};
+
 // Import / export
 function download(name,text){let a=document.createElement("a"),u=URL.createObjectURL(new Blob([text],{type:"application/json;charset=utf-8"}));a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),800)}
 function snapshotRollback(reason){try{localStorage.setItem(ROLLBACK_KEY,JSON.stringify({format:"TRKI-C1-VOCAB-ROLLBACK",version:1,reason,savedAt:Date.now(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")}))}catch(e){}}
-$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:"6.3.3",exportedAt:new Date().toISOString(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")},null,2))
+$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:"6.4",exportedAt:new Date().toISOString(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")},null,2))
 function readJSON(file,cb){if(!file)return;let r=new FileReader();r.onload=()=>{try{cb(JSON.parse(r.result))}catch(e){alert("JSON 读取失败："+e.message)}};r.readAsText(file)}
 $("importBackup").onchange=e=>readJSON(e.target.files[0],x=>{
   let obj=x&&x.db?x.db:x;if(!obj||!obj.cards){alert("不是有效备份");return}snapshotRollback("before-backup-restore");db=normalizeDB(obj);rolloverDay();repairMissingCoreFields();applyBuiltinEnrichment();save();
