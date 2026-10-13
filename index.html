@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>ТРКИ-C1 智能词汇学习 v6.5</title>
+<title>ТРКИ-C1 智能词汇学习 v6.6</title>
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
@@ -131,6 +131,23 @@ details.fold>.panel{
   .quick-card{padding:13px}
 }
 
+
+/* v6.6 mobile scroll performance */
+html,body{scroll-behavior:auto}
+#home,#test,#intro{touch-action:pan-y}
+.qbox,.quick-card,.compact-dashboard,.compact-fold,.lookup-compact{
+  contain:layout paint style;
+}
+.hub-home-link{
+  box-shadow:none!important;
+  transform:translate3d(0,0,0);
+  -webkit-transform:translate3d(0,0,0);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  contain:paint;
+}
+button,input,select{touch-action:manipulation}
+
 </style>
 </head>
 <body>
@@ -139,7 +156,7 @@ details.fold>.panel{
 <div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
-<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.5</span></h1>
+<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.6</span></h1>
 <div class="home-sub-compact">先学习，再测试。查词、看板、设置和备份都保留，但默认收起来，免得每次为了背个词先进行一次网页徒步旅行。</div>
 
 <div class="quick-zone">
@@ -352,6 +369,7 @@ const SEED=[{"term": "диссерта́ция", "level": "A", "g": false, "mean
 const KEY="trki_c1_srs_v5";
 const SESSION_KEY="trki_c1_vocab_session_v1";
 const ACTIVE_TEST_KEY="trki_c1_vocab_active_test_v1";
+const JOURNAL_KEY="trki_c1_vocab_pending_journal_v1";
 const INTRO_SESSION_KEY="trki_c1_vocab_intro_session_v1";
 const BROWSER_STATE_KEY="trki_c1_vocab_browser_state_v2";
 const ROLLBACK_KEY="trki_c1_vocab_rollback_v6";
@@ -430,13 +448,8 @@ function firstHistoryDate(c){
 }
 function reviewedIdsOn(date){return all().filter(c=>historyOnDate(c,date)).map(id)}
 function firstLearnedIdsOn(date){return all().filter(c=>firstHistoryDate(c)===date).map(id)}
-function resetInitialScroll(){
+function setManualScrollRestoration(){
   try{if("scrollRestoration" in history)history.scrollRestoration="manual"}catch(e){}
-  const topEl=document.getElementById("pageTop");
-  if(!topEl)return;
-  topEl.scrollIntoView({block:"start",inline:"nearest",behavior:"auto"});
-  document.documentElement.scrollTop=0;
-  document.body.scrollTop=0;
 }
 
 function normalizeCard(c){
@@ -485,17 +498,51 @@ function repairMissingCoreFields(){
 function findLegacy(){
   try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k===KEY)continue;if(!/trki/i.test(k))continue;try{let x=JSON.parse(localStorage.getItem(k));let obj=x&&x.db?x.db:x;if(obj&&obj.cards&&Object.keys(obj.cards).length>20)return obj}catch(e){}}}catch(e){}return null
 }
-function load(){
-  let saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
-  if(!saved||!saved.cards)saved=findLegacy();
-  if(saved&&saved.cards)db=normalizeDB(saved);
-  else{const cards={};SEED.forEach(c=>{const nc=normalizeCard(c);cards[id(nc)]=nc});db=normalizeDB({cards,settings:{newCap:20},day:null})}
-  rolloverDay();repairTodayFromHistory();repairMissingCoreFields();applyBuiltinEnrichment();save()
-}
 let lastSaveError=null;
+let idleSaveHandle=null;
+let fallbackSaveTimer=null;
+
+function readJournal(){
+  try{return JSON.parse(localStorage.getItem(JOURNAL_KEY)||"null")}catch(e){return null}
+}
+function applyPendingJournal(){
+  const j=readJournal();
+  if(!j)return false;
+  if(j.cards&&typeof j.cards==="object"){
+    for(const [k,v] of Object.entries(j.cards)){
+      if(!v)continue;
+      db.cards[k]=normalizeCard(v)
+    }
+  }
+  if(j.day&&typeof j.day==="object")db.day=j.day;
+  return true
+}
+function writeJournal(c){
+  try{
+    const j=readJournal()||{format:"TRKI-C1-VOCAB-JOURNAL",version:1,cards:{},day:null,savedAt:0};
+    if(c)j.cards[id(c)]=c;
+    j.day=db.day;
+    j.savedAt=Date.now();
+    localStorage.setItem(JOURNAL_KEY,JSON.stringify(j));
+    return true
+  }catch(e){
+    console.warn("TRKI-C1 journal write failed:",e);
+    return false
+  }
+}
+function clearJournal(){try{localStorage.removeItem(JOURNAL_KEY)}catch(e){}}
+function cancelScheduledSave(){
+  if(idleSaveHandle!==null&&typeof cancelIdleCallback==="function"){
+    try{cancelIdleCallback(idleSaveHandle)}catch(e){}
+  }
+  idleSaveHandle=null;
+  if(fallbackSaveTimer!==null)clearTimeout(fallbackSaveTimer);
+  fallbackSaveTimer=null
+}
 function save(){
   try{
     localStorage.setItem(KEY,JSON.stringify(db));
+    clearJournal();
     lastSaveError=null;
     return true
   }catch(e){
@@ -503,6 +550,33 @@ function save(){
     console.warn("TRKI-C1 vocab save failed:",e);
     return false
   }
+}
+function scheduleFullSave(){
+  cancelScheduledSave();
+  if(typeof requestIdleCallback==="function"){
+    idleSaveHandle=requestIdleCallback(()=>{
+      idleSaveHandle=null;
+      save()
+    },{timeout:1800})
+  }else{
+    fallbackSaveTimer=setTimeout(()=>{
+      fallbackSaveTimer=null;
+      save()
+    },1200)
+  }
+}
+function flushFullSave(){
+  cancelScheduledSave();
+  save()
+}
+function load(){
+  let saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
+  if(!saved||!saved.cards)saved=findLegacy();
+  if(saved&&saved.cards)db=normalizeDB(saved);
+  else{const cards={};SEED.forEach(c=>{const nc=normalizeCard(c);cards[id(nc)]=nc});db=normalizeDB({cards,settings:{newCap:20},day:null})}
+  applyPendingJournal();
+  rolloverDay();repairTodayFromHistory();repairMissingCoreFields();applyBuiltinEnrichment();
+  scheduleFullSave()
 }
 function rolloverDay(){
   const td=localDate();
@@ -853,7 +927,7 @@ function persistSession(nextIndex){
   localStorage.setItem(SESSION_KEY,JSON.stringify({
     format:"TRKI-C1-VOCAB-SESSION",version:1,mode,queue:[...queue],qi:idx,date:localDate(),savedAt:Date.now()
   }));
-  renderResume()
+  if($("home").style.display!=="none")renderResume()
 }
 function clearSession(){localStorage.removeItem(SESSION_KEY);renderResume()}
 function resumeSavedSession(){
@@ -896,6 +970,7 @@ $("reviewOld").onclick=()=>{
 }
 function showQ(){
   if(qi>=queue.length){finish();return}
+  requestAnimationFrame(()=>window.scrollTo(0,0));
   answered=false;pendingCorrectMC=false;$("next").classList.add("hidden");$("fuzzyBtn").classList.add("hidden");$("dontKnow").classList.remove("hidden");
   const fb=$("feedback");fb.className="feedback";fb.innerHTML="";
   const c=db.cards[queue[qi]];if(!c){qi++;showQ();return}
@@ -946,7 +1021,14 @@ function showFeedback(c,cls,title,typeOverride){
   f.className="feedback "+cls;
   f.innerHTML=`${title}<br><b>正确答案：</b><span class="ru">${esc(c.term)}</span> — ${esc(m)}<div class="backdetails">${testDetailHTML(c,type)}</div>`
 }
-function after(c){answered=true;$("dontKnow").classList.add("hidden");$("next").classList.remove("hidden");save();persistSession(qi+1)}
+function after(c){
+  answered=true;
+  $("dontKnow").classList.add("hidden");
+  $("next").classList.remove("hidden");
+  writeJournal(c);
+  persistSession(qi+1);
+  scheduleFullSave()
+}
 function gradeMC(c,o){
   if(answered)return;
   if(o!==coreMeaning(c)){mark(c,"wrong","meaning");showFeedback(c,"bad","❌ 错误","mc");after(c);return}
@@ -959,7 +1041,10 @@ $("fuzzyBtn").onclick=()=>{
 $("next").onclick=()=>{
   if(pendingCorrectMC){
     const c=db.cards[queue[qi]];
-    mark(c,"correct",null);pendingCorrectMC=false;save()
+    mark(c,"correct",null);
+    pendingCorrectMC=false;
+    writeJournal(c);
+    scheduleFullSave()
   }
   qi++;persistSession(qi);showQ()
 }
@@ -1052,12 +1137,19 @@ $("dontKnow").onclick=()=>{
   after(c)
 }
 function finish(){
-  clearSession();setTestActive(false);
+  clearSession();setTestActive(false);flushFullSave();
   alert("本轮完成。今天的新词批次不会自动追加；想继续可以复习今天或已学旧词。");
   $("test").style.display="none";$("home").style.display="block";updateHome()
 }
 $("exit").textContent="暂存本轮并返回首页";
-$("exit").onclick=()=>{persistSession(answered?qi+1:qi);setTestActive(false);$("test").style.display="none";$("home").style.display="block";updateHome();renderResume()}
+$("exit").onclick=()=>{
+  persistSession(answered?qi+1:qi);
+  setTestActive(false);
+  flushFullSave();
+  $("test").style.display="none";
+  $("home").style.display="block";
+  updateHome();renderResume()
+}
 
 $("resetToday").onclick=()=>{
   if(!confirm("重建今天任务会重新生成今日队列，但不会删除历史成绩。确定继续？"))return;
@@ -1201,13 +1293,13 @@ $("bCopyPack").onclick=async e=>{
 };
 
 
-const hubLink=document.querySelector(".hub-fab");
-if(hubLink)hubLink.addEventListener("click",()=>setTestActive(false));
+const hubLink=document.querySelector(".hub-fab,.hub-home-link");
+if(hubLink)hubLink.addEventListener("click",()=>{setTestActive(false);flushFullSave()});
 
 // Import / export
 function download(name,text){let a=document.createElement("a"),u=URL.createObjectURL(new Blob([text],{type:"application/json;charset=utf-8"}));a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),800)}
 function snapshotRollback(reason){try{localStorage.setItem(ROLLBACK_KEY,JSON.stringify({format:"TRKI-C1-VOCAB-ROLLBACK",version:1,reason,savedAt:Date.now(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")}))}catch(e){}}
-$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:"6.5",exportedAt:new Date().toISOString(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")},null,2))
+$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:"6.6",exportedAt:new Date().toISOString(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")},null,2))
 function readJSON(file,cb){if(!file)return;let r=new FileReader();r.onload=()=>{try{cb(JSON.parse(r.result))}catch(e){alert("JSON 读取失败："+e.message)}};r.readAsText(file)}
 $("importBackup").onchange=e=>readJSON(e.target.files[0],x=>{
   let obj=x&&x.db?x.db:x;if(!obj||!obj.cards){alert("不是有效备份");return}snapshotRollback("before-backup-restore");db=normalizeDB(obj);rolloverDay();repairMissingCoreFields();applyBuiltinEnrichment();save();
@@ -1222,19 +1314,19 @@ $("importVocab").onchange=e=>readJSON(e.target.files[0],x=>{
 })
 $("undoLastImport").onclick=()=>{let x=null;try{x=JSON.parse(localStorage.getItem(ROLLBACK_KEY)||"null")}catch(e){}if(!x||!x.db){alert("没有可撤销的最近一次导入 / 恢复。 ");return}if(!confirm("恢复到最近一次导入 / 恢复之前的词库状态？"))return;const current={db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")};db=normalizeDB(x.db);save();if(x.session)localStorage.setItem(SESSION_KEY,JSON.stringify(x.session));else localStorage.removeItem(SESSION_KEY);if(x.introSession)localStorage.setItem(INTRO_SESSION_KEY,JSON.stringify(x.introSession));else localStorage.removeItem(INTRO_SESSION_KEY);if(x.browserState)localStorage.setItem(BROWSER_STATE_KEY,JSON.stringify(x.browserState));localStorage.setItem(ROLLBACK_KEY,JSON.stringify({format:"TRKI-C1-VOCAB-ROLLBACK",version:1,reason:"undo-swap",savedAt:Date.now(),...current}));updateHome();renderResume();renderIntroResume();alert(`已恢复：当前 ${all().length} 个词。`)}
 
+setManualScrollRestoration();
 load();updateHome();renderResume();renderIntroResume();
 if(testWasActive()&&savedSession()){
-  // iOS/Safari/WebView 若中途重载当前标签页，直接回到刚才的测试，
-  // 不再让用户看到“莫名其妙闪回首页”。
+  // iOS/Safari/WebView 若中途重载当前标签页，直接回到刚才的测试。
   setTimeout(()=>resumeSavedSession(),0)
 }else{
   setTestActive(false)
 }
-[0,80,250,700,1400,2200].forEach(ms=>setTimeout(resetInitialScroll,ms));
 window.addEventListener("pageshow",()=>{
-  [0,120,500,1200].forEach(ms=>setTimeout(resetInitialScroll,ms));
   if(testWasActive()&&savedSession()&&$("test").style.display==="none"){
     setTimeout(()=>resumeSavedSession(),0)
   }
 });
+window.addEventListener("pagehide",flushFullSave);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")flushFullSave()});
 </script></body></html>
