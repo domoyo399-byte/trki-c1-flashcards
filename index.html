@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>ТРКИ-C1 智能词汇学习 v6.6</title>
+<title>ТРКИ-C1 智能词汇学习 v6.6.1 Candidate</title>
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
@@ -156,7 +156,7 @@ button,input,select{touch-action:manipulation}
 <div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
-<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.6</span></h1>
+<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.6.1 Candidate</span></h1>
 <div class="home-sub-compact">先学习，再测试。查词、看板、设置和备份都保留，但默认收起来，免得每次为了背个词先进行一次网页徒步旅行。</div>
 
 <div class="quick-zone">
@@ -188,6 +188,7 @@ button,input,select{touch-action:manipulation}
   </div>
   <div class="freeze" id="freezeText"></div>
   <button class="primary" id="startToday" style="margin-top:10px">开始 / 继续今日测试</button>
+  <button id="recoverAssigned" class="hidden" style="margin-top:8px">找回原批次可能遗漏的未测词</button>
   <details class="compact-fold" style="margin-top:8px">
     <summary><span>其他复习方式</span><span class="fold-note">需要时展开</span></summary>
     <div class="fold-body">
@@ -591,6 +592,16 @@ function repairTodayFromHistory(){
   const learned=firstLearnedIdsOn(td);
   if(!reviewed.length)return;
 
+  // v6.6.1: An initialized day is a locked batch. Keep its exact queue, cursor,
+  // new/review classifications and assigned order, even after a reload.
+  // The old repair code removed reviewed/new IDs and reset qi to 0 on every load.
+  // That destroyed the pending portion of an unfinished 120-word test.
+  if(db.day.initialized){
+    db.day.reviewedToday=unique([...(db.day.reviewedToday||[]),...reviewed]);
+    return;
+  }
+
+  // Legacy day with no locked batch: only then run the original repair logic.
   const oldNew=(db.day.newIds||[]).filter(k=>db.cards[k]);
   const touchedOldNew=oldNew.filter(k=>reviewed.includes(k));
 
@@ -638,6 +649,14 @@ function updateHome(){
   $("aN").textContent=arr.filter(c=>c.level==="A").length;$("rN").textContent=arr.filter(c=>c.level==="R").length;$("gN").textContent=arr.filter(c=>c.g).length;
   $("introPending").textContent=pending.length;$("introDoneN").textContent=studied.length;renderIntroResume();
   $("todayLabel").textContent=db.day.date;$("newCap").value=String(db.settings.newCap??20);
+  const pendingSaved=savedSession();
+  $("startToday").textContent=pendingSaved&&pendingSaved.mode==="today"
+    ?`继续原测试（${pendingSaved.qi+1}/${pendingSaved.queue.length}）`
+    :"开始今日测试";
+  const missing=missingOriginalAssigned();
+  const recoveryButton=$("recoverAssigned");
+  recoveryButton.classList.toggle("hidden",missing.length===0||!!(pendingSaved&&pendingSaved.mode!=="today"));
+  recoveryButton.textContent=`检查并找回原批次遗漏的 ${missing.length} 个未答词`;
   if(db.day.initialized){
     $("todayNew").textContent=db.day.newIds.length;$("todayReview").textContent=db.day.reviewIds.length;$("weakN").textContent=db.day.weakIds.length;$("doneN").textContent=new Set(db.day.reviewedToday||[]).size;
     $("freezeText").textContent=`今日批次已锁定：${db.day.newIds.length} 个新词。明日新词尚未分配，不会提前出现。`;
@@ -905,7 +924,8 @@ function savedSession(){
   try{
     const s=JSON.parse(localStorage.getItem(SESSION_KEY)||"null");
     if(!s||!Array.isArray(s.queue))return null;
-    if(s.mode==="today"&&s.date&&s.date!==localDate()){localStorage.removeItem(SESSION_KEY);return null}
+    // Never silently delete an unfinished batch at midnight. A user may
+    // resume yesterday's practice later; the original date remains visible.
     s.queue=s.queue.filter(k=>db.cards[k]);
     s.qi=Math.max(0,Math.min(Number(s.qi)||0,s.queue.length));
     if(!s.queue.length||s.qi>=s.queue.length){localStorage.removeItem(SESSION_KEY);return null}
@@ -917,7 +937,8 @@ function renderResume(){
   const s=savedSession();
   if(!s){p.classList.add("hidden");return}
   const names={today:"今日任务",reviewToday:"今天新词复习",old:"旧词复习"};
-  $("resumeText").textContent=`${names[s.mode]||"训练"} · ${s.qi+1}/${s.queue.length} · 已自动保存`;
+  const when=s.date&&s.date!==localDate()?` · 开始于 ${s.date}`:"";
+  $("resumeText").textContent=`${names[s.mode]||"训练"} · ${s.qi+1}/${s.queue.length}${when} · 已自动保存；继续后不会重新计算题量`;
   p.classList.remove("hidden")
 }
 function persistSession(nextIndex){
@@ -938,10 +959,46 @@ function resumeSavedSession(){
 $("resumeSession").onclick=resumeSavedSession;
 $("discardSession").onclick=()=>{if(confirm("放弃这轮未完成训练？已经记录的答题成绩不会删除。"))clearSession()}
 
+function protectExistingSession(requestedMode){
+  const s=savedSession();
+  if(!s)return false;
+  if(s.mode===requestedMode){resumeSavedSession();return true}
+  const names={today:"今日测试",reviewToday:"今天新词复习",old:"旧词复习"};
+  alert(`还有未完成的${names[s.mode]||"测试"}（第 ${s.qi+1}/${s.queue.length} 题）。为保护原题序列，这次不会自动覆盖。请在首页选择「继续上次训练」，或确认不需要后点击「放弃这轮」。`);
+  renderResume();
+  return true
+}
+function missingOriginalAssigned(){
+  if(!db.day||db.day.date!==localDate()||!db.day.initialized)return [];
+  const assigned=Array.isArray(db.day.assignedIds)?db.day.assignedIds:[];
+  if(!assigned.length)return [];
+  const reviewed=new Set(reviewedIdsOn(db.day.date));
+  const s=savedSession();
+  if(s&&s.mode!=="today")return [];
+  const stillQueued=new Set(s?s.queue.slice(s.qi):[]);
+  return unique(assigned).filter(k=>db.cards[k]&&!reviewed.has(k)&&!stillQueued.has(k));
+}
+$("recoverAssigned").onclick=()=>{
+  const missed=missingOriginalAssigned();
+  if(!missed.length){alert("现有记录中，没有发现能够可靠判定为遗漏的原批次单词。");updateHome();return}
+  const s=savedSession();
+  if(!confirm(`根据今日原始分配记录，发现 ${missed.length} 个尚无今日作答历史、也不在当前待答队列中的词。\n\n是否将它们补到当前测试队列末尾？不会清除已有成绩或重做已答词。\n\n注意：只能找回可核对的未答词，无法保证恢复原先的完整题目顺序或已丢失的错题重测顺序。`))return;
+  const resumed=s&&s.mode==="today"?{...s,queue:[...s.queue,...missed],savedAt:Date.now()}
+    :{format:"TRKI-C1-VOCAB-SESSION",version:1,mode:"today",queue:missed,qi:0,date:localDate(),savedAt:Date.now()};
+  try{localStorage.setItem(SESSION_KEY,JSON.stringify(resumed))}
+  catch(e){alert("保存补救队列失败。原始数据没有修改，请先导出备份后再尝试。");return}
+  renderResume();updateHome();
+  alert(`已补入 ${missed.length} 个未测词。点击「继续原测试」即可接着做。`)
+};
 function launch(q,whichMode){
+  // Never overwrite a persisted test just because the user pressed a start button.
+  if(protectExistingSession(whichMode))return;
   queue=q.slice();qi=0;mode=whichMode;persistSession(0);setTestActive(true);$("home").style.display="none";$("browser").style.display="none";$("intro").style.display="none";$("test").style.display="block";showQ()
 }
 $("startToday").onclick=()=>{
+  // Check before deriving/rebuilding today's pool: resume the saved 120-word
+  // queue instead of replacing it with the few words now due.
+  if(protectExistingSession("today"))return;
   repairTodayFromHistory();
   if(!db.day.initialized&&Number(db.settings.newCap||0)>0&&eligibleNewCards().length===0&&introPendingCards().length>0){
     if(!confirm(`还有 ${introPendingCards().length} 个新词没过首次学习轮。现在继续的话，本轮只会安排旧词复习；是否继续？`))return
@@ -956,6 +1013,7 @@ $("startToday").onclick=()=>{
   launch(pending,"today")
 }
 $("reviewToday").onclick=()=>{
+  if(protectExistingSession("reviewToday"))return;
   repairTodayFromHistory();
   const learned=firstLearnedIdsOn(db.day.date);
   let ids=learned.length?learned:(db.day.newIds||[]).filter(k=>db.cards[k]&&historyOnDate(db.cards[k],db.day.date));
@@ -964,6 +1022,7 @@ $("reviewToday").onclick=()=>{
   launch(ids,"reviewToday")
 }
 $("reviewOld").onclick=()=>{
+  if(protectExistingSession("old"))return;
   let arr=all().filter(c=>c.status!=="new");
   arr.sort((a,b)=>((b.lapses||0)-(a.lapses||0))||((a.lastReviewed||0)-(b.lastReviewed||0)));
   let ids=arr.slice(0,40).map(id); if(!ids.length){alert("还没有已学旧词。");return} launch(ids,"old")
@@ -1299,7 +1358,7 @@ if(hubLink)hubLink.addEventListener("click",()=>{setTestActive(false);flushFullS
 // Import / export
 function download(name,text){let a=document.createElement("a"),u=URL.createObjectURL(new Blob([text],{type:"application/json;charset=utf-8"}));a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),800)}
 function snapshotRollback(reason){try{localStorage.setItem(ROLLBACK_KEY,JSON.stringify({format:"TRKI-C1-VOCAB-ROLLBACK",version:1,reason,savedAt:Date.now(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")}))}catch(e){}}
-$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:"6.6",exportedAt:new Date().toISOString(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")},null,2))
+$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:"6.6.1",exportedAt:new Date().toISOString(),db,session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(localStorage.getItem(BROWSER_STATE_KEY)||"null")},null,2))
 function readJSON(file,cb){if(!file)return;let r=new FileReader();r.onload=()=>{try{cb(JSON.parse(r.result))}catch(e){alert("JSON 读取失败："+e.message)}};r.readAsText(file)}
 $("importBackup").onchange=e=>readJSON(e.target.files[0],x=>{
   let obj=x&&x.db?x.db:x;if(!obj||!obj.cards){alert("不是有效备份");return}snapshotRollback("before-backup-restore");db=normalizeDB(obj);rolloverDay();repairMissingCoreFields();applyBuiltinEnrichment();save();
