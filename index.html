@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>ТРКИ-C1 智能词汇学习 v6.6.2 Storage Candidate · 单仓库导航修复版</title>
+<title>ТРКИ-C1 智能词汇学习 v6.6.3 Storage v2 Candidate · 按自然日计算到期</title>
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
@@ -152,7 +152,7 @@ button,input,select{touch-action:manipulation}
 /* v4.2: Restore native document scrolling and browser pull-to-refresh.
    Removed candidate-v3 viewport/overscroll overrides; original layout CSS unchanged. */
 </style>
-<meta name="trki-candidate-build" content="2026-10-22-four-repo-root-v4">
+<meta name="trki-candidate-build" content="2026-10-26-vocab-calendar-day-v4.3">
 </head>
 <body>
 <a class="hub-home-link" href="https://domoyo399-byte.github.io/trki-c1-hub/" aria-label="返回 C1 学习中心">⌂ 学习中心</a>
@@ -160,7 +160,7 @@ button,input,select{touch-action:manipulation}
 <div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
-<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.6.2 Storage Candidate</span></h1>
+<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.6.3 Storage v2 Candidate</span></h1>
 <div class="home-sub-compact">先学习，再测试。查词、看板、设置和备份都保留，但默认收起来，免得每次为了背个词先进行一次网页徒步旅行。</div>
 
 <div class="quick-zone">
@@ -193,6 +193,7 @@ button,input,select{touch-action:manipulation}
   <div class="freeze" id="freezeText"></div>
   <button class="primary" id="startToday" style="margin-top:10px">开始 / 继续今日测试</button>
   <button id="recoverAssigned" class="hidden" style="margin-top:8px">找回原批次可能遗漏的未测词</button>
+  <button id="appendDueToday" class="hidden" style="margin-top:8px">补入今日到期词（保留已答进度）</button>
   <details class="compact-fold" style="margin-top:8px">
     <summary><span>其他复习方式</span><span class="fold-note">需要时展开</span></summary>
     <div class="fold-body">
@@ -876,7 +877,17 @@ function repairTodayFromHistory(){
   db.day.completed=unique([...(db.day.completed||[]),...reviewed]);
   db.day.initialized=true;
 }
-function dueCards(){let now=Date.now();return all().filter(c=>c.status!=="new"&&c.nextDue&&c.nextDue<=now)}
+// Review debt is grouped by the user's LOCAL calendar day, not the exact hour.
+// The next local midnight (exclusive) includes 23:59:59.999 today; using the
+// Date constructor, instead of +24h, also handles daylight-saving transitions.
+function nextLocalMidnight(ts=Date.now()){
+  const d=new Date(ts);
+  return new Date(d.getFullYear(),d.getMonth(),d.getDate()+1).getTime();
+}
+function dueCards(){
+  const cutoff=nextLocalMidnight();
+  return all().filter(c=>c.status!=="new"&&c.nextDue&&Number(c.nextDue)<cutoff);
+}
 function weakCards(){return all().filter(c=>c.status!=="new"&&((c.lapses||0)>0||(c.streak||0)<2))}
 function buildToday(force=false){
   rolloverDay(); if(db.day.initialized&&!force)return;
@@ -906,13 +917,17 @@ function updateHome(){
   const recoveryButton=$("recoverAssigned");
   recoveryButton.classList.toggle("hidden",missing.length===0||!!(pendingSaved&&pendingSaved.mode!=="today"));
   recoveryButton.textContent=`检查并找回原批次遗漏的 ${missing.length} 个未答词`;
+  const catchup=unassignedDueToday();
+  const catchupButton=$("appendDueToday");
+  catchupButton.classList.toggle("hidden",catchup.length===0||missing.length>0);
+  catchupButton.textContent=`补入今日尚未安排的 ${catchup.length} 个到期旧词（不重置本轮）`;
   if(db.day.initialized){
     $("todayNew").textContent=db.day.newIds.length;$("todayReview").textContent=db.day.reviewIds.length;$("weakN").textContent=db.day.weakIds.length;$("doneN").textContent=new Set(db.day.reviewedToday||[]).size;
-    $("freezeText").textContent=`今日批次已锁定：${db.day.newIds.length} 个新词。明日新词尚未分配，不会提前出现。`;
+    $("freezeText").textContent=`今日批次已锁定：${db.day.newIds.length} 个新词；到期词按本地今日23:59前计算。原队列不会自动重排。`;
     $("capNote").textContent="今天的批次已经生成。这里改成 0 不会删除今天已分配的词；它会影响下一次生成的新批次。若现在只想复习旧词，请点“只复习已学旧词”。";
   }else{
     const cap=Number(db.settings.newCap||0),reviewedNow=new Set(reviewedIdsOn(db.day.date));$("todayNew").textContent=Math.min(cap,eligibleNewCards().length);$("todayReview").textContent=dueCards().filter(c=>!reviewedNow.has(id(c))).length;$("weakN").textContent=Math.min(20,weakCards().filter(c=>!reviewedNow.has(id(c))).length);$("doneN").textContent=reviewedNow.size;
-    $("freezeText").textContent=`今天的测试批次还没生成。已完成首次学习、可进入测试的新词有 ${eligibleNewCards().length} 个；点击“开始今日测试”后按上限（${cap}）生成并锁定。`;
+    $("freezeText").textContent=`今天的测试批次还没生成。今日到期包含本地23:59前到期的所有旧词（含积压）；可测试新词 ${eligibleNewCards().length} 个，开始后按上限（${cap}）生成并锁定。`;
     $("capNote").textContent=cap===0?"当前为 0：今天生成任务时不会加入任何新词，只安排复习。":"你可以在生成今天任务前改为 0 / 10 / 20 / 30。";
   }
 }
@@ -1220,6 +1235,43 @@ function protectExistingSession(requestedMode){
   renderResume();
   return true
 }
+function unassignedDueToday(){
+  if(!db.day||db.day.date!==localDate()||!db.day.initialized)return [];
+  const s=savedSession();
+  if(s&&(s.mode!=="today"||s.date!==localDate()))return [];
+  const assigned=new Set([...(db.day.assignedIds||[]),...(db.day.queue||[]),...(s?s.queue:[])]);
+  const reviewed=new Set(reviewedIdsOn(localDate()));
+  return dueCards().map(id).filter(k=>!assigned.has(k)&&!reviewed.has(k));
+}
+async function appendDueToday(){
+  const s=savedSession();
+  if(s&&(s.mode!=="today"||s.date!==localDate())){
+    alert("请先完成当前未结束的其他训练，再补入今天到期的单词；不会覆盖原来的队列。");return;
+  }
+  const missing=missingOriginalAssigned();
+  if(missing.length){alert("检测到原测试队列存在尚未答完的词。请先使用上方的原批次恢复功能，避免遗漏。" );return;}
+  const extra=unassignedDueToday();
+  if(!extra.length){updateHome();return;}
+  if(!confirm(`发现 ${extra.length} 个今天23:59之前到期、尚未纳入本轮的旧词。\n是否补到今日任务末尾？\n原有题目、已答成绩和测试位置不会重置。`))return;
+  const previousDay=JSON.parse(JSON.stringify(db.day));
+  const prevSession=s?JSON.parse(JSON.stringify(s)):null;
+  db.day.reviewIds=unique([...(db.day.reviewIds||[]),...extra]);
+  db.day.assignedIds=unique([...(db.day.assignedIds||[]),...extra]);
+  db.day.queue=[...(db.day.queue||[]),...extra];
+  const session=prevSession?{...prevSession,queue:[...prevSession.queue,...extra],savedAt:Date.now()}
+    :{format:"TRKI-C1-VOCAB-SESSION",version:1,mode:"today",queue:[...extra],qi:0,date:localDate(),savedAt:Date.now()};
+  try{
+    // Persist the changed day and the resume cursor in one EXISTING Storage-v2
+    // atomic transaction, with no full-library rewrite and no new scoring event.
+    await TRKIStore.saveVocabStep(db.cards[extra[0]],db.day,session);
+    renderResume();updateHome();
+    alert(`已补入 ${extra.length} 个今日到期词。点击「继续上次训练」即可完成。`);
+  }catch(e){
+    db.day=previousDay;
+    alert("补入未保存成功，没有确认写入。请停止操作、导出备份并检查存储状态。" );
+  }
+}
+$("appendDueToday").onclick=appendDueToday;
 function missingOriginalAssigned(){
   if(!db.day||db.day.date!==localDate()||!db.day.initialized)return [];
   const assigned=Array.isArray(db.day.assignedIds)?db.day.assignedIds:[];
