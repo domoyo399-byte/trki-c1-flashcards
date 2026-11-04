@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>ТРКИ-C1 智能词汇学习 v6.7.0 Candidate · 考前冲刺模式</title>
+<title>ТРКИ-C1 词汇复习 v6.8.2 Candidate · 原SRS自由任务</title>
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
@@ -151,21 +151,8 @@ button,input,select{touch-action:manipulation}
 
 /* v4.2: Restore native document scrolling and browser pull-to-refresh.
    Removed candidate-v3 viewport/overscroll overrides; original layout CSS unchanged. */
-
-/* v6.7.0 Candidate: isolated exam sprint visuals, original scrolling rules intact */
-.sprint-stats{background:var(--p);border:1px solid var(--l);border-radius:14px;padding:12px;margin-bottom:12px}
-.sprint-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:8px}
-.sprint-brief{font-size:13px;line-height:1.7;margin:6px 0;color:var(--t)}
-.sprint-audit-row{border-top:1px solid var(--l);padding:9px 0;font-size:13px}
-.sprint-audit-row button{margin-top:6px;width:100%;font-size:13px}
-#sprintClassReview{margin-top:10px;max-height:58vh;overflow-y:auto}
-#sprintView .topline{gap:10px;flex-wrap:wrap}
-#sprintQuestionBox .prompt{margin:14px 0}
-#sprintQuestionBox .answer input{font-size:18px}
-#sprintNextBtn{min-width:140px}
-
 </style>
-<meta name="trki-candidate-build" content="2026-11-05-c1-exam-sprint-v6.7.0">
+<meta name="trki-candidate-build" content="2026-10-26-vocab-calendar-day-v4.3">
 </head>
 <body>
 <a class="hub-home-link" href="https://domoyo399-byte.github.io/trki-c1-hub/" aria-label="返回 C1 学习中心">⌂ 学习中心</a>
@@ -173,35 +160,11 @@ button,input,select{touch-action:manipulation}
 <div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
-<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.7.0 Candidate</span></h1>
+<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.8.2 SRS Flexible Candidate</span></h1>
 <div class="home-sub-compact">先学习，再测试。查词、看板、设置和备份都保留，但默认收起来，免得每次为了背个词先进行一次网页徒步旅行。</div>
 
 <div class="quick-zone">
 <div class="quick-title">今天先做什么</div>
-
-
-<div class="quick-card" id="sprintHomePanel">
-  <h3>🚀 C1考前冲刺｜2026-11-21</h3>
-  <div class="muted">单独排程、真实词条覆盖。冲刺成绩独立保存，不改变长期SRS到期、分数或未完成会话。</div>
-  <div id="sprintSummary" class="sprint-brief">正在读取冲刺记录…</div>
-  <div id="sprintEstimate" class="muted"></div>
-  <button id="sprintStartBtn" class="primary" style="width:100%;margin-top:9px">开启考前冲刺（不影响SRS）</button>
-  <button id="sprintPauseBtn" class="hidden" style="width:100%;margin-top:7px">暂停冲刺模式，保留成绩</button>
-  <details class="compact-fold" style="margin-top:9px"><summary>冲刺设置 / 分类审核 / 独立备份</summary>
-    <div class="fold-body">
-      <div class="taskrow"><span>每天目标不同词条</span><select id="sprintTarget"><option value="80">80</option><option value="120">120</option><option value="140">140</option><option value="150">150</option><option value="160" selected>160</option><option value="180">180</option><option value="200">200</option><option value="250">250</option><option value="300">300</option></select></div>
-      <div class="taskrow"><span>每天每词错误次数上限</span><select id="sprintErrLimit"><option value="2">2次</option><option value="3" selected>3次</option></select></div>
-      <div class="taskrow"><span>答错后间隔多少个不同词</span><select id="sprintGap"><option value="3">3词</option><option value="5" selected>5词</option><option value="8">8词</option><option value="10">10词</option></select></div>
-      <button id="sprintSaveSettings">保存冲刺设置（不重置成绩）</button>
-      <button id="sprintGrowDay">调高目标后补入今天未测词</button>
-      <div class="muted">今日计划一经生成不会自动重排。达到错误上限后，该词今天不再测试。若当日余下不同词不足指定间隔，错词顺延次日。</div>
-      <button id="sprintClassToggle">查看分类调整候选（逐项确认）</button>
-      <div id="sprintClassReview" class="hidden"><div class="muted" id="sprintClassCount"></div><div id="sprintClassList"></div><div id="sprintClassConflictList"></div><div id="sprintClassNewList"></div></div>
-      <button id="sprintExportBtn">导出冲刺独立备份</button>
-      <label class="filebtn" for="sprintImportFile">恢复冲刺独立备份</label><input id="sprintImportFile" type="file" accept=".json">
-    </div>
-  </details>
-</div>
 
 <div class="quick-card" id="introPanel">
   <h3>📖 首次学习轮</h3>
@@ -212,7 +175,7 @@ button,input,select{touch-action:manipulation}
   <div class="quick-select-row">
     <span>本轮数量</span>
     <select id="introCap">
-      <option value="10">10</option><option value="20" selected>20</option><option value="30">30</option><option value="99999">全部</option>
+      <option value="10">10</option><option value="20" selected>20</option><option value="30">30</option><option value="50">50</option><option value="75">75</option><option value="100">100</option><option value="99999">全部（可随时暂存）</option>
     </select>
   </div>
   <button class="primary" id="startIntro">开始首次学习</button>
@@ -220,22 +183,34 @@ button,input,select{touch-action:manipulation}
 </div>
 
 <div class="quick-card">
-  <h3>🎯 今日测试</h3>
+  <h3>🎯 今日SRS复习 · 自主学习量</h3>
   <div class="quick-meta">
     <span class="quick-pill">新词 <b id="todayNew">0</b></span>
     <span class="quick-pill">到期 <b id="todayReview">0</b></span>
     <span class="quick-pill">弱项 <b id="weakN">0</b></span>
-    <span class="quick-pill">已答 <b id="doneN">0</b></span>
+    <span class="quick-pill">已测不同词 <b id="doneN">0</b></span>
+    <span class="quick-pill">手动排除 <b id="masteredN">0</b></span>
   </div>
   <div class="freeze" id="freezeText"></div>
+  <div class="quick-meta" style="margin-top:9px">
+    <span class="quick-pill">今日首次学习 <b id="todayIntroN">0</b></span>
+    <span class="quick-pill">今日复习旧词 <b id="todayOldDoneN">0</b></span>
+    <span class="quick-pill">今日覆盖 <b id="todayUniqueN">0</b></span>
+    <span class="quick-pill">累计作答 <b id="todayAttemptsN">0</b></span>
+    <span class="quick-pill">答错词 <b id="todayWrongN">0</b></span>
+    <span class="quick-pill">次日优先 <b id="tomorrowErrorsN">0</b></span>
+  </div>
+  <div class="muted" id="dailyGoalStatus" style="margin-top:8px"></div>
   <button class="primary" id="startToday" style="margin-top:10px">开始 / 继续今日测试</button>
   <button id="recoverAssigned" class="hidden" style="margin-top:8px">找回原批次可能遗漏的未测词</button>
   <button id="appendDueToday" class="hidden" style="margin-top:8px">补入今日到期词（保留已答进度）</button>
+  <div class="taskrow" style="margin-top:9px;gap:8px"><label for="extraNewAmount">追加新词</label><input id="extraNewAmount" type="number" min="1" max="9999" value="50" inputmode="numeric" style="width:90px;max-width:30%;"><button id="appendNewToday">追加到今日任务</button></div>
+  <div class="muted">可分多次首次学习、分批追加已过卡的新词；不会重建已答队列。</div>
   <details class="compact-fold" style="margin-top:8px">
     <summary><span>其他复习方式</span><span class="fold-note">需要时展开</span></summary>
     <div class="fold-body">
       <button class="secondary" id="reviewToday" style="width:100%">复习今天学过的词</button>
-      <button class="secondary" id="reviewOld" style="width:100%;margin-top:8px">只复习已学旧词（0 新词）</button>
+      <button class="secondary" id="reviewOld" style="width:100%;margin-top:8px">复习全部已学旧词（不限40）</button>
     </div>
   </details>
 </div>
@@ -288,11 +263,13 @@ button,input,select{touch-action:manipulation}
 <details class="compact-fold">
   <summary><span>⚙️ 每日设置</span><span class="fold-note">默认收起</span></summary>
   <div class="fold-body">
-    <div class="taskrow"><span>每日新词上限</span>
-      <select id="newCap" style="max-width:150px">
-        <option value="0">0（只复习）</option><option value="10">10</option><option value="20">20</option><option value="30">30</option>
-      </select>
+    <div class="taskrow"><label for="newCap">今日生成任务时计划加入的新词（可继续追加，无硬上限）</label>
+      <input id="newCap" type="number" min="0" max="9999" value="75" inputmode="numeric" style="width:94px">
     </div>
+    <div class="taskrow"><label for="dailyGoalLow">每日不同词参考目标下限</label><input id="dailyGoalLow" type="number" min="0" max="9999" value="250" inputmode="numeric" style="width:94px"></div>
+    <div class="taskrow"><label for="dailyGoalHigh">每日不同词参考目标上限</label><input id="dailyGoalHigh" type="number" min="0" max="9999" value="300" inputmode="numeric" style="width:94px"></div>
+    <div class="taskrow"><label for="wrongCap">同一词当天最多答错</label><select id="wrongCap" style="width:94px"><option value="3">3次</option><option value="2">2次</option></select></div>
+    <div class="taskrow"><label for="repeatGap">错题同日再测至少穿插不同词数</label><input id="repeatGap" type="number" min="1" max="50" value="5" inputmode="numeric" style="width:94px"></div>
     <div class="muted" id="capNote" style="margin-top:8px"></div>
   </div>
 </details>
@@ -315,37 +292,6 @@ button,input,select{touch-action:manipulation}
 <div id="todayLabel" class="hidden"></div>
 </section>
 
-
-
-<section id="sprintView" style="display:none">
-  <div class="topline"><span>C1考前冲刺 · 独立记录</span><span id="sprintPhaseInfo"></span></div>
-  <div class="sprint-stats"><div class="sprint-grid">
-    <div class="mini-stat"><b id="sprintTotal">0</b><span>实际总词</span></div><div class="mini-stat"><b id="sprintPass1">0</b><span>第一遍覆盖</span></div>
-    <div class="mini-stat"><b id="sprintPass2">0</b><span>第二遍覆盖</span></div><div class="mini-stat"><b id="sprintTodayPending">0</b><span>今天剩余新接触</span></div>
-  </div>
-  <div class="sprint-brief">今日不同词：<b id="sprintTodayUnique">0</b> · 累计答题：<b id="sprintTodayClicks">0</b> · 首次正确率：<b id="sprintFirstRate">—</b></div>
-  <div class="sprint-brief">当日纠正 <b id="sprintCorrected">0</b> · 错误封顶 <b id="sprintCapped">0</b> · 跨日复测正确率 <b id="sprintRetestRate">—</b> · 学习时间 <b id="sprintActiveTime">—</b></div>
-  <div class="muted" id="sprintWeakStats"></div><div class="muted" id="sprintRiskList"></div>
-  </div>
-  <div class="topline"><span id="sprintViewCount"></span><span>今日冲刺</span></div><div class="bar"><div id="sprintViewBar"></div></div>
-  <div class="muted" id="sprintViewStats"></div><div class="muted" id="sprintViewTime"></div>
-  <div class="qbox" id="sprintQuestionBox">
-    <div class="tag" id="sprintQuestionLabel"></div>
-    <div class="muted" id="sprintQuestionHint"></div>
-    <div class="prompt" id="sprintPrompt"></div>
-    <div class="answer" id="sprintAnswers"></div>
-    <div class="feedback" id="sprintFeedback"></div>
-    <div class="smallbtns">
-      <button id="sprintWrongBtn">不认识 / 实际答错</button>
-      <button id="sprintConfirmBtn" class="hidden">确认首次认识</button>
-      <button id="sprintFuzzyBtn" class="hidden">蒙对 / 不确定</button>
-      <button id="sprintNextBtn" class="hidden primary">下一题 →</button>
-    </div>
-  </div>
-  <div class="actions"><button id="sprintPrevBtn">查看上一题记录</button><button id="sprintEndBtn">提前结束今天任务</button></div>
-  <div id="sprintPreviousInfo" class="muted"></div>
-  <button id="sprintBackBtn" style="width:100%;margin-top:11px">暂存并返回首页</button>
-</section>
 
 <section id="intro">
 <div class="topline"><span id="introCount"></span><span>首次学习 · 不评分</span></div><div class="bar"><div id="introProg"></div></div>
@@ -384,6 +330,8 @@ button,input,select{touch-action:manipulation}
 <button id="next" class="hidden">下一题</button>
 </div>
 </div>
+<button id="markKnownTest" class="secondary" style="margin-top:12px;width:100%">✓ 我会了 · 不再自动复习这个词</button>
+<div class="muted" style="margin-top:6px">仅手动排除，历史成绩和SRS到期日保留，可在查词页恢复。</div>
 <button id="exit" style="margin-top:12px">结束本轮并返回首页</button>
 </section>
 
@@ -400,7 +348,7 @@ button,input,select{touch-action:manipulation}
 <option value="unlearned">未首次学习</option>
 <option value="consolidating">正在巩固</option>
 <option value="stable">稳定掌握</option>
-<option value="weak">薄弱</option>
+<option value="weak">薄弱</option><option value="manualMastered">我会了 · 暂不再测</option>
 <option value="A">A 主动</option>
 <option value="R">R 识别</option>
 <option value="G">G 支配/搭配</option>
@@ -429,7 +377,7 @@ button,input,select{touch-action:manipulation}
 <div class="browser-meta" id="bMeta"></div>
 <button id="bCopyPack" class="copy-study">💬 复制完整词卡学习包</button>
 <div id="bCopyStatus" class="copy-status"></div>
-<div id="bAccepted"></div>
+<button id="bToggleKnown" class="secondary" style="width:100%;margin-top:9px">✓ 我会了 · 暂不再测</button><div id="bAccepted"></div>
 </div>
 </div>
 <div class="browsernav"><button id="bPrev">← 上一张</button><button id="bNext">下一张 →</button></div>
@@ -448,9 +396,7 @@ button,input,select{touch-action:manipulation}
 const NAME='trki_c1_learning_storage_v2_20261022', VERSION=1;
 const VOCAB='trki_c1_srs_v5', PHRASE='trki_c1_phrase_db_v1', GRAMMAR='trki_c1_grammar_errors_v1';
 const CORE=[VOCAB,PHRASE,GRAMMAR], UNDO=['trki_c1_hub_undo_v1','trki_c1_vocab_rollback_v6'];
-const SPRINT_KEYS=['trki_c1_vocab_exam_sprint_20261121_v1','trki_c1_vocab_class_review_20261121_v1'];
-const WATCHED=new Set([...CORE,...SPRINT_KEYS]);
-const LARGE=new Set([...CORE,...UNDO,...SPRINT_KEYS]), VOCAB_SESSION='trki_c1_vocab_session_v1';
+const LARGE=new Set([...CORE,...UNDO]), VOCAB_SESSION='trki_c1_vocab_session_v1';
 let conn=null, ready=false, cache=new Map(), vCards=new Map(), vocabDay=undefined, vocabSession=undefined;
 let rev={}, queue=Promise.resolve(), lastError=null, stopped=false, pending=0;
 const revKey=k=>'__revision_v2_'+k;
@@ -511,7 +457,7 @@ async function load(){
  cache=new Map(Object.entries(raw.kv));vCards=new Map(Object.entries(raw.cards));
  vocabDay=Object.prototype.hasOwnProperty.call(raw.state,'day')?raw.state.day:undefined;
  vocabSession=Object.prototype.hasOwnProperty.call(raw.state,'session')?raw.state.session:undefined;
- rev=Object.fromEntries([...WATCHED].map(k=>[k,Number(cache.get(revKey(k))||0)]));
+ rev=Object.fromEntries(CORE.map(k=>[k,Number(cache.get(revKey(k))||0)]));
  ready=cache.get('__initialized_v2')===true;
  if(ready){
   for(const k of CORE)if(typeof cache.get(k)!=='string')throw makeError('新存储缺少有效主库：'+k+'。请从备份恢复，不要继续答题。','DataIncompleteError');
@@ -543,7 +489,7 @@ function getItem(k){
 function ensureWriteAllowed(){if(!conn||!ready||stopped)throw makeError('当前数据库不可写。请先完成安全恢复，或修复数据库连接。','NotReadyError')}
 // All mutations compare a monotone revision inside the write transaction.
 function writeChecked(stores,fn,stage,affected=[]){
- const watched=[...new Set(affected.filter(k=>WATCHED.has(k)))];
+ const watched=[...new Set(affected.filter(k=>CORE.includes(k)))];
  const job=queue.catch(()=>{}).then(async()=>{
   ensureWriteAllowed();pending++;
   try{
@@ -600,7 +546,7 @@ function setItem(k,v){
    return writeChecked(k===VOCAB?['vocabCards','vocabState']:[],t=>{
      t.objectStore('kv').put(v,k);
      if(k===VOCAB)t.objectStore('vocabCards').clear();
-   },'whole.save:'+k,WATCHED.has(k)?[k]:[]).then(()=>{
+   },'whole.save:'+k,CORE.includes(k)?[k]:[]).then(()=>{
      cache.set(k,v);if(k===VOCAB){vCards.clear();vocabDay=undefined}
      return true
    });
@@ -718,7 +664,7 @@ function applyBuiltinEnrichment(){
   return n;
 }
 
-let db={cards:{},settings:{newCap:20,conjugationQuiz:true,dailyFreeze:true},day:null};
+let db={cards:{},settings:{newCap:75,dailyGoalLow:250,dailyGoalHigh:300,wrongCap:3,repeatGap:5,conjugationQuiz:true,dailyFreeze:true},day:null};
 let queue=[],qi=0,mode="today",answered=false,pendingCorrectMC=false,currentQuestionType="";
 let browserDeck=[],bi=0,browserFilter="all",browserSort="original",browserQuery="",browserReturnTarget="home",browserSwipeX=null,browserSwipeY=null,browserSwiped=false;
 let introQueue=[],introI=0;
@@ -729,10 +675,34 @@ function norm(s){return stripMarks(s).toLowerCase().replace(/ё/g,"е").trim().r
 function id(c){return c.contentId||norm(c.term)}
 function localDate(ts=Date.now()){let d=new Date(ts);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function all(){return Object.values(db.cards)}
+function isManuallyMastered(c){return !!(c&&c.manualMastered&&c.manualMastered.active===true)}
+function testable(c){return !!c&&!isManuallyMastered(c)}
+function clampNumber(x,lo,hi,fallback){const n=Number(x);return Number.isFinite(n)?Math.max(lo,Math.min(hi,Math.floor(n))):fallback}
+function dailyWrongCount(c,date=localDate()){return (c.history||[]).filter(h=>h&&h.grade==="wrong"&&h.time&&localDate(h.time)===date).length}
+function maxWrong(){return clampNumber(db.settings.wrongCap,2,3,3)}
+function repeatGap(){return clampNumber(db.settings.repeatGap,1,50,5)}
+function lastDayWrong(c,date){return (c.history||[]).some(h=>h&&h.grade==="wrong"&&h.time&&localDate(h.time)===date)}
+function correctedToday(c,date=localDate()){
+  const h=(c.history||[]).filter(x=>x&&x.time&&localDate(x.time)===date);
+  const firstWrong=h.findIndex(x=>x.grade==="wrong");
+  return firstWrong>=0&&h.slice(firstWrong+1).some(x=>x.grade==="correct");
+}
+function previousLocalDate(date=localDate()){const [y,m,d]=date.split("-").map(Number);return localDate(new Date(y,m-1,d-1,12).getTime())}
+function dailyActualStats(date=localDate()){
+ let intro=0,old=new Set(),covered=new Set(),wrong=new Set(),attempts=0,firstTestNew=0;
+ for(const c of all()){
+   const k=id(c),first=firstStudyTime(c),firstDate=first?localDate(first):null;
+   if(firstDate===date){intro++;covered.add(k)}
+   const hh=(c.history||[]).filter(h=>h&&h.time&&localDate(h.time)===date);
+   if(hh.length){covered.add(k);attempts+=hh.length;if(firstDate!==date)old.add(k);if(hh.some(h=>h.grade==="wrong"))wrong.add(k)}
+ }
+ const priority=all().filter(c=>lastDayWrong(c,date)&&!isManuallyMastered(c)).length;
+ return {intro,old:old.size,unique:covered.size,attempts,wrong:wrong.size,priority};
+}
 function unique(xs){return [...new Set(xs)]}
 function hasInitialStudy(c){return !!(c.firstStudyAt||(c.seen||0)>0||(c.history||[]).length)}
-function introPendingCards(){return all().filter(c=>c.status==="new"&&!hasInitialStudy(c))}
-function eligibleNewCards(){return all().filter(c=>c.status==="new"&&hasInitialStudy(c))}
+function introPendingCards(){return all().filter(c=>c.status==="new"&&!hasInitialStudy(c)&&testable(c))}
+function eligibleNewCards(){return all().filter(c=>c.status==="new"&&hasInitialStudy(c)&&testable(c))}
 function recentGrades(c,n=3){return (c.history||[]).slice(-n).map(h=>h&&h.grade).filter(Boolean)}
 function isStable(c){const g=recentGrades(c,3);return hasInitialStudy(c)&&(c.seen||0)>=3&&(c.streak||0)>=3&&g.length===3&&g.every(x=>x==="correct")}
 function isConsolidating(c){return hasInitialStudy(c)&&!isStable(c)}
@@ -776,15 +746,18 @@ function normalizeCard(c){
   out.errors=out.errors||{meaning:0,recall:0,spelling:0,governance:0,conjugation:0};if(out.errors.conjugation===undefined)out.errors.conjugation=0;out.history=Array.isArray(out.history)?out.history:[];return out
 }
 function mergeContent(existing,incoming){
-  const progressKeys=["status","streak","lapses","seen","lastReviewed","nextDue","lastWrong","errors","history","acceptedAnswers","acceptedGovAnswers","firstStudyAt","addedAt","importBatch"];
+  const progressKeys=["status","streak","lapses","seen","lastReviewed","nextDue","lastWrong","errors","history","acceptedAnswers","acceptedGovAnswers","firstStudyAt","addedAt","importBatch","manualMastered"];
   // v6.1: 内容补充包可以只带 study / conjugation 等字段；未提供的旧内容不会被抹掉。
   const out=existing?{...existing,...incoming}:{...incoming};
-  if(existing){for(const label of ['level','g'])if(existing[label]!==undefined)out[label]=existing[label];}
   if(existing){for(const k of progressKeys)if(existing[k]!==undefined)out[k]=existing[k]}
   return normalizeCard(out)
 }
 function normalizeDB(obj){
-  const out={...obj};out.settings={...(obj.settings||{})};if(out.settings.newCap===undefined)out.settings.newCap=20;out.cards={};Object.values(obj.cards||{}).forEach(c=>{const nc=normalizeCard(c);out.cards[id(nc)]=nc});return out
+  const out={...obj};out.settings={...(obj.settings||{})};if(out.settings.newCap===undefined)out.settings.newCap=75;
+  if(out.settings.dailyGoalLow===undefined)out.settings.dailyGoalLow=250;
+  if(out.settings.dailyGoalHigh===undefined)out.settings.dailyGoalHigh=300;
+  if(out.settings.wrongCap===undefined)out.settings.wrongCap=3;
+  if(out.settings.repeatGap===undefined)out.settings.repeatGap=5;out.cards={};Object.values(obj.cards||{}).forEach(c=>{const nc=normalizeCard(c);out.cards[id(nc)]=nc});return out
 }
 
 function baselineCard(c){
@@ -895,7 +868,7 @@ function load(){
   let saved=null;try{saved=JSON.parse(TRKIStore.getItem(KEY)||"null")}catch(e){}
   if(!saved||!saved.cards)saved=findLegacy();
   if(saved&&saved.cards)db=normalizeDB(saved);
-  else{const cards={};SEED.forEach(c=>{const nc=normalizeCard(c);cards[id(nc)]=nc});db=normalizeDB({cards,settings:{newCap:20},day:null})}
+  else{const cards={};SEED.forEach(c=>{const nc=normalizeCard(c);cards[id(nc)]=nc});db=normalizeDB({cards,settings:{newCap:75},day:null})}
   applyPendingJournal();
   rolloverDay();repairTodayFromHistory();repairMissingCoreFields();applyBuiltinEnrichment();
   // Do not rewrite a multi-megabyte book just from opening a page.
@@ -956,19 +929,21 @@ function nextLocalMidnight(ts=Date.now()){
   return new Date(d.getFullYear(),d.getMonth(),d.getDate()+1).getTime();
 }
 function dueCards(){
-  const cutoff=nextLocalMidnight();
-  return all().filter(c=>c.status!=="new"&&c.nextDue&&Number(c.nextDue)<cutoff);
+  const cutoff=nextLocalMidnight(),prior=previousLocalDate();
+  // Preserve overdue cards and put yesterday's actually-wrong words ahead of other due words.
+  return all().filter(c=>testable(c)&&c.status!=="new"&&c.nextDue&&Number(c.nextDue)<cutoff)
+    .sort((a,b)=>(Number(lastDayWrong(b,prior))-Number(lastDayWrong(a,prior)))||(Number(a.nextDue)-Number(b.nextDue)));
 }
-function weakCards(){return all().filter(c=>c.status!=="new"&&((c.lapses||0)>0||(c.streak||0)<2))}
+function weakCards(){return all().filter(c=>testable(c)&&c.status!=="new"&&((c.lapses||0)>0||(c.streak||0)<2))}
 function buildToday(force=false){
   rolloverDay(); if(db.day.initialized&&!force)return;
   const due=dueCards();
   const weak=weakCards().filter(c=>!due.some(d=>id(d)===id(c))).sort((a,b)=>(b.lapses||0)-(a.lapses||0)).slice(0,20);
-  const cap=Number(db.settings.newCap||0);
-  const news=eligibleNewCards().slice(0,cap);
+  const target=clampNumber(db.settings.newCap,0,9999,75);
+  const news=eligibleNewCards().slice(0,target);
   db.day.newIds=news.map(id); db.day.reviewIds=due.map(id); db.day.weakIds=weak.map(id);
-  let mixed=[],pools=[news.slice(),due.slice(),weak.slice()];
-  while(pools.some(p=>p.length)){for(const p of pools)if(p.length)mixed.push(id(p.shift()))}
+  // Due words go first; all selected eligible new words follow. No daily review cap.
+  let mixed=[...due.map(id),...news.map(id),...weak.map(id)];
   db.day.assignedIds=[...new Set(mixed)];
   db.day.queue=mixed;db.day.qi=0;db.day.initialized=true;db.day.completed=[];save()
 }
@@ -979,7 +954,15 @@ function updateHome(){
   const sp=arr.length?Math.round(studied.length/arr.length*100):0,stp=arr.length?Math.round(stable.length/arr.length*100):0;$("studyPct").textContent=sp+"%";$("stablePct").textContent=stp+"%";$("studyBar").style.width=sp+"%";$("stableBar").style.width=stp+"%";
   $("aN").textContent=arr.filter(c=>c.level==="A").length;$("rN").textContent=arr.filter(c=>c.level==="R").length;$("gN").textContent=arr.filter(c=>c.g).length;
   $("introPending").textContent=pending.length;$("introDoneN").textContent=studied.length;renderIntroResume();
-  $("todayLabel").textContent=db.day.date;$("newCap").value=String(db.settings.newCap??20);
+  $("todayLabel").textContent=db.day.date;$("newCap").value=String(db.settings.newCap??75);
+  $("dailyGoalLow").value=String(db.settings.dailyGoalLow??250);$("dailyGoalHigh").value=String(db.settings.dailyGoalHigh??300);
+  $("wrongCap").value=String(maxWrong());$("repeatGap").value=String(repeatGap());
+  const st=dailyActualStats(db.day.date);
+  $("todayIntroN").textContent=st.intro;$("todayOldDoneN").textContent=st.old;$("todayUniqueN").textContent=st.unique;
+  $("todayAttemptsN").textContent=st.attempts;$("todayWrongN").textContent=st.wrong;$("tomorrowErrorsN").textContent=st.priority;
+  $("masteredN").textContent=arr.filter(isManuallyMastered).length;
+  const lo=clampNumber(db.settings.dailyGoalLow,0,9999,250),hi=Math.max(lo,clampNumber(db.settings.dailyGoalHigh,0,9999,300));
+  $("dailyGoalStatus").textContent=`今日不同词：${st.unique} / 参考 ${lo}–${hi}；这是目标而非上限，复习和新词均可继续追加。`;
   const pendingSaved=savedSession();
   $("startToday").textContent=pendingSaved&&pendingSaved.mode==="today"
     ?`继续原测试（${pendingSaved.qi+1}/${pendingSaved.queue.length}）`
@@ -992,17 +975,30 @@ function updateHome(){
   const catchupButton=$("appendDueToday");
   catchupButton.classList.toggle("hidden",catchup.length===0||missing.length>0);
   catchupButton.textContent=`补入今日尚未安排的 ${catchup.length} 个到期旧词（不重置本轮）`;
+  $("appendNewToday").disabled=eligibleNewCards().filter(c=>!new Set(db.day.assignedIds||[]).has(id(c))).length===0;
   if(db.day.initialized){
-    $("todayNew").textContent=db.day.newIds.length;$("todayReview").textContent=db.day.reviewIds.length;$("weakN").textContent=db.day.weakIds.length;$("doneN").textContent=new Set(db.day.reviewedToday||[]).size;
-    $("freezeText").textContent=`今日批次已锁定：${db.day.newIds.length} 个新词；到期词按本地今日23:59前计算。原队列不会自动重排。`;
-    $("capNote").textContent="今天的批次已经生成。这里改成 0 不会删除今天已分配的词；它会影响下一次生成的新批次。若现在只想复习旧词，请点“只复习已学旧词”。";
+    $("todayNew").textContent=(db.day.newIds||[]).filter(k=>testable(db.cards[k])).length;
+    $("todayReview").textContent=(db.day.reviewIds||[]).filter(k=>testable(db.cards[k])).length;
+    $("weakN").textContent=(db.day.weakIds||[]).filter(k=>testable(db.cards[k])).length;
+    $("doneN").textContent=st.unique;
+    $("freezeText").textContent="今日队列已生成，可继续补入到期旧词或首次学习后的新词，原已答题目不重置。";
+    $("capNote").textContent="设置的计划新词量用于下一次生成；今天要继续增加，使用上方“追加新词”。不会删掉已安排的词。";
   }else{
-    const cap=Number(db.settings.newCap||0),reviewedNow=new Set(reviewedIdsOn(db.day.date));$("todayNew").textContent=Math.min(cap,eligibleNewCards().length);$("todayReview").textContent=dueCards().filter(c=>!reviewedNow.has(id(c))).length;$("weakN").textContent=Math.min(20,weakCards().filter(c=>!reviewedNow.has(id(c))).length);$("doneN").textContent=reviewedNow.size;
-    $("freezeText").textContent=`今天的测试批次还没生成。今日到期包含本地23:59前到期的所有旧词（含积压）；可测试新词 ${eligibleNewCards().length} 个，开始后按上限（${cap}）生成并锁定。`;
-    $("capNote").textContent=cap===0?"当前为 0：今天生成任务时不会加入任何新词，只安排复习。":"你可以在生成今天任务前改为 0 / 10 / 20 / 30。";
+    const cap=clampNumber(db.settings.newCap,0,9999,75),reviewedNow=new Set(reviewedIdsOn(db.day.date));
+    $("todayNew").textContent=Math.min(cap,eligibleNewCards().length);
+    $("todayReview").textContent=dueCards().filter(c=>!reviewedNow.has(id(c))).length;
+    $("weakN").textContent=Math.min(20,weakCards().filter(c=>!reviewedNow.has(id(c))).length);
+    $("doneN").textContent=st.unique;
+    $("freezeText").textContent=`尚未生成今日任务：所有今日到期旧词优先，已过卡的新词最多按参考数 ${cap} 条加入；可之后无限次追加。`;
+    $("capNote").textContent="计划数不是硬上限；只限制本次初始队列的大小。可继续新词首次学习与追加测试。";
   }
 }
-$("newCap").onchange=()=>{db.settings.newCap=Number($("newCap").value);save();updateHome()};
+for(const [field,setting,fallback] of [["newCap","newCap",75],["dailyGoalLow","dailyGoalLow",250],["dailyGoalHigh","dailyGoalHigh",300],["wrongCap","wrongCap",3],["repeatGap","repeatGap",5]]){
+  $(field).onchange=async()=>{const n=clampNumber($(field).value,field==="wrongCap"?2:field==="repeatGap"?1:0,field==="wrongCap"?3:field==="repeatGap"?50:9999,fallback);
+    const before=db.settings[setting];db.settings[setting]=n;
+    try{await save();updateHome()}catch(e){db.settings[setting]=before;alert("设置未保存，请重新确认备份与存储状态。")}
+  }
+}
 
 function baseTarget(c){
   let s=(c.term||"").trim();
@@ -1207,14 +1203,19 @@ function renderIntro(){
   const badges=`<span class="badge">${esc(c.level)}</span>${c.g?'<span class="badge">G</span>':""}${c.addedAt?'<span class="badge">新导入</span>':""}`;
   $("introBadges").innerHTML=$("introBadges2").innerHTML=badges;$("introTerm").textContent=c.term;$("introTerm2").textContent=c.term;$("introMeaning").textContent=c.meaning;$("introDetails").innerHTML=introDetailHTML(c)
 }
-async function markIntroDone(c){if(!c.firstStudyAt)c.firstStudyAt=Date.now();await save()}
+async function markIntroDone(c){
+  const before=c.firstStudyAt;
+  if(!c.firstStudyAt)c.firstStudyAt=Date.now();
+  try{await TRKIStore.saveVocabStep(c,db.day,savedSession())}
+  catch(e){c.firstStudyAt=before;throw e}
+}
 $("introDone").onclick=async()=>{const b=$("introDone");if(b.disabled)return;b.disabled=true;try{const c=db.cards[introQueue[introI]];if(c)await markIntroDone(c);introI++;await saveIntroSession();renderIntro()}catch(e){alert("首次学习进度未保存，请不要继续："+e.message)}finally{b.disabled=false}};
 $("introSkip").onclick=()=>{introI++;saveIntroSession();renderIntro()};
 $("introPrev").onclick=()=>{if(introI>0){introI--;saveIntroSession();renderIntro()}};
 $("introExit").onclick=()=>{saveIntroSession();$("intro").style.display="none";$("home").style.display="block";updateHome()};
 function finishIntro(){
   TRKIStore.removeItem(INTRO_SESSION_KEY);$("intro").style.display="none";$("home").style.display="block";updateHome();
-  if(db.day&&db.day.initialized)alert("这轮首次学习完成。今天的测试批次已经锁定，因此这些新词不会自动插入今天的队列；如果你确实想今天马上测，可以使用“重建今天任务”。");
+  if(db.day&&db.day.initialized)alert("这轮首次学习完成。可以在首页使用『追加新词』，无需重建已答的今日任务。");
   else alert("这轮首次学习完成。刚学过的新词现在已经可以进入今天的新词测试。")
 }
 async function copyText(text){
@@ -1312,7 +1313,7 @@ function unassignedDueToday(){
   if(s&&(s.mode!=="today"||s.date!==localDate()))return [];
   const assigned=new Set([...(db.day.assignedIds||[]),...(db.day.queue||[]),...(s?s.queue:[])]);
   const reviewed=new Set(reviewedIdsOn(localDate()));
-  return dueCards().map(id).filter(k=>!assigned.has(k)&&!reviewed.has(k));
+  return dueCards().map(id).filter(k=>!assigned.has(k)&&!reviewed.has(k)&&testable(db.cards[k]));
 }
 async function appendDueToday(){
   const s=savedSession();
@@ -1343,6 +1344,30 @@ async function appendDueToday(){
   }
 }
 $("appendDueToday").onclick=appendDueToday;
+async function appendNewToday(){
+  rolloverDay();
+  const s=savedSession();
+  if(s&&(s.mode!=="today"||s.date!==localDate())){
+    alert("还有其他未完成训练，请先继续或手动放弃，避免覆盖它的会话。");return;
+  }
+  const requested=clampNumber($("extraNewAmount").value,1,9999,50);
+  const assigned=new Set([...(db.day.assignedIds||[]),...(s?s.queue:[])]);
+  const reviewed=new Set(reviewedIdsOn(localDate()));
+  const extra=eligibleNewCards().map(id).filter(k=>!assigned.has(k)&&!reviewed.has(k)).slice(0,requested);
+  if(!extra.length){alert("目前没有已过首次学习轮、且今天尚未安排的新词。先进行首次学习即可继续追加。");return}
+  if(!confirm(`追加 ${extra.length} 个已首次学习的新词到今天的测试末尾？原有题目与进度保持不变。`))return;
+  const oldDay=JSON.parse(JSON.stringify(db.day));
+  db.day.initialized=true;db.day.newIds=unique([...(db.day.newIds||[]),...extra]);
+  db.day.assignedIds=unique([...(db.day.assignedIds||[]),...extra]);
+  db.day.queue=[...(db.day.queue||[]),...extra];
+  const nextSession=s?{...s,queue:[...s.queue,...extra],savedAt:Date.now()}
+    :{format:"TRKI-C1-VOCAB-SESSION",version:1,mode:"today",queue:extra,qi:0,date:localDate(),savedAt:Date.now()};
+  try{
+    await TRKIStore.saveVocabStep(db.cards[extra[0]],db.day,nextSession);
+    updateHome();renderResume();alert(`已安全追加 ${extra.length} 个新词，原有复习历史和测试位置未改动。`);
+  }catch(e){db.day=oldDay;alert("追加操作未成功保存，已恢复页面内队列，切勿清空浏览器数据："+e.message)}
+}
+$("appendNewToday").onclick=appendNewToday;
 function missingOriginalAssigned(){
   if(!db.day||db.day.date!==localDate()||!db.day.initialized)return [];
   const assigned=Array.isArray(db.day.assignedIds)?db.day.assignedIds:[];
@@ -1351,7 +1376,7 @@ function missingOriginalAssigned(){
   const s=savedSession();
   if(s&&s.mode!=="today")return [];
   const stillQueued=new Set(s?s.queue.slice(s.qi):[]);
-  return unique(assigned).filter(k=>db.cards[k]&&!reviewed.has(k)&&!stillQueued.has(k));
+  return unique(assigned).filter(k=>testable(db.cards[k])&&!reviewed.has(k)&&!stillQueued.has(k));
 }
 $("recoverAssigned").onclick=()=>{
   const missed=missingOriginalAssigned();
@@ -1382,7 +1407,7 @@ $("startToday").onclick=()=>{
   const start=Math.min(db.day.qi||0,db.day.queue.length);
   const pending=db.day.queue.slice(start);
   if(!pending.length){
-    alert("今天的固定任务已经完成。想继续的话，可以点“复习今天学过的词”或“只复习已学旧词”。");
+    alert("当前队列已完成。还可以先过卡更多新词后使用『追加新词』，或继续复习已学旧词。");
     updateHome();return
   }
   launch(pending,"today")
@@ -1398,18 +1423,25 @@ $("reviewToday").onclick=()=>{
 }
 $("reviewOld").onclick=()=>{
   if(protectExistingSession("old"))return;
-  let arr=all().filter(c=>c.status!=="new");
+  let arr=all().filter(c=>c.status!=="new"&&testable(c));
   arr.sort((a,b)=>((b.lapses||0)-(a.lapses||0))||((a.lastReviewed||0)-(b.lastReviewed||0)));
-  let ids=arr.slice(0,40).map(id); if(!ids.length){alert("还没有已学旧词。");return} launch(ids,"old")
+  let ids=arr.map(id); if(!ids.length){alert("还没有已学旧词。");return} launch(ids,"old")
 }
-function showQ(){
+async function showQ(){
+  // A previously locked queue may still contain words later manually excluded.
+  // Skip without grading; only persist an updated cursor. No hidden SRS score.
+  while(qi<queue.length&&(!db.cards[queue[qi]]||isManuallyMastered(db.cards[queue[qi]])||dailyWrongCount(db.cards[queue[qi]])>=maxWrong()||(mode==="today"&&correctedToday(db.cards[queue[qi]])))){
+    qi++;
+    if(mode==="today")db.day.qi=Math.min((db.day.qi||0)+1,(db.day.queue||[]).length);
+    try{await persistSession(qi)}catch(e){alert("跳过已排除词时未能安全保存，请停止操作："+e.message);return}
+  }
   if(qi>=queue.length){finish();return}
   requestAnimationFrame(()=>window.scrollTo(0,0));
-  answered=false;pendingCorrectMC=false;$("next").classList.add("hidden");$("fuzzyBtn").classList.add("hidden");$("dontKnow").classList.remove("hidden");
+  answered=false;pendingCorrectMC=false;$("markKnownTest").classList.remove("hidden");$("markKnownTest").disabled=false;$("next").classList.add("hidden");$("fuzzyBtn").classList.add("hidden");$("dontKnow").classList.remove("hidden");
   const fb=$("feedback");fb.className="feedback";fb.innerHTML="";
   const c=db.cards[queue[qi]];if(!c){qi++;showQ();return}
   $("qCount").textContent=`${qi+1} / ${queue.length}`;$("prog").style.width=`${(qi/Math.max(1,queue.length))*100}%`;
-  $("tag").textContent=`${c.level}${c.g?" · G":""}`;$("answer").innerHTML="";
+  $("tag").textContent=`${c.level}${c.g?" · G":""} · 今日错 ${dailyWrongCount(c)}/${maxWrong()}`;$("answer").innerHTML="";
   const type=qType(c);currentQuestionType=type;
   if(type==="mc"){
     $("qKind").textContent="俄语 → 中文 · 选择";$("prompt").innerHTML=`<span class="ru">${c.term}</span>`;
@@ -1438,13 +1470,18 @@ function makeConj(c){
 function mark(c,grade,errorType){
   const now=Date.now();c.seen=(c.seen||0)+1;c.lastReviewed=now;c.history=c.history||[];c.errors=c.errors||{};
   c.status="learning";
+  const earlier=(c.history||[]).some(h=>h&&h.grade==="correct"&&h.time&&localDate(h.time)===localDate(now));
   if(grade==="correct"){
-    c.streak=(c.streak||0)+1;let days=c.streak>=5?30:c.streak===4?14:c.streak===3?7:c.streak===2?3:1;c.nextDue=now+days*DAY
+    // A repeated same-day correct answer must NOT earn repeated long-term SRS streak increments.
+    if(!earlier){c.streak=(c.streak||0)+1;let days=c.streak>=5?30:c.streak===4?14:c.streak===3?7:c.streak===2?3:1;c.nextDue=now+days*DAY}
   }else if(grade==="fuzzy"){
     c.streak=0;c.lapses=(c.lapses||0)+1;c.nextDue=now+DAY;if(errorType)c.errors[errorType]=(c.errors[errorType]||0)+1
   }else{
     c.streak=0;c.lapses=(c.lapses||0)+1;c.lastWrong=now;c.nextDue=now+DAY;if(errorType)c.errors[errorType]=(c.errors[errorType]||0)+1;
-    if(!queue.slice(qi+1).includes(id(c)))queue.push(id(c))
+    const wrongSoFar=dailyWrongCount(c)+1;
+    const remainingUnique=new Set(queue.slice(qi+1).filter(k=>k!==id(c)&&testable(db.cards[k]))).size;
+    // No immediate-answer echo. If too few intervening words remain, let tomorrow's due priority handle it.
+    if(wrongSoFar<maxWrong()&&remainingUnique>=repeatGap()&&!queue.slice(qi+1).includes(id(c)))queue.push(id(c))
   }
   c.history.push({time:now,grade,errorType:errorType||null});
   rolloverDay();if(!db.day.reviewedToday.includes(id(c)))db.day.reviewedToday.push(id(c));
@@ -1464,7 +1501,7 @@ function blockNextWhileSaving(value){
 }
 function exportEmergency(){
   download('TRKI_C1_VOCAB_EMERGENCY_'+localDate()+'.json',JSON.stringify({
-    format:'TRKI-C1-SRS-backup',version:'6.6.2-emergency',exportedAt:new Date().toISOString(),db,
+    format:'TRKI-C1-SRS-backup',version:'6.8.2-emergency',exportedAt:new Date().toISOString(),db,
     session:sessionSnapshot(answered?qi+1:qi),storageError:TRKIStore.lastError
   },null,2));
 }
@@ -1608,9 +1645,27 @@ $("dontKnow").onclick=()=>{
 }
 function finish(){
   clearSession();setTestActive(false);
-  alert("本轮完成。今天的新词批次不会自动追加；想继续可以复习今天或已学旧词。");
+  alert("本轮完成。可以继续首次学习并追加新词，或继续补入到期旧词；每日参考目标不是上限。");
   $("test").style.display="none";$("home").style.display="block";updateHome()
 }
+
+$("markKnownTest").onclick=async()=>{
+  if(gradedSaving||TRKIStore.blocked){alert("当前作答还在保存，不能标记。请完成保存再操作。");return}
+  if(gradedSave){try{await gradedSave}catch(e){return}}
+  const c=db.cards[queue[qi]];if(!c)return;
+  if(!confirm(`将「${c.term}」标记为「我会了」？之后的自动复习会跳过，可在查词页撤销。不会计入一次正确答案。`))return;
+  const before=JSON.parse(JSON.stringify(c)),oldDay=JSON.parse(JSON.stringify(db.day));
+  const cursor=answered?qi+1:qi+1;
+  c.manualMastered={active:true,at:Date.now(),source:"user"};
+  if(mode==="today"&&!answered)db.day.qi=Math.min((db.day.qi||0)+1,(db.day.queue||[]).length);
+  $("markKnownTest").disabled=true;
+  try{
+    await TRKIStore.saveVocabStep(c,db.day,sessionSnapshot(cursor));
+    qi=cursor;answered=false;gradedSave=null;
+    await showQ();
+  }catch(e){db.cards[id(c)]=before;db.day=oldDay;alert("『我会了』标记未保存，已停止跳题："+e.message)}
+  finally{$("markKnownTest").disabled=false}
+};
 $("exit").textContent="暂存本轮并返回首页";
 $("exit").onclick=async()=>{
   if(gradedSaving || TRKIStore.blocked){alert("上一题还没保存成功。请下载内存备份，不要退出测试页面。");return}
@@ -1624,7 +1679,7 @@ $("exit").onclick=async()=>{
 
 $("resetToday").onclick=()=>{
   if(!confirm("重建今天任务会重新生成今日队列，但不会删除历史成绩。确定继续？"))return;
-  clearSession();db.day.initialized=false;db.day.queue=[];db.day.qi=0;buildToday(true);updateHome();alert("今天任务已按当前新词上限重新生成并锁定。")
+  clearSession();db.day.initialized=false;db.day.queue=[];db.day.qi=0;buildToday(true);updateHome();alert("今日任务已重新生成。注意原队列可能改变，正常情况下优先使用『追加新词』。")
 }
 
 // Browser
@@ -1663,6 +1718,7 @@ function browserFiltered(){
   let arr=all().slice().filter(matchesBrowserQuery);
   if(browserFilter==="recent")arr=arr.filter(c=>withinDays(c.addedAt,7));
   else if(browserFilter==="unlearned")arr=arr.filter(c=>!hasInitialStudy(c));
+  else if(browserFilter==="manualMastered")arr=arr.filter(isManuallyMastered);
   else if(browserFilter==="consolidating")arr=arr.filter(isConsolidating);
   else if(browserFilter==="stable")arr=arr.filter(isStable);
   else if(browserFilter==="weak")arr=arr.filter(c=>c.status!=="new"&&((c.lapses||0)>0||(c.streak||0)<2));
@@ -1725,15 +1781,16 @@ $("bGo").onclick=()=>{if(!browserDeck.length)return;let n=Number($("bJump").valu
 $("bJump").onkeydown=e=>{if(e.key==="Enter")$("bGo").click()};
 $("browserCard").addEventListener("touchstart",e=>{const t=e.changedTouches&&e.changedTouches[0];if(!t)return;browserSwipeX=t.clientX;browserSwipeY=t.clientY;browserSwiped=false},{passive:true});
 $("browserCard").addEventListener("touchend",e=>{const t=e.changedTouches&&e.changedTouches[0];if(!t||browserSwipeX===null)return;const dx=t.clientX-browserSwipeX,dy=t.clientY-browserSwipeY;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.2){browserSwiped=true;browserMove(dx<0?1:-1);setTimeout(()=>browserSwiped=false,250)}browserSwipeX=browserSwipeY=null},{passive:true});
-$("browserCard").onclick=e=>{if(browserSwiped)return;if(e.target.closest&&e.target.closest("#bAccepted, #bCopyPack"))return;$("browserCard").classList.toggle("flipped")};
+$("browserCard").onclick=e=>{if(browserSwiped)return;if(e.target.closest&&e.target.closest("#bAccepted, #bCopyPack, #bToggleKnown"))return;$("browserCard").classList.toggle("flipped")};
 function renderBrowser(){
   const empty=!browserDeck.length;$("browserEmpty").classList.toggle("hidden",!empty);$("browserMain").classList.toggle("hidden",empty);$("bSlider").disabled=empty;$("bJump").disabled=empty;$("bGo").disabled=empty;
   if(empty){$("bCount").textContent="0 / 0";$("bSlider").min=1;$("bSlider").max=1;$("bSlider").value=1;$("bJump").value=1;return}
   const c=browserDeck[bi];$("browserCard").classList.remove("flipped");$("bCount").textContent=`${bi+1} / ${browserDeck.length}`;$("bSlider").min=1;$("bSlider").max=browserDeck.length;$("bSlider").value=bi+1;$("bJump").min=1;$("bJump").max=browserDeck.length;$("bJump").value=bi+1;
-  const badges=`<span class="badge">${esc(c.level)}</span>${c.g?'<span class="badge">G</span>':""}<span class="badge">${esc(masteryLabel(c))}</span>`;$("bBadges").innerHTML=$("bBadges2").innerHTML=badges;
+  const badges=`<span class="badge">${esc(c.level)}</span>${c.g?'<span class="badge">G</span>':""}<span class="badge">${esc(masteryLabel(c))}</span>${isManuallyMastered(c)?'<span class="badge">✓ 我会了（手动排除）</span>':''}`;$("bBadges").innerHTML=$("bBadges2").innerHTML=badges;
   $("bTerm").textContent=c.term;$("bTerm2").textContent=c.term;$("bMeaning").textContent=c.meaning;
   $("bStudyDetails").innerHTML=introDetailHTML(c)||'<div class="muted">这张词卡目前只有基础释义，还没有额外学习信息。</div>';
   $("bCopyStatus").textContent="";
+  $("bToggleKnown").textContent=isManuallyMastered(c)?"↩ 恢复自动复习":"✓ 我会了 · 暂不再测";
   const added=c.addedAt?new Date(c.addedAt).toLocaleDateString():"旧库数据 · 无精确加入日期";$("bMeta").textContent=`${masteryLabel(c)} · 测试 ${c.seen||0} 次 · 连续正确 ${c.streak||0} · 加入：${added}`;
   const custom=[
     ...(Array.isArray(c.acceptedAnswers)?c.acceptedAnswers:[]).map(v=>({v,type:"typing",label:"词汇答案"})),
@@ -1756,6 +1813,20 @@ function renderBrowser(){
 }
 
 
+
+$("bToggleKnown").onclick=async e=>{
+  e.stopPropagation();const c=browserDeck[bi];if(!c)return;
+  const turnOn=!isManuallyMastered(c);
+  if(!confirm(turnOn?`将 ${c.term} 暂时排除自动复习？原学习记录不删除。`:`恢复 ${c.term} 的正常自动复习？`))return;
+  const old=JSON.parse(JSON.stringify(c));c.manualMastered={active:turnOn,at:Date.now(),source:"user"};
+  $("bToggleKnown").disabled=true;
+  try{
+    // One-card atomic save, no SRS mark(), no change of history or nextDue.
+    await TRKIStore.saveVocabStep(c,db.day,savedSession());
+    renderBrowser();updateHome();
+  }catch(err){db.cards[id(c)]=old;alert("手动标记未保存，请核查存储："+err.message)}
+  finally{$("bToggleKnown").disabled=false}
+};
 $("bCopyPack").onclick=async e=>{
   e.stopPropagation();
   const c=browserDeck[bi];if(!c)return;
@@ -1776,8 +1847,8 @@ async function snapshotRollback(reason){
   return TRKIStore.setItem(ROLLBACK_KEY,JSON.stringify({format:"TRKI-C1-VOCAB-ROLLBACK",version:1,reason,savedAt:Date.now(),db,
     session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(TRKIStore.getItem(BROWSER_STATE_KEY)||"null")}));
 }
-$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:"6.6.2",exportedAt:new Date().toISOString(),db,
-  session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(TRKIStore.getItem(BROWSER_STATE_KEY)||"null"),sprint,classReview},null,2));
+$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:"6.8.2",exportedAt:new Date().toISOString(),db,
+  session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(TRKIStore.getItem(BROWSER_STATE_KEY)||"null")},null,2));
 function readJSON(file,cb){if(!file)return;let r=new FileReader();r.onload=async()=>{try{await cb(JSON.parse(r.result))}catch(e){alert("文件解析或写入失败："+e.message)}};r.readAsText(file)}
 $("importBackup").onchange=e=>readJSON(e.target.files[0],async x=>{
   const obj=x&&x.db?x.db:x;if(!obj||!obj.cards){alert("不是有效备份");return}
@@ -1787,13 +1858,7 @@ $("importBackup").onchange=e=>readJSON(e.target.files[0],async x=>{
   if(x&&x.session)await TRKIStore.setItem(SESSION_KEY,JSON.stringify(x.session));else await TRKIStore.removeItem(SESSION_KEY);
   if(x&&x.introSession)await TRKIStore.setItem(INTRO_SESSION_KEY,JSON.stringify(x.introSession));else await TRKIStore.removeItem(INTRO_SESSION_KEY);
   if(x&&x.browserState)await TRKIStore.setItem(BROWSER_STATE_KEY,JSON.stringify(x.browserState));
-  if(x&&x.sprint?.days&&x.sprint?.pass1&&x.sprint?.pass2){
-    await TRKIStore.setItem(SPRINT_KEY,JSON.stringify(x.sprint));sprint=x.sprint;
-  }
-  if(x&&x.classReview?.overrides&&Array.isArray(x.classReview.conflicts)){
-    await TRKIStore.setItem(CLASS_KEY,JSON.stringify(x.classReview));classReview=x.classReview;
-  }
-  updateHome();renderResume();renderIntroResume();sprintRenderHome();alert(`备份恢复并写入成功：${all().length} 个词。旧备份不含冲刺字段时，不会清空独立冲刺进度。`)
+  updateHome();renderResume();renderIntroResume();alert(`备份恢复并写入成功：${all().length} 个词。`)
 });
 $("importVocab").onchange=e=>readJSON(e.target.files[0],async x=>{
   const arr=Array.isArray(x)?x:(x.cards||x.vocabulary||[]);if(!Array.isArray(arr)){alert("词包格式不正确");return}
@@ -1801,15 +1866,9 @@ $("importVocab").onchange=e=>readJSON(e.target.files[0],async x=>{
   const before=all().length;let updated=0;const nowISO=new Date().toISOString(),batch="import-"+nowISO;
   arr.forEach(c=>{if(!c.term||!c.level)return;const k=id(c),ex=db.cards[k],incoming={...c,contentId:k};
     if(!ex){incoming.addedAt=incoming.addedAt||nowISO;incoming.importBatch=incoming.importBatch||batch}else updated++;
-    if(ex&&((incoming.level!==undefined&&incoming.level!==ex.level)||(incoming.g!==undefined&&Boolean(incoming.g)!==Boolean(ex.g)))){
-      const cr=classReview.conflicts;
-      if(!cr.some(x=>x.id===k&&x.importLevel===incoming.level&&x.importG===Boolean(incoming.g)))cr.push({id:k,term:incoming.term,oldLevel:ex.level,oldG:Boolean(ex.g),importLevel:incoming.level,importG:Boolean(incoming.g),at:Date.now()});
-    }
-    db.cards[k]=mergeContent(ex,incoming);
-    if(!ex&&!classReview.newEntries.some(x=>x.id===k))classReview.newEntries.push(sprintSuggestNew(incoming));
+    db.cards[k]=mergeContent(ex,incoming)
   });
-  await save();await TRKIStore.setItem(CLASS_KEY,JSON.stringify(classReview));
-  updateHome();sprintRenderHome();sprintRenderClass();alert(`导入并保存成功：新增 ${all().length-before} 个，更新 ${updated} 个。既有A/R/G标签和学习进度保留；分类冲突 ${classReview.conflicts.length} 项在冲刺分类预览中，未经确认不会覆盖。`)
+  await save();updateHome();alert(`导入并保存成功：新增 ${all().length-before} 个，更新 ${updated} 个。原有学习进度保留。`)
 });
 $("undoLastImport").onclick=async()=>{
   try{
@@ -1826,348 +1885,8 @@ $("undoLastImport").onclick=async()=>{
   }catch(e){alert("撤销未保存，已停止操作："+e.message)}
 };
 
-/* Exam sprint v1: all results are in an independent IndexedDB kv record.
- * NO calls to mark(), save(), saveVocabStep(), or SRS mutators.
- * Current-card identities are the stable db.cards keys.
- */
-const SPRINT_KEY='trki_c1_vocab_exam_sprint_20261121_v1';
-const CLASS_KEY='trki_c1_vocab_class_review_20261121_v1';
-const SPRINT_BEGIN='2026-11-05', SPRINT_EXAM='2026-11-21';
-const SPRINT_DAY_END='2026-11-20';
-const SPRINT_SUGGESTIONS={"диссертация":{"term":"диссерта́ция","old":"A","oldG":false,"new":"R","newG":false,"reason":"学位论文偏学术教育专题；一般议论文可用更高复用的研究/论文表达","confidence":"中","issue":"A→R","disputed":"是"},"постановление":{"term":"постановле́ние","old":"A","oldG":false,"new":"R","newG":false,"reason":"行政决议术语，适合阅读文件；若实际商务信函常用则保留A","confidence":"中","issue":"A→R","disputed":"是"},"ориентировка":{"term":"ориентиро́вка","old":"A","oldG":false,"new":"R","newG":false,"reason":"“导向/定位”义项不稳定且话题专门，建议识别优先","confidence":"中","issue":"A→R","disputed":"是"},"прикладнои":{"term":"прикладно́й","old":"A","oldG":false,"new":"R","newG":false,"reason":"应用性术语常见于科技教育专题，跨话题主动收益有限","confidence":"中","issue":"A→R","disputed":"是"},"редакция":{"term":"реда́кция","old":"A","oldG":false,"new":"R","newG":false,"reason":"编辑部/编辑工作具体名词，阅读优先","confidence":"中","issue":"A→R","disputed":"是"},"подбор персонала":{"term":"подбо́р персона́ла","old":"A","oldG":false,"new":"R","newG":false,"reason":"招聘筛选是职场专门话题；非通用论证骨架","confidence":"中","issue":"A→R","disputed":"是"},"наесться + р.":{"term":"нае́сться + Р.","old":"A","oldG":true,"new":"R","newG":true,"reason":"“吃饱”的生活场景词组，非C1论证常用主动词","confidence":"高","issue":"A→R","disputed":"否"},"созвониться с кем":{"term":"созвони́ться с кем","old":"A","oldG":true,"new":"R","newG":true,"reason":"打电话联络的情境表达，阅读听力识别优先","confidence":"中","issue":"A→R","disputed":"是"},"заголовок":{"term":"заголо́вок","old":"A","oldG":false,"new":"R","newG":false,"reason":"标题名称具体词，非核心论证词","confidence":"中","issue":"A→R","disputed":"是"},"энтузиазм":{"term":"энтузиа́зм","old":"R","oldG":false,"new":"A","newG":false,"reason":"热情与动机的评价词，个人观点和教育工作题材可复用","confidence":"中","issue":"R→A","disputed":"是"},"наглядныи":{"term":"нагля́дный","old":"R","oldG":false,"new":"A","newG":false,"reason":"“直观的”可直接用于说明教学、举例和论证","confidence":"中","issue":"R→A","disputed":"是"},"постороннее мнение":{"term":"посторо́ннее мне́ние","old":"R","oldG":false,"new":"A","newG":false,"reason":"外部意见，辩论立场表达可用","confidence":"中","issue":"R→A","disputed":"是"},"поколебаться":{"term":"поколеба́ться","old":"R","oldG":false,"new":"A","newG":false,"reason":"动摇等立场变化，有一定论证价值","confidence":"中","issue":"R→A","disputed":"是"},"равнодушие":{"term":"равноду́шие","old":"R","oldG":false,"new":"A","newG":false,"reason":"冷漠/漠不关心，社会伦理观点表达","confidence":"中","issue":"R→A","disputed":"是"},"дорожить чем":{"term":"дорожи́ть чем","old":"R","oldG":true,"new":"A","newG":true,"reason":"表达珍视价值/关系，口试观点可用","confidence":"中","issue":"R→A","disputed":"是"},"возразить кому":{"term":"возрази́ть кому","old":"R","oldG":true,"new":"A","newG":true,"reason":"讨论反驳及口试回应可直接使用，带кому格支配","confidence":"高","issue":"R→A","disputed":"否"},"подъезд":{"term":"подъе́зд","old":"A","oldG":false,"new":"R","newG":false,"reason":"楼道/单元门具体生活名词","confidence":"高","issue":"A→R","disputed":"否"},"коляска":{"term":"коля́ска","old":"A","oldG":false,"new":"R","newG":false,"reason":"婴儿车等具体物品","confidence":"高","issue":"A→R","disputed":"否"},"беременныи":{"term":"береме́нный","old":"A","oldG":false,"new":"R","newG":false,"reason":"怀孕形容词，对专题有用但通常非通用主动论证","confidence":"中","issue":"A→R","disputed":"是"},"выгуливать / выгулять":{"term":"выгу́ливать / вы́гулять","old":"A","oldG":true,"new":"R","newG":true,"reason":"遛宠物的场景动作，主动输出优先级较低","confidence":"高","issue":"A→R","disputed":"否"},"поводок":{"term":"поводо́к","old":"A","oldG":false,"new":"R","newG":false,"reason":"宠物牵引绳具体物品","confidence":"高","issue":"A→R","disputed":"否"},"лестница":{"term":"ле́стница","old":"A","oldG":false,"new":"R","newG":false,"reason":"楼梯具体物体；若个人常用可保留A","confidence":"中","issue":"A→R","disputed":"是"},"раскидывать / раскидать":{"term":"раски́дывать / раскида́ть","old":"A","oldG":true,"new":"R","newG":true,"reason":"四处乱扔的叙事情景动词","confidence":"中","issue":"A→R","disputed":"是"},"кататься":{"term":"ката́ться","old":"A","oldG":false,"new":"R","newG":false,"reason":"乘坐兜风/滚动的具体叙事动作","confidence":"中","issue":"A→R","disputed":"是"},"покатиться":{"term":"покати́ться","old":"A","oldG":true,"new":"R","newG":true,"reason":"滚动起来的场景动作","confidence":"高","issue":"A→R","disputed":"否"},"усмехнуться":{"term":"усмехну́ться","old":"A","oldG":true,"new":"R","newG":true,"reason":"文学叙事表情动作，识别价值高","confidence":"高","issue":"A→R","disputed":"否"},"разгибать":{"term":"разгиба́ть","old":"A","oldG":false,"new":"R","newG":false,"reason":"掰直/伸直的具体动作","confidence":"高","issue":"A→R","disputed":"否"},"закатать":{"term":"заката́ть","old":"A","oldG":false,"new":"R","newG":false,"reason":"卷起等具体动作，阅读描述优先","confidence":"中","issue":"A→R","disputed":"是"},"сомкнуть":{"term":"сомкну́ть","old":"A","oldG":true,"new":"R","newG":true,"reason":"合拢动作偏叙事描述","confidence":"中","issue":"A→R","disputed":"是"},"потонуть":{"term":"потону́ть","old":"A","oldG":false,"new":"R","newG":false,"reason":"淹没、沉没，叙述文本识别优先","confidence":"中","issue":"A→R","disputed":"是"},"малолетнии":{"term":"малоле́тний","old":"A","oldG":false,"new":"R","newG":false,"reason":"年龄特征词，特定叙事语境","confidence":"中","issue":"A→R","disputed":"是"},"вертикальныи":{"term":"вертика́льный","old":"A","oldG":false,"new":"R","newG":false,"reason":"垂直方向的描述，科技说明可识别","confidence":"中","issue":"A→R","disputed":"是"},"поцеловать + в.":{"term":"поцелова́ть + В.","old":"A","oldG":true,"new":"R","newG":true,"reason":"亲吻的情境动作，非C1正式论证高频主动骨架","confidence":"高","issue":"A→R","disputed":"否"},"зависеть":{"term":"зави́сеть","old":"R","oldG":true,"new":"A","newG":true,"reason":"条件依赖/因果论证的核心动词，应能主动说出 зависеть от + Р.","confidence":"高","issue":"R→A","disputed":"否"},"серебристыи":{"term":"серебри́стый","old":"A","oldG":false,"new":"R","newG":false,"reason":"颜色和质感描写词，文学识别优先","confidence":"高","issue":"A→R","disputed":"否"},"субординация":{"term":"субордина́ция","old":"A","oldG":false,"new":"R","newG":false,"reason":"上下级关系为组织场景专用概念，阅读理解优先","confidence":"高","issue":"A→R","disputed":"否"},"изысканность":{"term":"изы́сканность","old":"A","oldG":false,"new":"R","newG":false,"reason":"精致高雅的评价词，跨议题复用较受限","confidence":"中","issue":"A→R","disputed":"是"},"пошлость":{"term":"по́шлость","old":"A","oldG":false,"new":"R","newG":false,"reason":"庸俗评价词，价值判断中或可用；按题材调整","confidence":"中","issue":"A→R","disputed":"是"},"потребность":{"term":"потре́бность","old":"R","oldG":true,"new":"A","newG":true,"reason":"需求/需要可在社会与公共政策类议论文中复用","confidence":"高","issue":"R→A","disputed":"否"},"потребитель":{"term":"потреби́тель","old":"A","oldG":false,"new":"R","newG":false,"reason":"消费者具体参与者名词；经济消费题材下可保留A","confidence":"中","issue":"A→R","disputed":"是"},"кажущиися":{"term":"ка́жущийся","old":"R","oldG":false,"new":"R","newG":true,"reason":"词条原始用法栏出现明确且有区分价值的格支配结构，建议逐项核对后加G；该标记不代表把词强制升为A。","confidence":"中","issue":"G待增补","disputed":"是"},"отношение":{"term":"отноше́ние","old":"R","oldG":true,"new":"A","newG":true,"reason":"表达立场和态度的跨题材基础抽象名词","confidence":"高","issue":"R→A","disputed":"否"},"условие":{"term":"усло́вие","old":"R","oldG":true,"new":"A","newG":true,"reason":"表示条件与制约，跨题材写作基础词","confidence":"高","issue":"R→A","disputed":"否"},"необходимость":{"term":"необходи́мость","old":"R","oldG":true,"new":"A","newG":true,"reason":"必要性、论证必要措施的高复用表达","confidence":"高","issue":"R→A","disputed":"否"},"существование":{"term":"существова́ние","old":"R","oldG":true,"new":"A","newG":true,"reason":"存在/生存的抽象概念，适合社会与伦理论证","confidence":"中","issue":"R→A","disputed":"是"},"ценность":{"term":"це́нность","old":"R","oldG":true,"new":"A","newG":true,"reason":"价值、价值观讨论的抽象关键词","confidence":"高","issue":"R→A","disputed":"否"},"способствовать":{"term":"спосо́бствовать","old":"R","oldG":true,"new":"A","newG":true,"reason":"“有助于/促进”是跨教育、社会、科技等议论文常用因果功能；第三格支配重要","confidence":"高","issue":"R→A","disputed":"否"},"основа":{"term":"осно́ва","old":"R","oldG":true,"new":"A","newG":true,"reason":"“……的基础”多话题结构，复用价值高","confidence":"高","issue":"R→A","disputed":"否"},"развитие":{"term":"разви́тие","old":"R","oldG":true,"new":"A","newG":true,"reason":"发展、趋势论述中的高复用词","confidence":"高","issue":"R→A","disputed":"否"},"в результате":{"term":"в результа́те","old":"R","oldG":true,"new":"A","newG":true,"reason":"作为结果的因果连接结构","confidence":"高","issue":"R→A","disputed":"否"},"в связи с":{"term":"в свя́зи с","old":"R","oldG":true,"new":"A","newG":true,"reason":"正式原因/关联表达，有明确书面运用场景","confidence":"高","issue":"R→A","disputed":"否"},"на основе":{"term":"на осно́ве","old":"R","oldG":true,"new":"A","newG":true,"reason":"“以……为基础”论证及信息来源常用框架","confidence":"高","issue":"R→A","disputed":"否"},"претендент":{"term":"претенде́нт","old":"R","oldG":false,"new":"R","newG":true,"reason":"词条原始用法栏出现明确且有区分价值的格支配结构，建议逐项核对后加G；该标记不代表把词强制升为A。","confidence":"中","issue":"G待增补","disputed":"是"}};
-function sprintDefault(){return {format:'TRKI-C1-EXAM-SPRINT',version:1,examDate:SPRINT_EXAM,createdAt:Date.now(),enabled:false,
- config:{dailyTarget:160,errorLimit:3,repeatGap:5},days:{},pass1:{},pass2:{},eventsTotal:0}}
-function classDefault(){return {format:'TRKI-C1-CLASS-REVIEW',version:1,overrides:{},conflicts:[],newEntries:[],savedAt:Date.now()}}
-function safeSprintParse(key,factory){try{const raw=TRKIStore.getItem(key);if(!raw)return factory();const obj=JSON.parse(raw);return obj&&typeof obj==='object'&&!Array.isArray(obj)?obj:factory()}catch(e){console.error(e);return factory()}}
-let sprint=safeSprintParse(SPRINT_KEY,sprintDefault),classReview=safeSprintParse(CLASS_KEY,classDefault);
-if(!sprint.days||!sprint.pass1||!sprint.pass2||!sprint.config){sprint=sprintDefault()}
-if(!classReview.overrides||!Array.isArray(classReview.conflicts)){classReview=classDefault()}
-if(!Array.isArray(classReview.newEntries))classReview.newEntries=[]
-let sprintBusy=false,sprintQuestion=null,sprintQuestionSince=Date.now(),sprintHidden=false;
-let sprintPendingGrade=null;
-const sprintTomorrow=date=>{const [y,m,d]=date.split('-').map(Number);return localDate(new Date(y,m-1,d+1,12).getTime())};
-const sprintPhase=date=>date<'2026-11-12'?1:date<'2026-11-19'?2:3;
-function sprintToday(){return localDate()}
-function sprintValidDate(d){return d>=SPRINT_BEGIN&&d<=SPRINT_DAY_END}
-function sprintLevel(c){const x=classReview.overrides[id(c)];return x&&x.term===c.term&&x.originalLevel===c.level?x.level:c.level}
-function sprintG(c){const x=classReview.overrides[id(c)];return x&&x.term===c.term&&x.originalG===!!c.g?x.g:!!c.g}
-function sprintHash(s){let n=2166136261;for(const ch of String(s)){n^=ch.charCodeAt(0);n=Math.imul(n,16777619)}return n>>>0}
-function sprintQuestionType(c){const level=sprintLevel(c),g=sprintG(c);
- if(g&&governanceSpec(c)&&sprintHash(id(c))%5===0)return 'gov';
- return level==='R'?'mc':'typing';
-}
-function sprintTodayRecord(){return sprint.days[sprintToday()]||null}
-function sprintAllEntries(){return Object.entries(db.cards).filter(([k,c])=>!!c&&c.term&&['A','R'].includes(sprintLevel(c)))}
-function sprintLastResult(key,beforeDay){let latest=null,latestDate='';for(const [date,day] of Object.entries(sprint.days||{})){
- if(date>=beforeDay||date<=latestDate)continue;
- const res=day.results&&day.results[key];if(res){latest=res;latestDate=date}
-}return latest?{...latest,date:latestDate}:null}
-function sprintNeedsRetest(key,date){const last=sprintLastResult(key,date);return last&&last.first!=='correct'}
-function sprintHighRisk(key){const entries=Object.entries(sprint.days).map(([d,x])=>x.results&&x.results[key]).filter(Boolean);
- return entries.reduce((n,r)=>n+(r.errors||0)+(r.first==='fuzzy'?1:0),0)}
-function sprintEligiblePlan(date,existing=new Set()){
- const phase=sprintPhase(date),entries=sprintAllEntries();
- const eligible=(key,c)=>!existing.has(key);
- const retest=entries.filter(([k])=>eligible(k)&&sprintNeedsRetest(k,date)).sort((a,b)=>sprintHighRisk(b[0])-sprintHighRisk(a[0]));
- const out=[];for(const [k] of retest){const couldPass2=phase>=2&&phase<3&&sprint.pass1[k]&&sprint.pass1[k]<date&&!sprint.pass2[k];
-  out.push({id:k,kind:couldPass2?'retest-pass2':'retest',origin:sprintLastResult(k,date).date})}
- const used=new Set([...existing,...out.map(x=>x.id)]);
- const p1=entries.filter(([k])=>!used.has(k)&&!sprint.pass1[k]);
- const p2=entries.filter(([k])=>!used.has(k)&&sprint.pass1[k]&&sprint.pass1[k]<date&&!sprint.pass2[k]);
- if(phase===1)out.push(...p1.map(([k])=>({id:k,kind:'pass1'})));
- else if(phase===2){out.push(...p1.map(([k])=>({id:k,kind:'pass1'})));out.push(...p2.map(([k])=>({id:k,kind:'pass2'})))}
- else{
-  const weak=entries.filter(([k,c])=>!used.has(k)&&(sprintHighRisk(k)>0||sprintG(c)&&sprintLevel(c)==='A'))
-    .sort((a,b)=>sprintHighRisk(b[0])-sprintHighRisk(a[0]));
-  out.push(...weak.map(([k])=>({id:k,kind:'weakness'})));
- }
- return out;
-}
-function sprintPlanDay(date){const cap=Math.max(20,Math.min(500,Number(sprint.config.dailyTarget)||160));
- const plan=sprintEligiblePlan(date).slice(0,cap);
- return {date,phase:sprintPhase(date),target:cap,plan,results:{},events:[],activeMs:0,ended:false,createdAt:Date.now()}
-}
-function sprintDistinctAfter(day,key){const events=day.events||[];let at=-1;for(let i=0;i<events.length;i++)if(events[i].id===key)at=i;
- const different=new Set(events.slice(at+1).map(e=>e.id).filter(k=>k!==key));return different.size}
-function sprintRetriesPending(day){return Object.entries(day.results||{}).filter(([k,r])=>r.errors>0&&!r.corrected&&!r.capped&&r.errors<sprint.config.errorLimit)}
-function sprintNextItem(day){if(!day||day.ended)return null;
- const retries=sprintRetriesPending(day).filter(([key])=>sprintDistinctAfter(day,key)>=sprint.config.repeatGap)
-    .sort((a,b)=>(a[1].lastAt||0)-(b[1].lastAt||0));
- if(retries.length){const [key]=retries[0];return {id:key,kind:'delayed'}}
- for(const item of day.plan){if(!day.results[item.id]&&db.cards[item.id])return item}
- return null;
-}
-function sprintDayMetrics(day){const results=Object.values(day&&day.results||{}),events=day&&day.events||[];
- const correct=results.filter(x=>x.first==='correct').length;
- const firstWrong=results.filter(x=>x.first==='wrong').length;
- const corrected=results.filter(x=>x.corrected).length;
- const capped=results.filter(x=>x.capped||x.errors>=sprint.config.errorLimit).length;
- const dueRetest=day?day.plan.filter(p=>p.kind==='retest'||p.kind==='retest-pass2'):[];
- const retestDone=dueRetest.filter(p=>day.results[p.id]);
- const retestRight=retestDone.filter(p=>day.results[p.id].first==='correct').length;
- const remaining=day?day.plan.filter(p=>!day.results[p.id]).length:0;
- return {unique:results.length,clicks:events.length,correct,firstWrong,corrected,capped,
- firstRate:results.length?correct/results.length:null,retRate:retestDone.length?retestRight/retestDone.length:null,
- retDone:retestDone.length,retCount:dueRetest.length,remaining,retries:sprintRetriesPending(day||{results:{}}).length,
- RWrong:events.filter(e=>e.grade==='wrong'&&e.dimension==='meaning').length,
- AWrong:events.filter(e=>e.grade==='wrong'&&e.dimension==='typing').length,
- GWrong:events.filter(e=>e.grade==='wrong'&&e.dimension==='gov').length,
- correctingRate:firstWrong?corrected/firstWrong:null, tomorrowDue:results.filter(x=>x.first!=='correct').length};
-}
-function sprintPct(v){return v==null?'暂无样本':(100*v).toFixed(1)+'%'}
-function sprintText(key){return db.cards[key]?db.cards[key].term:'[词条已移除：'+key+']'}
-function sprintForecast(){const total=sprintAllEntries().length,p1=Object.keys(sprint.pass1).filter(k=>db.cards[k]).length,p2=Object.keys(sprint.pass2).filter(k=>db.cards[k]).length;
- const date=sprintToday();let remain1=0,remain2=0;for(let d=date;d<'2026-11-19';d=sprintTomorrow(d)){
- if(d<'2026-11-12')remain1++;else remain2++;
- }
- const cap=Math.max(20,Math.min(500,Number(sprint.config.dailyTarget)||160));
- // Optimistic ceiling: assumes no retries and all sessions completed. Not a prediction of accuracy.
- const slots=cap*(remain1+remain2), outstanding=(total-p1)+(total-p2),coverageMax=total?Math.min(1,((p1+p2)+slots)/(2*total)):0;
- const needsPerDay=(remain1+remain2)>0?Math.ceil(outstanding/(remain1+remain2)):0;
- return {total,p1,p2,remain1,remain2,slots,coverageMax,needsPerDay};
-}
-function sprintRenderHome(){const date=sprintToday(),v=sprintForecast(),d=sprintTodayRecord(),m=sprintDayMetrics(d);
- $('sprintSummary').innerHTML=`<b>词库 ${v.total} 条</b> · 第一遍 ${v.p1}/${v.total} · 第二遍 ${v.p2}/${v.total}<br>
-  <span class="muted">今日已测不同词 ${m.unique} · 累计答题 ${m.clicks} · 首次正确 ${sprintPct(m.firstRate)}</span>`;
- $('sprintEstimate').textContent=`两遍覆盖的理论乐观上限 ${Math.round(v.coverageMax*100)}%；按当前每日${sprint.config.dailyTarget}词和余下${v.remain1+v.remain2}个覆盖日，平均需约${v.needsPerDay}次不同词覆盖/日（错题复测会占容量）。`;
- $('sprintStartBtn').textContent=sprint.enabled?'进入 / 继续冲刺测试':'开启考前冲刺（不影响SRS）';
- $('sprintPauseBtn').classList.toggle('hidden',!sprint.enabled);
- $('sprintTarget').value=String(sprint.config.dailyTarget);
- $('sprintErrLimit').value=String(sprint.config.errorLimit);
- $('sprintGap').value=String(sprint.config.repeatGap);
- $('sprintTotal').textContent=v.total;
- $('sprintPass1').textContent=`${v.p1}/${v.total}`;
- $('sprintPass2').textContent=`${v.p2}/${v.total}`;
- $('sprintTodayUnique').textContent=m.unique;
- $('sprintTodayClicks').textContent=m.clicks;
- $('sprintFirstRate').textContent=sprintPct(m.firstRate);
- $('sprintCorrected').textContent=m.corrected;
- $('sprintCapped').textContent=m.capped;
- $('sprintRetestRate').textContent=sprintPct(m.retRate);
- $('sprintTodayPending').textContent=m.remaining;
- $('sprintActiveTime').textContent=Math.round((d?.activeMs||0)/60000)+' 分钟';
- $('sprintWeakStats').textContent=`R识别错误 ${m.RWrong} · A主动输出错误 ${m.AWrong} · G专项错误 ${m.GWrong} · 明天优先复测约 ${m.tomorrowDue} 词 · 仍待延迟复测 ${m.retries}`;
- const hot=Object.entries(d?.results||{}).filter(([_,r])=>r.errors>=2).sort((a,b)=>b[1].errors-a[1].errors).slice(0,5);
- $('sprintRiskList').textContent=hot.length?'反复错误高风险词：'+hot.map(([k,r])=>sprintText(k)+'（'+r.errors+'错）').join('、'):'反复错误高风险词：今天暂未出现';
- $('sprintPhaseInfo').textContent=date>SPRINT_DAY_END?'当前已过冲刺计划截止日，成绩保留为只读。':
-  `第${sprintPhase(date)}阶段；今天目标 ${d?d.plan.length:'待生成'} 个不同词；先做完计划内词，错词仅在间隔足够后追加复测。`;
-}
-function sprintSuggestNew(c){const k=id(c),t=norm(c.term||'');
- const expressive=/(?:способствовать|зависеть|оказывать влияние|в связи с|в результате|на основе)/;
- const concrete=/(?:субординац|поводок|коляск|подъезд|белокур)/;
- let recommended=null,reason='没有足够的跨话题主动使用证据；暂保留同步包标签，待人工核对。';
- if(expressive.test(t)){recommended='A';reason='核心跨话题论证结构候选；建议人工核对固定搭配后主动掌握。'}
- else if(concrete.test(t)){recommended='R';reason='具体物品/身份/场景概念，阅读识别优先；有真实主动需求可保留A。'}
- return {id:k,term:c.term,sourceLevel:c.level,sourceG:!!c.g,suggestedLevel:recommended,suggestedG:!!c.g,reason,at:Date.now()}
-}
-function sprintRenderClass(){const entries=Object.entries(SPRINT_SUGGESTIONS).filter(([key,x])=>{
- const c=db.cards[key];return c&&c.term===x.term&&c.level===x.old&&!!c.g===x.oldG;
- });
- $('sprintClassCount').textContent=`已匹配快照候选 ${entries.length} 条 · 已手动批准 ${Object.keys(classReview.overrides).length} 条 · 导入冲突 ${classReview.conflicts.length} 条 · 新词待审核 ${classReview.newEntries.length} 条`;
- const limit=100;
- $('sprintClassList').innerHTML=entries.slice(0,limit).map(([key,x])=>{const ov=classReview.overrides[key],applied=!!ov;
-  return `<div class="sprint-audit-row"><b class="ru">${esc(x.term)}</b> <span class="muted">${esc(x.old)}${x.oldG?'+G':''} → ${esc(x.new)}${x.newG?'+G':''}</span>
-  <div class="muted">${esc(x.reason)} · ${esc(x.confidence)}${x.disputed==='是'?' · 存争议':''}</div>
-  <button data-ck="${esc(key)}" class="${applied?'':'primary'}">${applied?'撤回此项冲刺临时分类':'逐项批准（只影响冲刺）'}</button></div>`
- }).join('')||'<p class="muted">当前词库没有与10月26日快照完全匹配的候选。请查看分类报告并以最新备份重新审核。</p>';
-  $('sprintClassList').querySelectorAll('button[data-ck]').forEach(b=>b.onclick=()=>sprintToggleClass(b.dataset.ck));
-  $('sprintClassConflictList').innerHTML=classReview.conflicts.length?'<p class="muted"><b>导入分类冲突（已保留旧标签）：</b></p>'+classReview.conflicts.slice(0,50).map((x,i)=>`<div class="sprint-audit-row"><b>${esc(x.term)}</b> <span>${esc(x.oldLevel)}${x.oldG?'+G':''} → ${esc(x.importLevel)}${x.importG?'+G':''}</span><br><button data-conflict="${i}">逐项确认：仅用于冲刺模式</button></div>`).join(''):'<div class="muted">没有新增导入分类冲突。</div>';
-  $('sprintClassConflictList').querySelectorAll('button[data-conflict]').forEach(b=>b.onclick=()=>sprintConfirmConflict(Number(b.dataset.conflict)));
-  $('sprintClassNewList').innerHTML=classReview.newEntries.length?'<p class="muted"><b>新词分类建议（不自动改来源标签）：</b></p>'+classReview.newEntries.slice(-30).reverse().map(x=>`<div class="sprint-audit-row"><b class="ru">${esc(x.term)}</b> ${esc(x.sourceLevel)} → ${esc(x.suggestedLevel||'待人工确认')}<div class="muted">${esc(x.reason)}</div>${x.suggestedLevel&&x.suggestedLevel!==x.sourceLevel?`<button data-new="${esc(x.id)}">逐项批准：只用于冲刺</button>`:''}</div>`).join(''):'<div class="muted">当前没有新导入词需要审查。</div>';
-  $('sprintClassNewList').querySelectorAll('button[data-new]').forEach(b=>b.onclick=()=>sprintConfirmNewSuggestion(b.dataset.new));
-}
-async function sprintToggleClass(key){if(sprintBusy)return;const x=SPRINT_SUGGESTIONS[key],c=db.cards[key];
- if(!x||!c||c.term!==x.term||c.level!==x.old||!!c.g!==x.oldG){alert('词条与快照不一致，暂不允许应用旧建议。');return}
- const was=!!classReview.overrides[key];const msg=was?'撤销此词在冲刺模式中的临时分类？原长期词卡没有更改。':
- `将 ${c.term} 在冲刺模式中由${c.level}${c.g?'+G':''}临时改为${x.new}${x.newG?'+G':''}？\n不会修改SRS标签、历史或当前题目，且可以撤回。`;
- if(!confirm(msg))return;
- const prev=JSON.parse(JSON.stringify(classReview));if(was)delete classReview.overrides[key];
- else classReview.overrides[key]={term:c.term,level:x.new,g:x.newG,originalLevel:c.level,originalG:!!c.g,approvedAt:Date.now()};
- try{await TRKIStore.setItem(CLASS_KEY,JSON.stringify(classReview));sprintRenderClass();sprintRenderHome()}
- catch(e){classReview=prev;alert('分类预览没有保存成功：'+e.message)}
-}
-async function sprintConfirmNewSuggestion(key){const x=classReview.newEntries.find(e=>e.id===key),c=db.cards[key];
- if(!x||!c||c.term!==x.term||!['A','R'].includes(x.suggestedLevel)){alert('当前词库与审核记录不匹配。');return}
- if(!confirm(`只在冲刺模式把${c.term}视作${x.suggestedLevel}？原SRS不更改。`))return;
- const old=JSON.parse(JSON.stringify(classReview));
- classReview.overrides[key]={term:c.term,level:x.suggestedLevel,g:!!c.g,originalLevel:c.level,originalG:!!c.g,approvedAt:Date.now()};
- try{await TRKIStore.setItem(CLASS_KEY,JSON.stringify(classReview));sprintRenderClass();sprintRenderHome()}
- catch(e){classReview=old;alert('未保存成功：'+e.message)}
-}
-async function sprintConfirmConflict(index){const entry=classReview.conflicts[index],c=entry&&db.cards[entry.id];
- if(!entry||!c||c.term!==entry.term||c.level!==entry.oldLevel||!!c.g!==entry.oldG){alert('冲突条目与当前词库不匹配，须重新审核。');return}
- if(!['A','R'].includes(entry.importLevel)){alert('导入等级不是合法A/R，无法采用。');return}
- if(!confirm(`仅在冲刺模式采用导入标签${entry.importLevel}${entry.importG?'+G':''}？原SRS标签不变，可随时撤回。`))return;
- const prev=JSON.parse(JSON.stringify(classReview));
- classReview.overrides[entry.id]={term:c.term,level:entry.importLevel,g:entry.importG,originalLevel:c.level,originalG:!!c.g,approvedAt:Date.now()};
- classReview.conflicts.splice(index,1);
- try{await TRKIStore.setItem(CLASS_KEY,JSON.stringify(classReview));sprintRenderClass();sprintRenderHome()}
- catch(e){classReview=prev;alert('确认未保存：'+e.message)}
-}
-function sprintShowView(){
- $('home').style.display='none';$('test').style.display='none';$('intro').style.display='none';$('browser').style.display='none';
- $('sprintView').style.display='block';requestAnimationFrame(()=>window.scrollTo(0,0));sprintRenderView();
-}
-function sprintReturnHome(){
- if(sprintBusy){alert('正在安全保存本题，保存成功后再返回。');return}
- $('sprintView').style.display='none';$('home').style.display='block';sprintQuestion=null;sprintRenderHome();renderResume();
-}
-async function sprintStart(){if(sprintBusy)return;const date=sprintToday();if(!sprintValidDate(date)){
- alert('本版冲刺排程只在2026-11-05至2026-11-20生成，其他日期保留成绩只读。');return
- }
- if(!sprint.enabled&&!confirm('开启独立考前冲刺？\n冲刺答题只存入独立记录，不修改原SRS的分数、到期时间和原测试会话。'))return;
- const before=JSON.parse(JSON.stringify(sprint));sprint.enabled=true;
- if(!sprint.days[date])sprint.days[date]=sprintPlanDay(date);
- try{await TRKIStore.setItem(SPRINT_KEY,JSON.stringify(sprint));sprintShowView()}
- catch(e){sprint=before;alert('无法安全保存冲刺会话，已停止：'+e.message)}
-}
-async function sprintPause(){if(!confirm('暂停冲刺模式？已保存的冲刺成绩保留，正常SRS不受影响。'))return;
- const old=sprint.enabled;sprint.enabled=false;try{await TRKIStore.setItem(SPRINT_KEY,JSON.stringify(sprint));sprintRenderHome()}
- catch(e){sprint.enabled=old;alert('保存失败：'+e.message)}
-}
-async function sprintSaveConfig(){const target=Number($('sprintTarget').value),errorLimit=Number($('sprintErrLimit').value),gap=Number($('sprintGap').value);
- if(!Number.isInteger(target)||target<20||target>500||![2,3].includes(errorLimit)||![3,5,8,10].includes(gap)){alert('目标20–500，错误上限2/3，间隔3/5/8/10个不同词。');return}
- const prev=JSON.parse(JSON.stringify(sprint));sprint.config={dailyTarget:target,errorLimit,repeatGap:gap};
- try{await TRKIStore.setItem(SPRINT_KEY,JSON.stringify(sprint));sprintRenderHome();if($('sprintView').style.display==='block')sprintRenderView()}
- catch(e){sprint=prev;alert('设置保存失败：'+e.message)}
-}
-async function sprintExtendToday(){const day=sprintTodayRecord();if(!day||day.ended)return;
- const want=Math.max(0,sprint.config.dailyTarget-day.plan.length);if(!want){alert('今天已分配的独立词条数达到当前目标；调大每日目标后可以追加。');return}
- const existing=new Set(day.plan.map(x=>x.id)),add=sprintEligiblePlan(day.date,existing).slice(0,want);
- if(!add.length){alert('已没有符合当前阶段条件、且今天未分配的词条。');return}
- if(!confirm(`把 ${add.length} 个不同词加入今天队尾？不会重排已有题目和历史。`))return;
- const prev=JSON.parse(JSON.stringify(sprint));day.plan.push(...add);
- try{await TRKIStore.setItem(SPRINT_KEY,JSON.stringify(sprint));sprintRenderView()}
- catch(e){sprint=prev;alert('追加保存失败：'+e.message)}
-}
-async function sprintEndDay(){const day=sprintTodayRecord();if(!day||day.ended)return;
- const m=sprintDayMetrics(day);if(!confirm(`提前结束今天？\n计划中还有 ${m.remaining} 个不同词未接触，它们不会算作已覆盖；下一学习日会从未覆盖池重新安排。\n历史答题不会删除。`))return;
- const prev=JSON.parse(JSON.stringify(sprint));day.ended=true;day.endedAt=Date.now();
- try{await TRKIStore.setItem(SPRINT_KEY,JSON.stringify(sprint));sprintRenderView()}
- catch(e){sprint=prev;alert('结束状态保存失败：'+e.message)}
-}
-function sprintDistractors(c){const correct=coreMeaning(c);let pool=all().filter(x=>id(x)!==id(c))
-  .map(coreMeaning).filter(x=>x&&x!=='（词义数据缺失）'&&x!==correct);
- pool=[...new Set(pool)];
- pool.sort((a,b)=>(sprintHash(id(c)+'|'+a)-sprintHash(id(c)+'|'+b)));
- return pool.slice(0,3)
-}
-function sprintQuestionBox(day,item){const c=db.cards[item.id];if(!c)return false;
- sprintQuestion=item;sprintPendingGrade=null;sprintQuestionSince=Date.now();
- const result=day.results[item.id],type=sprintQuestionType(c);sprintQuestion.type=type;
- $('sprintQuestionLabel').textContent=`${result?'延迟复测':'首次出现'} · ${item.kind} · ${sprintLevel(c)}${sprintG(c)?'+G':''}`;
- $('sprintQuestionHint').textContent=type==='mc'?'俄语 → 中文 · 四选一':type==='gov'?'格支配/固定搭配 · 只需填写结构':'中文 → 俄语 · 回忆核心词形';
- $('sprintPrompt').innerHTML=type==='mc'?`<span class="ru">${esc(c.term)}</span>`:
- type==='gov'?`写出 <span class="ru">${esc(govPromptHead(c))}</span> 的支配结构`:`<span>${esc(coreMeaning(c))}</span>`;
- const ans=$('sprintAnswers');ans.innerHTML='';$('sprintFeedback').innerHTML='';$('sprintFeedback').className='feedback';
- $('sprintNextBtn').classList.add('hidden');$('sprintWrongBtn').classList.remove('hidden');$('sprintFuzzyBtn').classList.add('hidden');
- if(type==='mc'){
-  const correct=coreMeaning(c),options=[correct,...sprintDistractors(c)].filter((x,i,a)=>a.indexOf(x)===i).slice(0,4);
-  if(options.length!==4){ans.innerHTML='<div class="muted">此词缺少足够明确的不重复干扰项，请选“不认识”或使用人工判断。</div>';return true}
-  for(let i=options.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[options[i],options[j]]=[options[j],options[i]]}
-  const box=document.createElement('div');box.className='choices';for(const value of options){const b=document.createElement('button');b.textContent=value;
-   b.onclick=()=>{if(sprintPendingGrade||sprintBusy)return;
-     if(value===correct){sprintPendingGrade={grade:'correct',dimension:'meaning'};
-       $('sprintFeedback').className='feedback ok';$('sprintFeedback').textContent='选对了。请确认是否真的认识，或点「蒙对/不确定」。';
-       $('sprintConfirmBtn').classList.remove('hidden');$('sprintFuzzyBtn').classList.remove('hidden');
-       [...box.children].forEach(x=>x.disabled=true)
-     }else{sprintCommitGrade('wrong','meaning')}
-   };box.appendChild(b)}ans.appendChild(box)
- }else{
-  const inp=document.createElement('input');inp.placeholder=type==='gov'?'例如：на + В. / от + Р.':'输入俄语词或表达';inp.autocomplete='off';inp.autocapitalize='off';inp.spellcheck=false;
-  const b=document.createElement('button');b.textContent='提交';b.className='primary';b.style.marginTop='9px';
-  b.onclick=()=>{if(sprintBusy||sprintPendingGrade)return;const v=inp.value.trim();const correct=type==='gov'?sameGovAnswer(c,v):!!typingMatch(c,v);
-   if(correct){sprintCommitGrade('correct',type==='gov'?'gov':'typing');return}
-   sprintPendingGrade={grade:'manual',dimension:type==='gov'?'gov':'typing'};
-   const fb=$('sprintFeedback');fb.className='feedback mid';fb.innerHTML=`答案暂不匹配：<span class="ru">${esc(v||'（空）')}</span><br>库中：<span class="ru">${esc(c.term)}</span><br>请选择：`;
-   const bar=document.createElement('div');bar.className='actions';
-   const accepted=document.createElement('button');accepted.textContent='我的表达可接受';accepted.onclick=()=>sprintCommitGrade('correct',type==='gov'?'gov':'typing');
-   const wrong=document.createElement('button');wrong.textContent='确实答错';wrong.onclick=()=>sprintCommitGrade('wrong',type==='gov'?'gov':'typing');
-   bar.append(accepted,wrong);fb.append(bar);inp.disabled=b.disabled=true;
-   $('sprintWrongBtn').classList.add('hidden')
-  };inp.onkeydown=e=>{if(e.key==='Enter')b.click()};ans.append(inp,b)
- }
- $('sprintConfirmBtn').classList.add('hidden');return true
-}
-function sprintRenderView(){sprintRenderHome();const date=sprintToday(),day=sprintTodayRecord();if(!day){$('sprintView').style.display='none';$('home').style.display='block';sprintRenderHome();return}
- const m=sprintDayMetrics(day),f=sprintForecast();
- $('sprintViewCount').textContent=`今日不同词 ${m.unique}/${day.plan.length} · 答题 ${m.clicks}次 · 剩余首次接触 ${m.remaining}`;
- $('sprintViewStats').textContent=`首次正确 ${m.correct}（${sprintPct(m.firstRate)}） · 当日纠正 ${m.corrected} · 错误封顶 ${m.capped} · 次日复测 ${m.retDone}/${m.retCount}（首次正确率 ${sprintPct(m.retRate)}）`;
- $('sprintViewTime').textContent=`本轮有效答题时间（近似）${Math.round((day.activeMs||0)/60000)}分钟 · 错词待延迟复测 ${m.retries} · 错误上限 ${sprint.config.errorLimit} · 间隔 ${sprint.config.repeatGap} 个不同词`;
- $('sprintViewBar').style.width=day.plan.length?`${Math.round(m.unique/day.plan.length*100)}%`:'0%';
- const next=sprintNextItem(day);
- if(!next){sprintQuestion=null;$('sprintQuestionLabel').textContent=day.ended?'今天已提前结束':'今日可测任务已完成';
-  $('sprintQuestionHint').textContent='';$('sprintPrompt').textContent=day.ended?'未做完的不同词仍是未覆盖，下一学习日重新安排。':
-  m.retries?`有 ${m.retries} 个错词未达到“间隔${sprint.config.repeatGap}个不同词”的复测条件，顺延下一学习日；不会连续刷同一词。`:'已完成今天可执行的任务。错词明天会优先复测。';
-  $('sprintAnswers').innerHTML='';$('sprintFeedback').textContent='';
-  ['sprintWrongBtn','sprintFuzzyBtn','sprintConfirmBtn','sprintNextBtn'].forEach(k=>$(k).classList.add('hidden'));
- }else{
-  sprintQuestionBox(day,next)
- }
-}
-async function sprintCommitGrade(grade,dimension){if(sprintBusy||!sprintQuestion)return;
- const date=sprintToday(),day=sprintTodayRecord(),item=sprintQuestion;
- if(!day||!day.plan.some(p=>p.id===item.id)||day.ended){alert('今日任务状态变化，请返回后重新进入。');return}
- const key=item.id,c=db.cards[key];if(!c)return;
- const already=day.results[key];if(already&&(already.corrected||already.capped||already.first==='correct'||already.first==='fuzzy'))return;
- const prev=JSON.parse(JSON.stringify(sprint));const now=Date.now();let r=day.results[key];
- if(!r){const plan=day.plan.find(p=>p.id===key);r={id:key,first:grade,errors:0,attempts:0,corrected:false,capped:false,kind:plan.kind,
-   dimension,createdAt:now};day.results[key]=r;
-   if(plan.kind==='pass1')sprint.pass1[key]=date;
-   else if(plan.kind==='pass2'||plan.kind==='retest-pass2')sprint.pass2[key]=date;
- }
- r.attempts++;r.last=grade;r.lastAt=now;if(grade==='wrong'){r.errors++;if(r.errors>=sprint.config.errorLimit)r.capped=true}
- if(grade==='correct'&&r.first!=='correct')r.corrected=true;
- const elapsed=!sprintHidden?Math.max(0,Math.min(120000,now-sprintQuestionSince)):0;
- day.activeMs=(day.activeMs||0)+elapsed;
- day.events.push({id:key,grade,dimension,kind:item.kind,time:now});sprint.eventsTotal=(sprint.eventsTotal||0)+1;
- // User's permanent SRS state (db.cards, db.day, original session) is untouched.
- sprintBusy=true;['sprintWrongBtn','sprintFuzzyBtn','sprintConfirmBtn'].forEach(k=>$(k).disabled=true);
- try{await TRKIStore.setItem(SPRINT_KEY,JSON.stringify(sprint));
-  $('sprintFeedback').className='feedback '+(grade==='correct'?'ok':grade==='fuzzy'?'mid':'bad');
-  $('sprintFeedback').innerHTML=`${grade==='correct'?(r.corrected?'✅ 当日纠正（不等于首次正确）':'✅ 首次正确'):grade==='fuzzy'?'△ 不确定，次日优先复测':r.capped?'❌ 今日错误达到上限，次日优先复测':'❌ 已记录实际错误次数：'+r.errors}
-   <br><b>正确答案：</b><span class="ru">${esc(c.term)}</span> — ${esc(coreMeaning(c))}
-   <div class="muted">${esc(compactUsage(c,dimension==='gov'?'gov':'general'))}</div>`;
-  $('sprintWrongBtn').classList.add('hidden');$('sprintFuzzyBtn').classList.add('hidden');$('sprintConfirmBtn').classList.add('hidden');
-  $('sprintNextBtn').classList.remove('hidden');$('sprintNextBtn').disabled=false;
-  sprintRenderHome();$('sprintViewCount').textContent=`今日不同词 ${Object.keys(day.results).length}/${day.plan.length} · 答题 ${day.events.length} 次`;
- }catch(e){sprint=prev;alert('这次作答没有安全保存，已停止继续，请检查存储：'+e.message);
- $('sprintNextBtn').classList.add('hidden')}
- finally{sprintBusy=false;['sprintWrongBtn','sprintFuzzyBtn','sprintConfirmBtn'].forEach(k=>$(k).disabled=false)}
-}
-function sprintPrevious(){const day=sprintTodayRecord();const e=day&&day.events[day.events.length-1];if(!e){alert('今天还没有可查看的上一题记录。');return}
- const c=db.cards[e.id];$('sprintPreviousInfo').innerHTML=c?`上一条：<b class="ru">${esc(c.term)}</b> · ${esc(coreMeaning(c))} · ${esc(e.grade==='correct'?'正确':e.grade==='fuzzy'?'模糊':'错误')}`:
- `上一条ID：${esc(e.id)}（词条目前不在词库中）`;
-}
-function sprintExport(){download('TRKI_C1_sprint_independent_backup_'+localDate()+'.json',JSON.stringify({format:'TRKI-C1-SPRINT-CANDIDATE-BACKUP',version:1,exportedAt:new Date().toISOString(),sprint,classReview,sourceCount:all().length},null,2))}
-async function sprintImport(file){if(!file)return;readJSON(file,async x=>{
- if(x?.format!=='TRKI-C1-SPRINT-CANDIDATE-BACKUP'||!x.sprint?.days||!x.sprint?.pass1||!x.sprint?.pass2){alert('不是有效冲刺独立备份，未写入任何数据。');return}
- if(!confirm('恢复冲刺独立备份？此操作不会修改原SRS，但会替换当前冲刺成绩。请先导出当前冲刺备份以便回退。'))return;
- const oldS=JSON.parse(JSON.stringify(sprint)),oldC=JSON.parse(JSON.stringify(classReview));
- try{await TRKIStore.setItem(SPRINT_KEY,JSON.stringify(x.sprint));
-   if(x.classReview?.overrides&&Array.isArray(x.classReview.conflicts))await TRKIStore.setItem(CLASS_KEY,JSON.stringify(x.classReview));
-   sprint=x.sprint;if(x.classReview?.overrides)classReview=x.classReview;sprintRenderHome();sprintRenderClass();alert('冲刺独立备份恢复成功，SRS未修改。')
- }catch(e){try{await TRKIStore.setItem(SPRINT_KEY,JSON.stringify(oldS));await TRKIStore.setItem(CLASS_KEY,JSON.stringify(oldC))}catch(_){ }sprint=oldS;classReview=oldC;alert('恢复失败，已尝试回退：'+e.message)}
-})}
-$('sprintStartBtn').onclick=sprintStart;
-$('sprintPauseBtn').onclick=sprintPause;
-$('sprintSaveSettings').onclick=sprintSaveConfig;
-$('sprintGrowDay').onclick=sprintExtendToday;
-$('sprintBackBtn').onclick=sprintReturnHome;
-$('sprintEndBtn').onclick=sprintEndDay;
-$('sprintPrevBtn').onclick=sprintPrevious;
-$('sprintNextBtn').onclick=()=>{if(sprintBusy)return;sprintRenderView();requestAnimationFrame(()=>window.scrollTo(0,0))};
-$('sprintWrongBtn').onclick=()=>sprintCommitGrade('wrong',sprintQuestion?.type==='mc'?'meaning':sprintQuestion?.type==='gov'?'gov':'typing');
-$('sprintFuzzyBtn').onclick=()=>sprintCommitGrade('fuzzy',sprintQuestion?.type==='mc'?'meaning':sprintQuestion?.type==='gov'?'gov':'typing');
-$('sprintConfirmBtn').onclick=()=>sprintCommitGrade('correct',sprintQuestion?.type==='mc'?'meaning':sprintQuestion?.type==='gov'?'gov':'typing');
-$('sprintExportBtn').onclick=sprintExport;
-$('sprintImportFile').onchange=e=>sprintImport(e.target.files[0]);
-$('sprintClassToggle').onclick=()=>{const x=$('sprintClassReview');x.classList.toggle('hidden');if(!x.classList.contains('hidden'))sprintRenderClass()};
-window.addEventListener('visibilitychange',()=>{sprintHidden=document.hidden;sprintQuestionSince=Date.now()});
-// If browser navigation reloads during sprint, records survive in IndexedDB.
-// Page stays on Home until user chooses resume, so original SRS resume remains intact.
 setManualScrollRestoration();
-load();updateHome();sprintRenderHome();renderResume();renderIntroResume();
+load();updateHome();renderResume();renderIntroResume();
 if(testWasActive()&&savedSession()){
   // iOS/Safari/WebView 若中途重载当前标签页，直接回到刚才的测试。
   setTimeout(()=>resumeSavedSession(),0)
@@ -2193,5 +1912,5 @@ TRKIStore.init().then((ok) => {
   warning.textContent='存储 v2 尚未可用，为保护已有数据，已停止加载此页面：'+error.message+'。请先到 Hub 恢复三库 JSON，不要清理浏览器数据。';
   document.body.prepend(warning);
 });
-</script><div style="position:fixed;top:0;right:0;z-index:900;background:#efe7ff;color:#40316d;padding:3px 8px;font:11px sans-serif;opacity:.9;border-radius:0 0 0 9px">Storage v2 Candidate</div>
+</script><div style="position:fixed;top:0;right:0;z-index:900;background:#efe7ff;color:#40316d;padding:3px 8px;font:11px sans-serif;opacity:.9;border-radius:0 0 0 9px">Storage v2 · SRS Flexible Candidate</div>
 </body></html>
