@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>ТРКИ-C1 词汇复习 v6.8.2 Candidate · 原SRS自由任务</title>
+<title>ТРКИ-C1 词汇复习 v6.8.3 Candidate · 原SRS自由任务</title>
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
@@ -160,7 +160,7 @@ button,input,select{touch-action:manipulation}
 <div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
-<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.8.2 SRS Flexible Candidate</span></h1>
+<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.8.3 Aspect Pair Candidate</span></h1>
 <div class="home-sub-compact">先学习，再测试。查词、看板、设置和备份都保留，但默认收起来，免得每次为了背个词先进行一次网页徒步旅行。</div>
 
 <div class="quick-zone">
@@ -674,9 +674,10 @@ function stripMarks(s){return (s||"").normalize("NFD").replace(/[\u0300-\u036f]/
 function norm(s){return stripMarks(s).toLowerCase().replace(/ё/g,"е").trim().replace(/\s+/g," ")}
 function id(c){return c.contentId||norm(c.term)}
 function localDate(ts=Date.now()){let d=new Date(ts);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
-function all(){return Object.values(db.cards)}
+function all(){return Object.values(db.cards).filter(c=>!c.pairAliasOf)}
+function rawAll(){return Object.values(db.cards)}
 function isManuallyMastered(c){return !!(c&&c.manualMastered&&c.manualMastered.active===true)}
-function testable(c){return !!c&&!isManuallyMastered(c)}
+function testable(c){return !!c&&!c.pairAliasOf&&!isManuallyMastered(c)}
 function clampNumber(x,lo,hi,fallback){const n=Number(x);return Number.isFinite(n)?Math.max(lo,Math.min(hi,Math.floor(n))):fallback}
 function dailyWrongCount(c,date=localDate()){return (c.history||[]).filter(h=>h&&h.grade==="wrong"&&h.time&&localDate(h.time)===date).length}
 function maxWrong(){return clampNumber(db.settings.wrongCap,2,3,3)}
@@ -962,7 +963,8 @@ function updateHome(){
   $("todayAttemptsN").textContent=st.attempts;$("todayWrongN").textContent=st.wrong;$("tomorrowErrorsN").textContent=st.priority;
   $("masteredN").textContent=arr.filter(isManuallyMastered).length;
   const lo=clampNumber(db.settings.dailyGoalLow,0,9999,250),hi=Math.max(lo,clampNumber(db.settings.dailyGoalHigh,0,9999,300));
-  $("dailyGoalStatus").textContent=`今日不同词：${st.unique} / 参考 ${lo}–${hi}；这是目标而非上限，复习和新词均可继续追加。`;
+  const foldedCount=rawAll().length-arr.length;
+  $("dailyGoalStatus").textContent=`今日不同词：${st.unique} / 参考 ${lo}–${hi}；这是目标而非上限，复习和新词均可继续追加。${foldedCount?`（体对合并显示${foldedCount}张副卡，原始${rawAll().length}条学习记录仍保留）`:""}`;
   const pendingSaved=savedSession();
   $("startToday").textContent=pendingSaved&&pendingSaved.mode==="today"
     ?`继续原测试（${pendingSaved.qi+1}/${pendingSaved.queue.length}）`
@@ -1068,6 +1070,8 @@ function sameGovAnswer(c,v){
 }
 function typingAnswers(c){
   let arr=[baseTarget(c),...(Array.isArray(c.acceptedAnswers)?c.acceptedAnswers:[])];
+  if(c.pairMeta&&Array.isArray(c.pairMeta.forms))arr.push(...c.pairMeta.forms);
+
   const bt=baseTarget(c);
   const pair=bt.split(/\s*\/\s*/).map(x=>x.trim()).filter(Boolean);
   if(pair.length===2&&pair.every(x=>/^[А-Яа-яЁё́-]+$/u.test(x)))arr.push(...pair);
@@ -1158,6 +1162,9 @@ function introDetailHTML(c){
   if(!hasStructured&&legacyAspect){
     out+=`<div class="study-section"><div class="study-label">动词体 / 体对</div><div class="study-value">${legacyAspect.aspect?`体：${esc(legacyAspect.aspect)}`:""}${legacyAspect.pair?`<br>体对：${esc(legacyAspect.pair)}`:""}</div></div>`
   }
+  if(c.pairMeta&&c.pairMeta.aspectPair&&!((c.study||{}).aspectPair)){
+    out+=`<div class="study-section"><div class="study-label">体对</div><div class="study-value">${esc(c.pairMeta.aspectPair)}</div></div>`;
+  }
   out+=structuredStudyHTML(c);
   if(c.extra)out+=`<div class="study-section"><div class="study-label">搭配 / 支配 / 用法</div><div class="study-value">${esc(c.extra)}</div></div>`;
   if(c.backNote)out+=labeledBackNoteHTML(c.backNote);
@@ -1170,7 +1177,7 @@ function savedIntroSession(){
   try{
     const s=JSON.parse(TRKIStore.getItem(INTRO_SESSION_KEY)||"null");
     if(!s||!Array.isArray(s.queue))return null;
-    s.queue=s.queue.filter(k=>db.cards[k]&&db.cards[k].status==="new");
+    s.queue=s.queue.filter(k=>testable(db.cards[k])&&db.cards[k].status==="new");
     s.i=Math.max(0,Math.min(Number(s.i)||0,s.queue.length));
     if(!s.queue.length||s.i>=s.queue.length){TRKIStore.removeItem(INTRO_SESSION_KEY);return null}
     return s
@@ -1186,7 +1193,7 @@ function renderIntroResume(){
   b.textContent=`继续上次首次学习 · ${s.i+1}/${s.queue.length}`;b.classList.remove("hidden")
 }
 function openIntro(q,start=0){
-  introQueue=q.filter(k=>db.cards[k]);introI=Math.max(0,Math.min(start,introQueue.length-1));
+  introQueue=q.filter(k=>testable(db.cards[k]));introI=Math.max(0,Math.min(start,introQueue.length-1));
   if(!introQueue.length){alert("目前没有待首次学习的新词。新导入的词会出现在这里。");return}
   $("home").style.display="none";$("test").style.display="none";$("browser").style.display="none";$("intro").style.display="block";saveIntroSession();renderIntro()
 }
@@ -1197,7 +1204,7 @@ $("continueIntro").onclick=()=>{const s=savedIntroSession();if(s)openIntro(s.que
 $("introFlip").onclick=()=>{$("introCard").classList.add("flipped")};
 function renderIntro(){
   if(introI>=introQueue.length){finishIntro();return}
-  const c=db.cards[introQueue[introI]];if(!c){introI++;saveIntroSession();renderIntro();return}
+  const c=db.cards[introQueue[introI]];if(!testable(c)){introI++;saveIntroSession();renderIntro();return}
   $("introCard").classList.remove("flipped");$("introCopyStatus").textContent="";
   $("introCount").textContent=`${introI+1} / ${introQueue.length}`;$("introProg").style.width=`${(introI/Math.max(1,introQueue.length))*100}%`;
   const badges=`<span class="badge">${esc(c.level)}</span>${c.g?'<span class="badge">G</span>':""}${c.addedAt?'<span class="badge">新导入</span>':""}`;
@@ -1430,7 +1437,7 @@ $("reviewOld").onclick=()=>{
 async function showQ(){
   // A previously locked queue may still contain words later manually excluded.
   // Skip without grading; only persist an updated cursor. No hidden SRS score.
-  while(qi<queue.length&&(!db.cards[queue[qi]]||isManuallyMastered(db.cards[queue[qi]])||dailyWrongCount(db.cards[queue[qi]])>=maxWrong()||(mode==="today"&&correctedToday(db.cards[queue[qi]])))){
+  while(qi<queue.length&&(!testable(db.cards[queue[qi]])||dailyWrongCount(db.cards[queue[qi]])>=maxWrong()||(mode==="today"&&correctedToday(db.cards[queue[qi]])))){
     qi++;
     if(mode==="today")db.day.qi=Math.min((db.day.qi||0)+1,(db.day.queue||[]).length);
     try{await persistSession(qi)}catch(e){alert("跳过已排除词时未能安全保存，请停止操作："+e.message);return}
@@ -1454,7 +1461,7 @@ async function showQ(){
     $("qKind").textContent="特殊变位 · я / ты / они";$("prompt").innerHTML=`<span class="ru">${c.conjugation.lemma}</span>`;
     makeConj(c)
   }else{
-    $("qKind").textContent="中文 → 俄语 · 输入";$("prompt").textContent=coreMeaning(c);makeInput(c,"typing")
+    $("qKind").textContent=c.pairMeta?"中文 → 俄语 · 输入（体对任选其一）":"中文 → 俄语 · 输入";$("prompt").textContent=coreMeaning(c);makeInput(c,"typing")
   }
 }
 function makeInput(c,type){
@@ -1501,7 +1508,7 @@ function blockNextWhileSaving(value){
 }
 function exportEmergency(){
   download('TRKI_C1_VOCAB_EMERGENCY_'+localDate()+'.json',JSON.stringify({
-    format:'TRKI-C1-SRS-backup',version:'6.8.2-emergency',exportedAt:new Date().toISOString(),db,
+    format:'TRKI-C1-SRS-backup',version:'6.8.3-emergency',exportedAt:new Date().toISOString(),db,
     session:sessionSnapshot(answered?qi+1:qi),storageError:TRKIStore.lastError
   },null,2));
 }
@@ -1847,7 +1854,7 @@ async function snapshotRollback(reason){
   return TRKIStore.setItem(ROLLBACK_KEY,JSON.stringify({format:"TRKI-C1-VOCAB-ROLLBACK",version:1,reason,savedAt:Date.now(),db,
     session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(TRKIStore.getItem(BROWSER_STATE_KEY)||"null")}));
 }
-$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:"6.8.2",exportedAt:new Date().toISOString(),db,
+$("exportBackup").onclick=()=>download("TRKI_C1_backup_"+localDate()+".json",JSON.stringify({format:"TRKI-C1-SRS-backup",version:"6.8.3",exportedAt:new Date().toISOString(),db,
   session:savedSession(),introSession:savedIntroSession(),browserState:JSON.parse(TRKIStore.getItem(BROWSER_STATE_KEY)||"null")},null,2));
 function readJSON(file,cb){if(!file)return;let r=new FileReader();r.onload=async()=>{try{await cb(JSON.parse(r.result))}catch(e){alert("文件解析或写入失败："+e.message)}};r.readAsText(file)}
 $("importBackup").onchange=e=>readJSON(e.target.files[0],async x=>{
@@ -1862,13 +1869,22 @@ $("importBackup").onchange=e=>readJSON(e.target.files[0],async x=>{
 });
 $("importVocab").onchange=e=>readJSON(e.target.files[0],async x=>{
   const arr=Array.isArray(x)?x:(x.cards||x.vocabulary||[]);if(!Array.isArray(arr)){alert("词包格式不正确");return}
+  if(x&&x.format==="TRKI-C1-ASPECT-PAIR-SAFE-PATCH"){
+    for(const c of arr){
+      if(!c.contentId||!db.cards[c.contentId])throw new Error("体对补丁包含当前词库不存在的ID："+String(c.contentId||c.term));
+      if(c.pairAliasOf&&!db.cards[c.pairAliasOf])throw new Error("找不到体对主词条："+c.pairAliasOf);
+    }
+  }
   await snapshotRollback("before-vocab-import");
-  const before=all().length;let updated=0;const nowISO=new Date().toISOString(),batch="import-"+nowISO;
-  arr.forEach(c=>{if(!c.term||!c.level)return;const k=id(c),ex=db.cards[k],incoming={...c,contentId:k};
+  const before=rawAll().length;let updated=0;const nowISO=new Date().toISOString(),batch="import-"+nowISO;
+  arr.forEach(c=>{if(!c.term&&!c.contentId)return;const k=c.contentId||id(c),ex=db.cards[k];
+    if(!ex&&(!c.term||!c.level))throw new Error("内容修正包中出现不存在的词条ID，已拒绝添加："+k);
+    if(c.pairAliasOf && (!db.cards[c.pairAliasOf] || c.pairAliasOf===k))throw new Error("体对合并主词条不存在或不能指向自己："+k);
+    const incoming={...c,contentId:k};
     if(!ex){incoming.addedAt=incoming.addedAt||nowISO;incoming.importBatch=incoming.importBatch||batch}else updated++;
     db.cards[k]=mergeContent(ex,incoming)
   });
-  await save();updateHome();alert(`导入并保存成功：新增 ${all().length-before} 个，更新 ${updated} 个。原有学习进度保留。`)
+  await save();updateHome();alert(`导入并保存成功：新增 ${rawAll().length-before} 个，更新 ${updated} 个。原有学习进度保留。体对折叠仅影响学习显示和抽题，不删除原始记录。`)
 });
 $("undoLastImport").onclick=async()=>{
   try{
@@ -1912,5 +1928,5 @@ TRKIStore.init().then((ok) => {
   warning.textContent='存储 v2 尚未可用，为保护已有数据，已停止加载此页面：'+error.message+'。请先到 Hub 恢复三库 JSON，不要清理浏览器数据。';
   document.body.prepend(warning);
 });
-</script><div style="position:fixed;top:0;right:0;z-index:900;background:#efe7ff;color:#40316d;padding:3px 8px;font:11px sans-serif;opacity:.9;border-radius:0 0 0 9px">Storage v2 · SRS Flexible Candidate</div>
+</script><div style="position:fixed;top:0;right:0;z-index:900;background:#efe7ff;color:#40316d;padding:3px 8px;font:11px sans-serif;opacity:.9;border-radius:0 0 0 9px">Storage v2 · Aspect Pair Candidate v6.8.3</div>
 </body></html>
