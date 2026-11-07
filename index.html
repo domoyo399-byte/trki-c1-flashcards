@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>ТРКИ-C1 词汇复习 v6.8.3 Candidate · 原SRS自由任务</title>
+<title>ТРКИ-C1 词汇复习 v6.8.4 Candidate · 原SRS自由任务</title>
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
@@ -160,7 +160,7 @@ button,input,select{touch-action:manipulation}
 <div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
-<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.8.3 Aspect Pair Candidate</span></h1>
+<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.8.4 Confusable R Candidate</span></h1>
 <div class="home-sub-compact">先学习，再测试。查词、看板、设置和备份都保留，但默认收起来，免得每次为了背个词先进行一次网页徒步旅行。</div>
 
 <div class="quick-zone">
@@ -270,6 +270,7 @@ button,input,select{touch-action:manipulation}
     <div class="taskrow"><label for="dailyGoalHigh">每日不同词参考目标上限</label><input id="dailyGoalHigh" type="number" min="0" max="9999" value="300" inputmode="numeric" style="width:94px"></div>
     <div class="taskrow"><label for="wrongCap">同一词当天最多答错</label><select id="wrongCap" style="width:94px"><option value="3">3次</option><option value="2">2次</option></select></div>
     <div class="taskrow"><label for="repeatGap">错题同日再测至少穿插不同词数</label><input id="repeatGap" type="number" min="1" max="50" value="5" inputmode="numeric" style="width:94px"></div>
+    <div class="taskrow"><label for="confusableR">R类四选一：同根／近形易混词优先</label><select id="confusableR" style="width:125px"><option value="1">开启（推荐）</option><option value="0">关闭（随机）</option></select></div>
     <div class="muted" id="capNote" style="margin-top:8px"></div>
   </div>
 </details>
@@ -664,7 +665,8 @@ function applyBuiltinEnrichment(){
   return n;
 }
 
-let db={cards:{},settings:{newCap:75,dailyGoalLow:250,dailyGoalHigh:300,wrongCap:3,repeatGap:5,conjugationQuiz:true,dailyFreeze:true},day:null};
+let db={cards:{},settings:{newCap:75,dailyGoalLow:250,dailyGoalHigh:300,wrongCap:3,repeatGap:5,conjugationQuiz:true,dailyFreeze:true,confusableR:true},day:null};
+let rChoiceContrasts=[];
 let queue=[],qi=0,mode="today",answered=false,pendingCorrectMC=false,currentQuestionType="";
 let browserDeck=[],bi=0,browserFilter="all",browserSort="original",browserQuery="",browserReturnTarget="home",browserSwipeX=null,browserSwipeY=null,browserSwiped=false;
 let introQueue=[],introI=0;
@@ -758,7 +760,8 @@ function normalizeDB(obj){
   if(out.settings.dailyGoalLow===undefined)out.settings.dailyGoalLow=250;
   if(out.settings.dailyGoalHigh===undefined)out.settings.dailyGoalHigh=300;
   if(out.settings.wrongCap===undefined)out.settings.wrongCap=3;
-  if(out.settings.repeatGap===undefined)out.settings.repeatGap=5;out.cards={};Object.values(obj.cards||{}).forEach(c=>{const nc=normalizeCard(c);out.cards[id(nc)]=nc});return out
+  if(out.settings.repeatGap===undefined)out.settings.repeatGap=5;
+  if(out.settings.confusableR===undefined)out.settings.confusableR=true;out.cards={};Object.values(obj.cards||{}).forEach(c=>{const nc=normalizeCard(c);out.cards[id(nc)]=nc});return out
 }
 
 function baselineCard(c){
@@ -957,7 +960,7 @@ function updateHome(){
   $("introPending").textContent=pending.length;$("introDoneN").textContent=studied.length;renderIntroResume();
   $("todayLabel").textContent=db.day.date;$("newCap").value=String(db.settings.newCap??75);
   $("dailyGoalLow").value=String(db.settings.dailyGoalLow??250);$("dailyGoalHigh").value=String(db.settings.dailyGoalHigh??300);
-  $("wrongCap").value=String(maxWrong());$("repeatGap").value=String(repeatGap());
+  $("wrongCap").value=String(maxWrong());$("repeatGap").value=String(repeatGap());$("confusableR").value=db.settings.confusableR===false?"0":"1";
   const st=dailyActualStats(db.day.date);
   $("todayIntroN").textContent=st.intro;$("todayOldDoneN").textContent=st.old;$("todayUniqueN").textContent=st.unique;
   $("todayAttemptsN").textContent=st.attempts;$("todayWrongN").textContent=st.wrong;$("tomorrowErrorsN").textContent=st.priority;
@@ -1001,6 +1004,12 @@ for(const [field,setting,fallback] of [["newCap","newCap",75],["dailyGoalLow","d
     try{await save();updateHome()}catch(e){db.settings[setting]=before;alert("设置未保存，请重新确认备份与存储状态。")}
   }
 }
+
+$("confusableR").onchange=async()=>{
+  const previous=db.settings.confusableR;
+  db.settings.confusableR=$("confusableR").value==="1";
+  try{await save();updateHome()}catch(e){db.settings.confusableR=previous;updateHome();alert("设置未保存，请检查存储状态。");}
+};
 
 function baseTarget(c){
   let s=(c.term||"").trim();
@@ -1088,12 +1097,115 @@ function typingMatch(c,v){
   const nv=norm(v);
   return typingAnswers(c).find(x=>norm(x)===nv)||null
 }
+// R类辨析：优先同根、近形、前缀对照；其余才用同词性/随机备选。
+// 这里只改变选项来源，不修改词卡标签、meaning、评分或SRS。
+// 人工审定关系组使用已存在词卡的稳定 contentId；不存在的词自动忽略。
+const CONFUSABLE_R_GROUPS=[
+ ["экономическии","экономичныи","эффективныи","эффектныи"],
+ ["земельныи","землянои","земнои","земляне","инопланетныи"],
+ ["эффективныи","эффектныи","экономическии","экономичныи"],
+ ["пересыпать","засыпать","просыпать","рассыпать","сыпать"],
+ ["изложить","выложить","переложить","уложить","отложить","вложить","подложить","разложить"],
+ ["укладывать","прикладывать","откладывать","перекладывать","складывать","закладывать"],
+ ["выбраться из + р.","разобраться в + п.","разобрать","подобрать","выбрать"],
+ ["наговорить","проговорить","проговориться","переговорить","оговорить","обговорить"],
+ ["уклониться","отклониться","наклониться","клониться"],
+ ["отстроить","достроить","застроить","перестроить","пристроить"],
+ ["доделать","отделать","приделать","отделаться"],
+ ["включить","подключить","переключить"],
+ ["выявить","проявить","проявляться"],
+ ["осудить","рассудить","обсуждать / обсудить"],
+ ["отбор","отбирать","перебирать","выбрать","подобрать"],
+ ["желанныи","желательныи"],
+ ["дистанционныи","удаленныи","отдаленныи"],
+ ["отражать / отразить","проявить","показать","продемонстрировать"],
+ ["переговорить","обговорить","обсуждать / обсудить"],
+ ["застать","находить / наити","выявить"],
+ ["заседание","совещание"],
+ ["обработать","отработать","проработать","сработать"],
+ ["земнои","землянои","земельныи","внеземная цивилизация","внеземнои разум"],
+ ["показать","представить","представлять кого/что","предъявить"]
+];
+const R_PREFIXES=["пред","пере","без","бес","под","при","раз","рас","про","пре","ото","от","обо","об","над","на","за","из","вы","до","по","со","с","у","в"];
+function rHeadWord(c){
+  const t=norm(baseTarget(c||{}));
+  const first=(t.split(/[\s/]+/)[0]||"").replace(/[^а-яеё]/g,"");
+  return first.length>=4?first:"";
+}
+function rPartOfSpeech(c){
+  const p=String(c?.study?.pos||c?.learning?.pos||"").toLowerCase();
+  if(p.includes("动词")||p.includes("глаг"))return "verb";
+  if(p.includes("形容词")||p.includes("прилаг"))return "adj";
+  if(p.includes("名词")||p.includes("сущ"))return "noun";
+  if(p.includes("副词")||p.includes("нареч"))return "adv";
+  const w=rHeadWord(c);if(!w)return "unknown";
+  if(/(ться|ить|ать|ять|еть|нуть|ти|чь)$/.test(w))return "verb";
+  if(/(ый|ий|ой|ыи|ии|ои|ая|ое)$/.test(w))return "adj";
+  if(/(ость|ение|ание|ство|ция|ник|ок|ец|ка|ка|изм)$/.test(w))return "noun";
+  return "unknown";
+}
+function rSenses(meaning){
+  return String(meaning||"").split(/[；;、，,。]/).map(x=>x.replace(/[（）()\s]/g,"").trim()).filter(x=>x.length>=2);
+}
+function rAmbiguousChoice(correct,other){
+  if(correct===other)return true;
+  const a=rSenses(correct),b=rSenses(other);
+  // 完全相同的中文核心义会导致两选项都可成立，不能用于单选。
+  return a.some(x=>b.some(y=>x===y || ((x.length>=3&&y.length>=3)&&(x.includes(y)||y.includes(x)))));
+}
+function rPrefixRoots(word){
+  const out=[word];
+  for(const p of R_PREFIXES)if(word.startsWith(p)&&word.length-p.length>=5)out.push(word.slice(p.length));
+  return out;
+}
+function rCommonStart(a,b){let i=0;while(i<a.length&&i<b.length&&a[i]===b[i])i++;return i;}
+function rMorphScore(a,b){
+  const x=rHeadWord(a),y=rHeadWord(b);
+  if(!x||!y||x===y)return 0;
+  let score=0;
+  for(const m of rPrefixRoots(x))for(const n of rPrefixRoots(y)){
+    const common=rCommonStart(m,n);
+    // 去掉不同前缀后仍有 5 个字母以上的共同词干
+    if(common>=5)score=Math.max(score,80+common*3-Math.abs(m.length-n.length)*2);
+  }
+  const common=rCommonStart(x,y);
+  if(common>=6)score=Math.max(score,45+common*2);
+  return score;
+}
+function rShuffleInPlace(xs){for(let i=xs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[xs[i],xs[j]]=[xs[j],xs[i]]}return xs;}
 function distractors(c){
-  let pool=all().filter(x=>id(x)!==id(c)&&x.level==="R").map(coreMeaning).filter(x=>x&&x!=="（词义数据缺失）");
-  if(pool.length<3)pool=all().filter(x=>id(x)!==id(c)).map(coreMeaning).filter(x=>x&&x!=="（词义数据缺失）");
-  pool=[...new Set(pool)];
-  for(let i=pool.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
-  return pool.slice(0,3)
+  rChoiceContrasts=[];
+  const pool=all().filter(x=>id(x)!==id(c)&&coreMeaning(x)!=="（词义数据缺失）");
+  const answer=coreMeaning(c);
+  if(db.settings.confusableR===false){
+    const base=pool.filter(x=>x.level==="R").map(coreMeaning);
+    const more=base.length>=3?base:pool.map(coreMeaning);
+    return rShuffleInPlace([...new Set(more.filter(x=>x!==answer))]).slice(0,3);
+  }
+  const groups=CONFUSABLE_R_GROUPS.filter(g=>g.includes(id(c)));
+  const groupKeys=new Set(groups.flat());
+  const part=rPartOfSpeech(c),used=[answer],picked=[];
+  function pick(candidate){
+    const m=coreMeaning(candidate);
+    if(used.some(x=>rAmbiguousChoice(x,m)))return false;
+    used.push(m);picked.push(m);rChoiceContrasts.push({term:candidate.term,meaning:m});return true;
+  }
+  // 人工对照优先，其次是相同词根（含不同前缀）的词。
+  const targetSingle=!/\s/.test(c.term||"");
+  const near=pool.map(x=>({card:x,curated:groupKeys.has(id(x))?1:0,morph:rMorphScore(c,x),samePos:rPartOfSpeech(x)===part?1:0,single:targetSingle&&!/\s/.test(x.term||"")?1:0}));
+  near.sort((a,b)=>(b.curated-a.curated)||(b.samePos-a.samePos)||(b.single-a.single)||(b.morph-a.morph));
+  for(const item of near){
+    if(picked.length===3)break;
+    if(item.curated||item.morph>=55)pick(item.card);
+  }
+  if(picked.length<3){
+    const leftovers=rShuffleInPlace(pool.filter(x=>rPartOfSpeech(x)===part));
+    for(const x of leftovers){if(picked.length===3)break;pick(x)}
+  }
+  if(picked.length<3){
+    for(const x of rShuffleInPlace(pool.slice())){if(picked.length===3)break;pick(x)}
+  }
+  return picked;
 }
 function qType(c){
   if(c.level==="R")return "mc";
@@ -1445,7 +1557,7 @@ async function showQ(){
   if(qi>=queue.length){finish();return}
   requestAnimationFrame(()=>window.scrollTo(0,0));
   answered=false;pendingCorrectMC=false;$("markKnownTest").classList.remove("hidden");$("markKnownTest").disabled=false;$("next").classList.add("hidden");$("fuzzyBtn").classList.add("hidden");$("dontKnow").classList.remove("hidden");
-  const fb=$("feedback");fb.className="feedback";fb.innerHTML="";
+  const fb=$("feedback");fb.className="feedback";fb.innerHTML="";rChoiceContrasts=[];
   const c=db.cards[queue[qi]];if(!c){qi++;showQ();return}
   $("qCount").textContent=`${qi+1} / ${queue.length}`;$("prog").style.width=`${(qi/Math.max(1,queue.length))*100}%`;
   $("tag").textContent=`${c.level}${c.g?" · G":""} · 今日错 ${dailyWrongCount(c)}/${maxWrong()}`;$("answer").innerHTML="";
@@ -1497,7 +1609,11 @@ function mark(c,grade,errorType){
 function showFeedback(c,cls,title,typeOverride){
   let f=$("feedback"),type=typeOverride||currentQuestionType||qType(c),m=coreMeaning(c);
   f.className="feedback "+cls;
-  f.innerHTML=`${title}<br><b>正确答案：</b><span class="ru">${esc(c.term)}</span> — ${esc(m)}<div class="backdetails">${testDetailHTML(c,type)}</div>`
+  f.innerHTML=`${title}<br><b>正确答案：</b><span class="ru">${esc(c.term)}</span> — ${esc(m)}<div class="backdetails">${testDetailHTML(c,type)}</div>`;
+  if(type==="mc"&&db.settings.confusableR!==false&&rChoiceContrasts.length){
+    const rows=rChoiceContrasts.map(x=>`<div style="margin:5px 0"><span class="ru" style="font-size:19px">${esc(x.term)}</span>：${esc(x.meaning)}</div>`).join("");
+    f.insertAdjacentHTML("beforeend",`<details class="backdetails"><summary style="cursor:pointer;font-weight:700">查看另三个选项对应的俄语词</summary>${rows}</details>`);
+  }
 }
 let gradedSave=null;
 let gradedSaving=false;
@@ -1508,7 +1624,7 @@ function blockNextWhileSaving(value){
 }
 function exportEmergency(){
   download('TRKI_C1_VOCAB_EMERGENCY_'+localDate()+'.json',JSON.stringify({
-    format:'TRKI-C1-SRS-backup',version:'6.8.3-emergency',exportedAt:new Date().toISOString(),db,
+    format:'TRKI-C1-SRS-backup',version:'6.8.4-emergency',exportedAt:new Date().toISOString(),db,
     session:sessionSnapshot(answered?qi+1:qi),storageError:TRKIStore.lastError
   },null,2));
 }
@@ -1928,5 +2044,5 @@ TRKIStore.init().then((ok) => {
   warning.textContent='存储 v2 尚未可用，为保护已有数据，已停止加载此页面：'+error.message+'。请先到 Hub 恢复三库 JSON，不要清理浏览器数据。';
   document.body.prepend(warning);
 });
-</script><div style="position:fixed;top:0;right:0;z-index:900;background:#efe7ff;color:#40316d;padding:3px 8px;font:11px sans-serif;opacity:.9;border-radius:0 0 0 9px">Storage v2 · Aspect Pair Candidate v6.8.3</div>
+</script><div style="position:fixed;top:0;right:0;z-index:900;background:#efe7ff;color:#40316d;padding:3px 8px;font:11px sans-serif;opacity:.9;border-radius:0 0 0 9px">Storage v2 · Confusable R Candidate v6.8.4</div>
 </body></html>
