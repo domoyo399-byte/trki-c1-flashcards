@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>ТРКИ-C1 词汇复习 v6.8.4 Candidate · 原SRS自由任务</title>
+<title>ТРКИ-C1 词汇复习 v6.8.5 Candidate · 原SRS自由任务</title>
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
@@ -160,7 +160,7 @@ button,input,select{touch-action:manipulation}
 <div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
-<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.8.4 Confusable R Candidate</span></h1>
+<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.8.5 Confusable R Candidate</span></h1>
 <div class="home-sub-compact">先学习，再测试。查词、看板、设置和备份都保留，但默认收起来，免得每次为了背个词先进行一次网页徒步旅行。</div>
 
 <div class="quick-zone">
@@ -270,7 +270,7 @@ button,input,select{touch-action:manipulation}
     <div class="taskrow"><label for="dailyGoalHigh">每日不同词参考目标上限</label><input id="dailyGoalHigh" type="number" min="0" max="9999" value="300" inputmode="numeric" style="width:94px"></div>
     <div class="taskrow"><label for="wrongCap">同一词当天最多答错</label><select id="wrongCap" style="width:94px"><option value="3">3次</option><option value="2">2次</option></select></div>
     <div class="taskrow"><label for="repeatGap">错题同日再测至少穿插不同词数</label><input id="repeatGap" type="number" min="1" max="50" value="5" inputmode="numeric" style="width:94px"></div>
-    <div class="taskrow"><label for="confusableR">R类四选一：同根／近形易混词优先</label><select id="confusableR" style="width:125px"><option value="1">开启（推荐）</option><option value="0">关闭（随机）</option></select></div>
+    <div class="taskrow"><label for="confusableR">R类四选一：同根／形近／前缀易混词优先</label><select id="confusableR" style="width:125px"><option value="1">开启（推荐）</option><option value="0">关闭（随机）</option></select></div>
     <div class="muted" id="capNote" style="margin-top:8px"></div>
   </div>
 </details>
@@ -1126,6 +1126,63 @@ const CONFUSABLE_R_GROUPS=[
  ["земнои","землянои","земельныи","внеземная цивилизация","внеземнои разум"],
  ["показать","представить","представлять кого/что","предъявить"]
 ];
+// v6.8.5: 与既有24组分离的形近词人工审核池。关系基于拼写和辨析价值，不声明同词根。
+// 只改变R类错误选项；其中外部对照词不新增到用户词库、不参与调度和SRS。
+const R_ORTHOGRAPHIC_GROUPS=[
+ ["греческий","гречневый","грецкий","грешный"],
+ ["стеклянный","стекольный","стекловидный","стекло"],
+ ["кожный","кожаный","кожевенный"],
+ ["выборный","выборочный"],
+ ["соседний","соседский"],
+ ["душевный","душный","душевой"],
+ ["расчетный","расчетливый"],
+ ["генеральный","генеральский"],
+ ["консультативный","консультационный"],
+ ["бедный","бедовый"],
+ ["водный","водяной"],
+ ["удаленный","удлиненный","отдаленный"],
+ ["корыстный","бескорыстный"],
+ ["подверженный","подвернутый"],
+ ["скрипучий","кипучий"],
+ ["величественный","вещественный"],
+];
+// 已查词典、但不一定是用户词卡的补充干扰项。只供解释，不写入db.cards。
+const R_EXTERNAL_CONTRASTS=[
+ {contentId:"external:грецкий",term:"гре́цкий",meaning:"常见于『核桃』（гре́цкий оре́х）",study:{pos:"形容词"}},
+ {contentId:"external:грешный",term:"гре́шный",meaning:"有罪的；有过错的",study:{pos:"形容词"}},
+ {contentId:"external:стекло",term:"стекло́",meaning:"玻璃材料；玻璃制品",study:{pos:"名词"}},
+];
+// 已核对的正字/重音展示修正仅用于辨析反馈，不改原词卡内容。
+const R_DISPLAY_ONLY=Object.fromEntries([["гречневый","гре́чневый"]].map(([k,v])=>[norm(k),v]));
+const R_AVOID_SYNONYM_PAIR=new Set([
+ ["длительный","продолжительный"], ["обсудить","обговорить"], ["приняться","приступить"],
+ ["удаленный","отдаленный"], ["водный","водяной"],
+].map(pair=>pair.map(norm).sort().join("|")));
+function rLexKey(c){return norm((String(c?.term||"").split(/\s*\/\s*/)[0]||"").split(/\s+/)[0]);}
+function rDisplayTerm(c){return R_DISPLAY_ONLY[rLexKey(c)]||c.term;}
+function rAvoidPair(a,b){return R_AVOID_SYNONYM_PAIR.has([rLexKey(a),rLexKey(b)].sort().join("|"));}
+function rEditDistance(a,b){
+  const m=a.length,n=b.length;
+  if(!m||!n)return Math.max(m,n);
+  let prev=Array.from({length:n+1},(_,i)=>i);
+  for(let i=1;i<=m;i++){
+    const cur=[i];
+    for(let j=1;j<=n;j++)cur[j]=Math.min(cur[j-1]+1,prev[j]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));
+    prev=cur;
+  }
+  return prev[n];
+}
+// 非同根也可因整体拼写相近进入备选；必须同词性且相似度足够高。
+function rVisualScore(a,b){
+  const x=rHeadWord(a),y=rHeadWord(b);
+  if(!x||!y||x===y||Math.abs(x.length-y.length)>5)return 0;
+  if(rPartOfSpeech(a)!==rPartOfSpeech(b))return 0;
+  const distance=rEditDistance(x,y),ratio=1-distance/Math.max(x.length,y.length);
+  // 同形似而不相关的偶然近似仍可能存在，因此放在人工组/可靠同词干关系之后。
+  if(ratio<.67||distance>4)return 0;
+  return 25+Math.round(ratio*55)+(rCommonStart(x,y)>=3?10:0);
+}
+
 const R_PREFIXES=["пред","пере","без","бес","под","при","раз","рас","про","пре","ото","от","обо","об","над","на","за","из","вы","до","по","со","с","у","в"];
 function rHeadWord(c){
   const t=norm(baseTarget(c||{}));
@@ -1182,25 +1239,36 @@ function distractors(c){
     const more=base.length>=3?base:pool.map(coreMeaning);
     return rShuffleInPlace([...new Set(more.filter(x=>x!==answer))]).slice(0,3);
   }
-  const groups=CONFUSABLE_R_GROUPS.filter(g=>g.includes(id(c)));
-  const groupKeys=new Set(groups.flat());
+  const targetLex=rLexKey(c);
+  const grouped=[...CONFUSABLE_R_GROUPS,...R_ORTHOGRAPHIC_GROUPS].map(g=>g.map(norm)).filter(g=>
+    g.includes(id(c))||g.includes(targetLex)||g.includes(norm(c.term||"")));
+  const groupKeys=new Set(grouped.flat());
+  // 确保即使外部高价值干扰词尚未导入词库，仍可用于R类辨析；没有历史或学习状态。
+  const existingLex=new Set([targetLex,...pool.map(rLexKey)]);
+  for(const x of R_EXTERNAL_CONTRASTS){
+    const k=rLexKey(x);if(groupKeys.has(k)&&!existingLex.has(k)){pool.push(x);existingLex.add(k)}
+  }
   const part=rPartOfSpeech(c),used=[answer],picked=[];
   function pick(candidate){
+    if(rAvoidPair(c,candidate))return false;
     const m=coreMeaning(candidate);
     if(used.some(x=>rAmbiguousChoice(x,m)))return false;
-    used.push(m);picked.push(m);rChoiceContrasts.push({term:candidate.term,meaning:m});return true;
+    used.push(m);picked.push(m);rChoiceContrasts.push({term:rDisplayTerm(candidate),meaning:m});return true;
   }
-  // 人工对照优先，其次是相同词根（含不同前缀）的词。
   const targetSingle=!/\s/.test(c.term||"");
-  const near=pool.map(x=>({card:x,curated:groupKeys.has(id(x))?1:0,morph:rMorphScore(c,x),samePos:rPartOfSpeech(x)===part?1:0,single:targetSingle&&!/\s/.test(x.term||"")?1:0}));
-  near.sort((a,b)=>(b.curated-a.curated)||(b.samePos-a.samePos)||(b.single-a.single)||(b.morph-a.morph));
+  const near=pool.map(x=>({card:x,curated:groupKeys.has(id(x))||groupKeys.has(rLexKey(x))?1:0,
+    morph:rMorphScore(c,x),visual:rVisualScore(c,x),
+    samePos:rPartOfSpeech(x)===part?1:0,
+    single:targetSingle&&!/\s/.test(x.term||"")?1:0}));
+  // 人工辨析组优先；随后共享词干/前缀关系及同词性的字形近似；最后同词性或随机补足。
+  near.sort((a,b)=>(b.curated-a.curated)||(b.morph-a.morph)||(b.visual-a.visual)||
+    (b.samePos-a.samePos)||(b.single-a.single));
   for(const item of near){
     if(picked.length===3)break;
-    if(item.curated||item.morph>=55)pick(item.card);
+    if(item.curated||item.morph>=55||item.visual>=65)pick(item.card);
   }
   if(picked.length<3){
-    const leftovers=rShuffleInPlace(pool.filter(x=>rPartOfSpeech(x)===part));
-    for(const x of leftovers){if(picked.length===3)break;pick(x)}
+    for(const x of rShuffleInPlace(pool.filter(x=>rPartOfSpeech(x)===part))){if(picked.length===3)break;pick(x)}
   }
   if(picked.length<3){
     for(const x of rShuffleInPlace(pool.slice())){if(picked.length===3)break;pick(x)}
@@ -1624,7 +1692,7 @@ function blockNextWhileSaving(value){
 }
 function exportEmergency(){
   download('TRKI_C1_VOCAB_EMERGENCY_'+localDate()+'.json',JSON.stringify({
-    format:'TRKI-C1-SRS-backup',version:'6.8.4-emergency',exportedAt:new Date().toISOString(),db,
+    format:'TRKI-C1-SRS-backup',version:'6.8.5-emergency',exportedAt:new Date().toISOString(),db,
     session:sessionSnapshot(answered?qi+1:qi),storageError:TRKIStore.lastError
   },null,2));
 }
@@ -2044,5 +2112,5 @@ TRKIStore.init().then((ok) => {
   warning.textContent='存储 v2 尚未可用，为保护已有数据，已停止加载此页面：'+error.message+'。请先到 Hub 恢复三库 JSON，不要清理浏览器数据。';
   document.body.prepend(warning);
 });
-</script><div style="position:fixed;top:0;right:0;z-index:900;background:#efe7ff;color:#40316d;padding:3px 8px;font:11px sans-serif;opacity:.9;border-radius:0 0 0 9px">Storage v2 · Confusable R Candidate v6.8.4</div>
+</script><div style="position:fixed;top:0;right:0;z-index:900;background:#efe7ff;color:#40316d;padding:3px 8px;font:11px sans-serif;opacity:.9;border-radius:0 0 0 9px">Storage v2 · Confusable R Candidate v6.8.5</div>
 </body></html>
