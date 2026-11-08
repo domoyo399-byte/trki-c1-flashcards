@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>ТРКИ-C1 词汇复习 v6.8.5 Candidate · 原SRS自由任务</title>
+<title>ТРКИ-C1 词汇复习 v6.8.7 Candidate · 原SRS自由任务</title>
 <style>
 :root{--bg:#f5f5f8;--p:#fff;--t:#17171a;--m:#777780;--l:#dddde5;--ac:#5b5bd6;--ok:#eaf7ed;--mid:#fff5d3;--bad:#fff0f0;--chip:#f0f0f5}
 @media(prefers-color-scheme:dark){:root{--bg:#111116;--p:#1d1d23;--t:#f5f5f6;--m:#aaaab4;--l:#393942;--ac:#9292ff;--ok:#203127;--mid:#3b351f;--bad:#3c2424;--chip:#292930}}
@@ -20,7 +20,8 @@ button,input,select,.filebtn{width:100%;border:1px solid var(--l);background:var
 .taskrow{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--l)}.taskrow:last-child{border:0}.taskrow span:last-child{text-align:right}
 .freeze{background:var(--chip);padding:10px 12px;border-radius:12px;margin-top:10px;font-size:13px;line-height:1.55}
 #test,#browser,#intro{display:none}.topline{display:flex;justify-content:space-between;gap:10px;color:var(--m);font-size:13px;margin-bottom:10px}.bar{height:7px;background:var(--l);border-radius:99px;overflow:hidden;margin-bottom:14px}.bar div{height:100%;background:var(--ac)}
-.qbox{background:var(--p);border:1px solid var(--l);border-radius:24px;padding:24px;min-height:370px;display:flex;flex-direction:column;justify-content:center}.tag{font-size:12px;color:var(--m);text-align:center;margin-bottom:14px}.prompt{font-size:27px;text-align:center;line-height:1.5}.ru{font-family:"Times New Roman",serif;font-size:38px}
+.qbox{background:var(--p);border:1px solid var(--l);border-radius:24px;padding:24px;min-height:370px;display:flex;flex-direction:column;justify-content:center}.tag{font-size:12px;color:var(--m);text-align:center;margin-bottom:14px}.prompt{font-size:27px;text-align:center;line-height:1.5}
+.active-pos-hint{font-size:13px;font-weight:650;text-align:center;color:var(--m);background:var(--chip);border-radius:999px;padding:6px 12px;margin:12px auto 0;max-width:100%;width:fit-content;line-height:1.45;overflow-wrap:anywhere}.active-pos-hint.pending{font-weight:500;border:1px dashed var(--l)}.ru{font-family:"Times New Roman",serif;font-size:38px}
 .answer{margin-top:22px}.answer input{font-family:"Times New Roman",serif;font-size:21px;padding:14px}.choices{display:grid;gap:9px;margin-top:20px}.choices button{text-align:left;padding:14px}
 .feedback{margin-top:14px;padding:14px;border-radius:13px;line-height:1.65;display:none}.feedback.ok{display:block;background:var(--ok)}.feedback.bad{display:block;background:var(--bad)}.feedback.mid{display:block;background:var(--mid)}.backdetails{margin-top:8px;padding-top:8px;border-top:1px solid var(--l)}
 .feedback .ru{font-size:24px;line-height:1.25;font-weight:700}.feedback b{font-size:16px}.feedback{line-height:1.5}.feedback .backdetails{font-size:15px}
@@ -152,7 +153,7 @@ button,input,select{touch-action:manipulation}
 /* v4.2: Restore native document scrolling and browser pull-to-refresh.
    Removed candidate-v3 viewport/overscroll overrides; original layout CSS unchanged. */
 </style>
-<meta name="trki-candidate-build" content="2026-10-26-vocab-calendar-day-v4.3">
+<meta name="trki-candidate-build" content="2026-11-08-vocab-pos-enriched-v6.8.7">
 </head>
 <body>
 <a class="hub-home-link" href="https://domoyo399-byte.github.io/trki-c1-hub/" aria-label="返回 C1 学习中心">⌂ 学习中心</a>
@@ -160,7 +161,7 @@ button,input,select{touch-action:manipulation}
 <div id="pageTop" aria-hidden="true"></div>
 
 <section id="home">
-<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.8.5 Confusable R Candidate</span></h1>
+<h1>ТРКИ-C1 智能词汇学习 <span style="font-size:12px;color:var(--m);font-weight:500">v6.8.7 POS Metadata Candidate</span></h1>
 <div class="home-sub-compact">先学习，再测试。查词、看板、设置和备份都保留，但默认收起来，免得每次为了背个词先进行一次网页徒步旅行。</div>
 
 <div class="quick-zone">
@@ -323,7 +324,7 @@ button,input,select{touch-action:manipulation}
 <section id="test">
 <div class="topline"><span id="qCount"></span><span id="qKind"></span></div><div class="bar"><div id="prog"></div></div>
 <div class="qbox">
-<div class="tag" id="tag"></div><div class="prompt" id="prompt"></div>
+<div class="tag" id="tag"></div><div class="prompt" id="prompt"></div><div class="active-pos-hint hidden" id="activePosHint" aria-label="当前中文主动回忆题词性提示"></div>
 <div class="answer" id="answer"></div><div class="feedback" id="feedback"></div>
 <div class="smallbtns">
 <button id="dontKnow">不认识 / 想不起来</button>
@@ -1126,7 +1127,7 @@ const CONFUSABLE_R_GROUPS=[
  ["земнои","землянои","земельныи","внеземная цивилизация","внеземнои разум"],
  ["показать","представить","представлять кого/что","предъявить"]
 ];
-// v6.8.5: 与既有24组分离的形近词人工审核池。关系基于拼写和辨析价值，不声明同词根。
+// v6.8.6: 与既有24组分离的形近词人工审核池。关系基于拼写和辨析价值，不声明同词根。
 // 只改变R类错误选项；其中外部对照词不新增到用户词库、不参与调度和SRS。
 const R_ORTHOGRAPHIC_GROUPS=[
  ["греческий","гречневый","грецкий","грешный"],
@@ -1274,6 +1275,44 @@ function distractors(c){
     for(const x of rShuffleInPlace(pool.slice())){if(picked.length===3)break;pick(x)}
   }
   return picked;
+}
+// v6.8.6: 仅在中文→俄语主动回忆题展示既有显式词性资料。
+// 不按词尾、不凭俄语拼写推测词性；缺项仅提示待核对，不写入数据库。
+function activeRecallPosInfo(c){
+  const studies=[c.study,c.learning].filter(x=>x&&typeof x==="object");
+  const generic=new Set(["词/表达","词汇/表达","词或表达","未知","未标注","待确认","待核对","其他"]);
+  const study=studies.find(x=>typeof x.pos==="string"&&x.pos.trim()&&!generic.has(x.pos.trim()))||studies[0]||{};
+  const sources=[...studies.map(x=>x.pos),c.pos,c.partOfSpeech];
+  let raw="";
+  for(const value of sources){
+    const candidate=typeof value==="string"?value.trim():"";
+    if(candidate&&!generic.has(candidate)){raw=candidate;break}
+  }
+  if(!raw)return {text:"词性待核对",known:false};
+  let part=raw==="гл."||raw==="глагол"?"动词":raw;
+  const explicitGender=String(study.gender||study.nounGender||c.gender||"").trim();
+  const genders={"m":"阳性","f":"阴性","n":"中性","м.р.":"阳性","ж.р.":"阴性","ср.р.":"中性","masculine":"阳性","feminine":"阴性","neuter":"中性"};
+  const gender=genders[explicitGender.toLowerCase()]||(["阳性","阴性","中性"].includes(explicitGender)?explicitGender:"");
+  if(gender&&/名词|существительн/i.test(part)&&!/阳性|阴性|中性|м\.р\.|ж\.р\.|ср\.р\./i.test(part))part+=" · "+gender;
+  // Only apply aspect to explicitly identified verbs, never participles/gerunds.
+  const explicitVerb=/(?:动词|глагол|гл\.)/.test(part)&&!/形动词|副动词/.test(part);
+  const aspect=String(study.aspect||c.aspect||"").trim().toLowerCase();
+  const isPair=!!(c.pairMeta&&Array.isArray(c.pairMeta.forms)&&c.pairMeta.forms.length>=2);
+  if(explicitVerb&&!/完成体|未完成体|体对/.test(part)){
+    if(isPair)part+=" · 未完成体／完成体";
+    else if(/^(нсв\.?|несовершенный вид)$/.test(aspect))part+=" · 未完成体";
+    else if(/^(св\.?|совершенный вид)$/.test(aspect))part+=" · 完成体";
+    else if(/^(нсв\.?\s*\/\s*св\.?|св\.?\s*\/\s*нсв\.?)$/.test(aspect))part+=" · 未完成体／完成体（需核对具体形式）";
+  }
+  return {text:"词性："+part,known:true};
+}
+function showActivePosHint(c,active){
+  const el=$("activePosHint");
+  if(!el)return;
+  if(!active){el.textContent="";el.className="active-pos-hint hidden";return}
+  const info=activeRecallPosInfo(c);
+  el.textContent=info.text;
+  el.className="active-pos-hint"+(info.known?"":" pending");
 }
 function qType(c){
   if(c.level==="R")return "mc";
@@ -1630,6 +1669,7 @@ async function showQ(){
   $("qCount").textContent=`${qi+1} / ${queue.length}`;$("prog").style.width=`${(qi/Math.max(1,queue.length))*100}%`;
   $("tag").textContent=`${c.level}${c.g?" · G":""} · 今日错 ${dailyWrongCount(c)}/${maxWrong()}`;$("answer").innerHTML="";
   const type=qType(c);currentQuestionType=type;
+  showActivePosHint(c,type==="typing");
   if(type==="mc"){
     $("qKind").textContent="俄语 → 中文 · 选择";$("prompt").innerHTML=`<span class="ru">${c.term}</span>`;
     let opts=[coreMeaning(c),...distractors(c)].sort(()=>Math.random()-.5),box=document.createElement("div");box.className="choices";
@@ -2051,7 +2091,56 @@ $("importBackup").onchange=e=>readJSON(e.target.files[0],async x=>{
   if(x&&x.browserState)await TRKIStore.setItem(BROWSER_STATE_KEY,JSON.stringify(x.browserState));
   updateHome();renderResume();renderIntroResume();alert(`备份恢复并写入成功：${all().length} 个词。`)
 });
+// v6.8.7: strict POS-only metadata patch. The existing study object and all other fields
+// are preserved; never parse these patches as ordinary card content updates.
+async function importPosMetadataPatch(x){
+  if(!Array.isArray(x.posUpdates)||x.posUpdates.length===0)throw new Error("词性补丁缺少非空 posUpdates 列表");
+  if(x.version!==1)throw new Error("不支持的词性补丁版本");
+  const seen=new Set(),plan=[],already=[],conflicts=[];
+  const GENERIC=new Set(["","词/表达","词汇/表达","词或表达","未知","未标注","待确认","待核对","其他"]);
+  // Validate the complete patch before touching any card or persistent storage.
+  for(const p of x.posUpdates){
+    const key=p&&p.contentId;
+    if(typeof key!=="string"||!key.trim()||seen.has(key))throw new Error("补丁含空ID或重复ID："+String(key));
+    seen.add(key);
+    const c=db.cards[key];
+    if(!c)throw new Error("当前词库中找不到词条ID："+key+"；请核对最新备份");
+    const fields=p.fields;
+    if(!fields||typeof fields!=="object"||Array.isArray(fields)||typeof fields.pos!=="string"||!fields.pos.trim())throw new Error("缺少可用词性信息："+key);
+    const unexpected=Object.keys(fields).filter(k=>!["pos","gender","aspect"].includes(k));
+    if(unexpected.length)throw new Error("补丁包含未经批准的字段："+key+" / "+unexpected.join(","));
+    const existing=c.study&&typeof c.study==="object"?c.study:{};
+    const oldPos=typeof existing.pos==="string"?existing.pos.trim():"";
+    const desired=fields.pos.trim();
+    if(oldPos===desired&&Object.keys(fields).every(k=>existing[k]===fields[k])){already.push(key);continue}
+    if(!GENERIC.has(oldPos)&&oldPos!==desired){conflicts.push(key+"：现有“"+oldPos+"” vs 补丁“"+desired+"”");continue}
+    // Existing confirmed gender or aspect always wins. A conflict is never silently replaced.
+    for(const field of ["gender","aspect"]){
+      const prev=existing[field],wanted=fields[field];
+      if(wanted!==undefined&&prev!==undefined&&prev!==null&&prev!==""&&prev!==wanted){
+        conflicts.push(key+"：现有"+field+"="+prev+"；建议="+wanted);
+      }
+    }
+    plan.push({key,study:{...existing,...fields}})
+  }
+  if(conflicts.length)throw new Error("已停止导入：发现 "+conflicts.length+" 项已确认信息冲突。示例：\n"+conflicts.slice(0,8).join("\n")+"\n请先核对最新备份，不会覆盖这些字段。");
+  if(plan.length===0){alert("没有需要补全的词性："+already.length+" 张已匹配；未修改学习数据。");return}
+  await snapshotRollback("before-pos-only-metadata-import");
+  const before=new Map(plan.map(p=>[p.key,db.cards[p.key].study]));
+  try{
+    for(const p of plan)db.cards[p.key].study=p.study;
+    await save();
+  }catch(error){
+    for(const [key,old] of before){db.cards[key].study=old}
+    throw error;
+  }
+  updateHome();
+  alert("词性补全完成：更新 "+plan.length+" 张，已是目标词性 "+already.length+" 张。原词条、A/R/G分类、历史成绩与SRS调度均未改变。请抽查词卡后再继续测试。");
+}
 $("importVocab").onchange=e=>readJSON(e.target.files[0],async x=>{
+  if(x&&x.format==="TRKI-C1-POS-METADATA-PATCH"){
+    await importPosMetadataPatch(x);return;
+  }
   const arr=Array.isArray(x)?x:(x.cards||x.vocabulary||[]);if(!Array.isArray(arr)){alert("词包格式不正确");return}
   if(x&&x.format==="TRKI-C1-ASPECT-PAIR-SAFE-PATCH"){
     for(const c of arr){
@@ -2112,5 +2201,5 @@ TRKIStore.init().then((ok) => {
   warning.textContent='存储 v2 尚未可用，为保护已有数据，已停止加载此页面：'+error.message+'。请先到 Hub 恢复三库 JSON，不要清理浏览器数据。';
   document.body.prepend(warning);
 });
-</script><div style="position:fixed;top:0;right:0;z-index:900;background:#efe7ff;color:#40316d;padding:3px 8px;font:11px sans-serif;opacity:.9;border-radius:0 0 0 9px">Storage v2 · Confusable R Candidate v6.8.5</div>
+</script><div style="position:fixed;top:0;right:0;z-index:900;background:#efe7ff;color:#40316d;padding:3px 8px;font:11px sans-serif;opacity:.9;border-radius:0 0 0 9px">Storage v2 · Active POS Hint Candidate v6.8.7</div>
 </body></html>
